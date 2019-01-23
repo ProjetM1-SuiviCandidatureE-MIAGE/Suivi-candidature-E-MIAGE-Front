@@ -8,7 +8,7 @@ import {
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import React from 'react';
 
-
+// Le composant Modal qui s'affiche pour se connecter ou s'inscrire
 class MyModal extends React.Component {
   constructor(props) {
     super(props);

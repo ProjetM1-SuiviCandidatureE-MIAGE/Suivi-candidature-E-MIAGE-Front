@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { Button, Collapse } from 'reactstrap';
+import { Button } from 'reactstrap';
 import './CandidatureForm.css';
+import axios from 'axios';
 
+// Le formulaire de création d'une candidature
 class CandidatureForm extends Component {
     constructor(props) {
       super(props);
 
       this.state = {
-        toggle: true,
         firstName:'',
         name:'',
         email:''
@@ -15,6 +16,7 @@ class CandidatureForm extends Component {
       this.handleFirstnameChange = this.handleFirstnameChange.bind(this);
       this.handleNameChange = this.handleNameChange.bind(this);
       this.handleEmailChange = this.handleEmailChange.bind(this);
+      this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleFirstnameChange(e) {
@@ -30,17 +32,25 @@ class CandidatureForm extends Component {
     }
 
     handleSubmit(e) {
-      console.log("Prénom : " + this.state.firstName);
-      console.log("Nom : " + this.state.name);
-      console.log("Email : " + this.state.email);
       e.preventDefault();
+      console.log(`Prénom is ${this.state.firstName} and Nom is ${this.state.name} and Email is ${this.state.email}`);
+      const test = {
+        etat: this.state.firstName,
+        commentaire : this.state.name,
+        date: this.state.email
+      }
+      axios.post('mongodb://localhost/new', test);
+      this.setState = {
+        firstName:'',
+        name:'',
+        email:''
+      }
     }
-
+      
     render() {
       return(
-        <Collapse isOpen={this.state.toggle}>
           <div className="candidatureDiv">
-            <form className="candidatureForm">
+            <form method="POST" action="/new" className="candidatureForm">
               <div className="formGroup">
                 <input className="inputText" type="text" name="firstName" required value={this.state.firstName} onChange={this.handleFirstnameChange}/>
                 <label className="labelText" for="firstName">Prénom(s)</label>
@@ -67,11 +77,10 @@ class CandidatureForm extends Component {
               </div>
               <div className="text-center">
                 <Button color="danger" type="button">Annuler</Button>
-                <Button color="primary" onClick={this.handleSubmit}>Envoyer</Button>
+                <Button color="primary" type="submit" onClick={this.handleSubmit}>Envoyer</Button>
               </div>
             </form>
           </div>
-        </Collapse>
       );
     }
 }

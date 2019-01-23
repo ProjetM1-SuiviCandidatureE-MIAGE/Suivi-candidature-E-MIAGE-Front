@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Navbar, Nav, NavItem, NavLink, Collapse, NavbarToggler } from 'reactstrap';
 import './HomeNavbar.css';
 
+// La barre de navigation de la page d'accueil
 export default class CustomNavbar extends Component {
     constructor(props) {
         super(props);

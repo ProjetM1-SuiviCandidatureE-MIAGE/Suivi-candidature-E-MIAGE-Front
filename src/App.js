@@ -5,6 +5,7 @@ import Home from './components/Home';
 import SpaceCandidat from './components/SpaceCandidat';
 import SpaceAdmin from './components/SpaceAdmin';
 
+// Composant principale qui contient les routes pour les autre composants
 class App extends Component {
   render() {
     return (
