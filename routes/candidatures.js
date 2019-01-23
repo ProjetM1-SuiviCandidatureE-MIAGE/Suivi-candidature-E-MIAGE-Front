@@ -11,7 +11,7 @@ router.get('/', (req, res)=>{
     })
 });
 
-//--afficher une nouvelle candidature
+//--afficher les nouvelle candidatures
 router.get('/new', (req, res) => {
     Candidat.find({}).then(candidats => {
         let candidature = new Candidature();
