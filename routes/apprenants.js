@@ -2,7 +2,7 @@ let router = require('express').Router();
 
 let Apprenant = require('./../models/Apprenant');
 
-router.get('/:type', (req, res) =>{
+router.get('/:apprenant', (req, res) =>{
 
 });
 
