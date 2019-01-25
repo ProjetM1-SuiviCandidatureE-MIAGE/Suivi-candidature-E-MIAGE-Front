@@ -45,9 +45,11 @@ class SpaceAdmin extends React.Component {
         return(
             <div>
                 <SpaceNavbar></SpaceNavbar>
-                <Button onClick={this.toggleNonTraite}>Afficher les candidatures non traitées</Button>
-                <Button onClick={this.toggleAttente}>Afficher les candidatures non traitées</Button>
-                <Button onClick={this.toggleTraite}>Afficher les candidatures non traitées</Button>
+                <div className="text-center">
+                    <Button onClick={this.toggleNonTraite}>Afficher les candidatures non traitées</Button>
+                    <Button onClick={this.toggleAttente}>Afficher les candidatures en attentes</Button>
+                    <Button onClick={this.toggleTraite}>Afficher les candidatures traitées</Button>
+                </div>    
                 <Collapse isOpen={this.state.candNonTraite}>
                     <div className="h" style={{backgroundColor: "red"}}>CANDIDATURES NON TRAITEES</div>
                 </Collapse>

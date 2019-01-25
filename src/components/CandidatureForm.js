@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import './CandidatureForm.css';
-import axios from 'axios';
 
 // Le formulaire de création d'une candidature
 class CandidatureForm extends Component {
@@ -34,17 +33,6 @@ class CandidatureForm extends Component {
     handleSubmit(e) {
       e.preventDefault();
       console.log(`Prénom is ${this.state.firstName} and Nom is ${this.state.name} and Email is ${this.state.email}`);
-      const test = {
-        etat: this.state.firstName,
-        commentaire : this.state.name,
-        date: this.state.email
-      }
-      axios.post('mongodb://localhost/new', test);
-      this.setState = {
-        firstName:'',
-        name:'',
-        email:''
-      }
     }
       
     render() {
