@@ -6,6 +6,7 @@ let candidatureSchema = new mongoose.Schema({
     etat : String,
     commentaire : String,
     date : String,
+    dateTraitement : String,
 
     cv : {
 
