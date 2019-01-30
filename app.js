@@ -2,19 +2,21 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-mongoose.connect('mongodb://localhost/candidature').then(() => {
+mongoose.connect('mongodb://localhost:27017',{useNewUrlParser: true,dbName: "candidature"}).then(() => {
     console.log('Connected to mongoDB')
 }).catch(e => {
     console.log('Error while DB connecting');
     console.log(e);
 });
 
+mongoose.connection.on('connected',function(){console.log("connected");})
+mongoose.connection.on('error',function(){console.log("error");})
+
 const app = express();
 
 //Body Parser
 let urlencodedParser = bodyParser.urlencoded({
-    extended: true,
-    useNewUrlParser: true //Inutile ?
+    extended: true
 });
 app.use(urlencodedParser);
 app.use(bodyParser.json());

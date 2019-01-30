@@ -7,7 +7,7 @@ let Candidat = require ('./../models/Candidat');
 //--afficher toutes les candidatures
 router.get('/', (req, res)=>{
     Candidature.find({}).populate('candidats').then(candidatures => {
-        res.render('chemin DAMIEN', { candidatures: candidatures });
+        res.render('./src/components/CandidatureForm', { candidatures: candidatures });
     })
 });
 
