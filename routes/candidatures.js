@@ -1,27 +1,43 @@
 let router = require('express').Router();
 
-let Candidature = require('./../models/Candidature');
+let Candidature = require('../models/Candidature');
 
-let Candidat = require ('./../models/Candidat');
+let Candidat = require ('../models/Candidat');
 
 //--afficher toutes les candidatures
-router.get('/', (req, res)=>{
+router.get('/gAC', (req, res)=>{
     Candidature.find({}).populate('candidats').then(candidatures => {
+<<<<<<< HEAD
         res.render('./src/components/CandidatureForm', { candidatures: candidatures });
+=======
+        res.render('index', { candidatures: candidatures });
+>>>>>>> c97a9840866cac5129af183e4c6d3bcae49b6462
     })
+});
+
+//Get all candidatures
+router.get('/testGet', function(req,res) {
+    Candidature.find( {}, function(err,candidatures) {
+        if(err) {
+            console.log(err);
+        }
+        console.log("hello" + candidatures);
+        res.send(candidatures);
+    });
 });
 
 //--afficher les nouvelle candidatures
 router.get('/new', (req, res) => {
     Candidat.find({}).then(candidats => {
         let candidature = new Candidature();
-        res.render('chemin DAMIEN', { candidature: candidature, candidats: candidats, endpoint: '/' });
+        res.render('index', { candidature: candidature, candidats: candidats, endpoint: '/' });
     });
 
 });
 
 //--Creation d'une candidature
-router.post('/new', (req, res) =>{
+router.post('/newCandidature', (req, res) =>{
+    console.log(JSON.stringify(req.body));
     let newCandidature = new Candidature(req.body);
     newCandidature.id = newCandidature._id;
 

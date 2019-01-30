@@ -3,3 +3,7 @@
     font-weight: 650;
     font-size: 19px;
 }
+
+.navbar-toggler {
+    background-color: black;
+}

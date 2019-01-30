@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
+// La BDD s'appelle 'candidature'
 mongoose.connect('mongodb://localhost:27017',{useNewUrlParser: true,dbName: "candidature"}).then(() => {
     console.log('Connected to mongoDB')
 }).catch(e => {
@@ -29,11 +30,6 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
-
-//Test avec une route Hello
-app.get('/hello',function(req,res){
-    res.json("Hello World")
-})
 
 app.use('/candidatures', require('./routes/candidatures'));
 app.use('/admins', require('./routes/admins'));
