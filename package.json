@@ -23,11 +23,12 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "startall": "concurrently \"react-scripts start\" \"node app.js\"",
+    "startall": "concurrently \"react-scripts start\" \"nodemon app.js\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "proxy": "http://localhost:3010",
   "eslintConfig": {
     "extends": "react-app"
   },

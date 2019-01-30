@@ -27,10 +27,10 @@ export default class CustomNavbar extends Component {
               <Collapse isOpen={this.state.isOpen} navbar>
                 <Nav className="ml-auto" navbar>
                   <NavItem>
-                    <NavLink id="link" eventKey={1} href="/SpaceAdmin" componentClass={Link} to="/">Espace admin</NavLink>
+                    <NavLink id="link" href="/SpaceAdmin" component={Link} to="/">Espace admin</NavLink>
                   </NavItem>
                   <NavItem>
-                    <NavLink id="link" eventKey={2} href="/SpaceCandidat"componentClass={Link} to="/">Espace candidat</NavLink>
+                    <NavLink id="link" href="/SpaceCandidat" component={Link} to="/">Espace candidat</NavLink>
                   </NavItem>
                 </Nav>
               </Collapse>
