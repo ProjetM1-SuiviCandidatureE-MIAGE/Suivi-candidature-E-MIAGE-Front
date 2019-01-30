@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
 // La BDD s'appelle 'candidature'
-mongoose.connect('mongodb://localhost/candidature').then(() => {
+mongoose.connect('mongodb://localhost/candidature',{useNewUrlParser:true}).then(() => {
     console.log('Connected to mongoDB')
 }).catch(e => {
     console.log('Error while DB connecting');
@@ -15,7 +15,6 @@ const app = express();
 //Body Parser
 let urlencodedParser = bodyParser.urlencoded({
     extended: true,
-    useNewUrlParser: true //Inutile ?
 });
 app.use(urlencodedParser);
 app.use(bodyParser.json());
