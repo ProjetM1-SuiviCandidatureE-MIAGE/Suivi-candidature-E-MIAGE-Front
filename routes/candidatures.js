@@ -1,8 +1,10 @@
-let router = require('express').Router();
+const router = require('express').Router();
 
-let Candidature = require('../models/Candidature');
+const Candidature = require('../models/Candidature');
 
-let Candidat = require ('../models/Candidat');
+const Candidat = require ('../models/Candidat');
+
+const ajoutCandidature = require ('./Candidatures/lib.js');
 
 //--afficher toutes les candidatures
 router.get('/gAC', (req, res)=>{
@@ -32,17 +34,7 @@ router.get('/new', (req, res) => {
 });
 
 //--Creation d'une candidature
-router.post('/newCandidature', (req, res) =>{
-    console.log(JSON.stringify(req.body));
-    let newCandidature = new Candidature(req.body);
-    newCandidature.id = newCandidature._id;
-
-    newCandidature.save().then(()=>{
-        res.status(200).json(newCandidature)
-    },(err)=>{
-        res.status(400).json(err);
-    })
-});
+router.post('/newCandidature',ajoutCandidature.newCandidature);
 
 //-- modification des informations pour une candidature
 router.put('/edit/:id', (req, res) =>{
