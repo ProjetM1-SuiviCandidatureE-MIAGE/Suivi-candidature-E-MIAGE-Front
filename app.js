@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-// La BDD s'appelle 'candidature'
+// Connexion à la BDD'candidature'
 mongoose.connect('mongodb://localhost/candidature',{useNewUrlParser:true}).then(() => {
     console.log('Connected to mongoDB')
 }).catch(e => {
@@ -32,13 +32,6 @@ app.use('/candidatures', require('./routes/candidatures'));
 app.use('/admins', require('./routes/admins'));
 app.use('/apprenants', require('./routes/apprenants'));
 app.use('/candidats', require('./routes/candidats'));
-
-/*
-//Définition du routeur
-var router = express.Router();
-app.use('/candidature', router);
-require('./routes/candidatures')(router);
-*/
 
 console.log('le server est connecté sur le port 3010');
 app.listen(3010);

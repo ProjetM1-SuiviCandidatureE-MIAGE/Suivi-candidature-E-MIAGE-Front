@@ -1,21 +1,21 @@
-
-const User = require('../../schema/schemaUser.js');
+const Admin = require('../../models/Admin.js');
 const passwordHash = require("password-hash");
 
+// --INSCRIPTION ADMINISTRATEUR
 function signup(req, res) {
-    if (!req.body.email || !req.body.password) {
+    if (!req.body.mail || !req.body.mdp) {
         //Le cas où l'email ou bien le password ne serait pas soumit ou nul
         res.status(400).json({
             "text": "Requête invalide"
         })
     } else {
-        var user = {
-            email: req.body.email,
-            password: passwordHash.generate(req.body.password)
+        let admin = {
+            mail: req.body.mail,
+            mdp: passwordHash.generate(req.body.mdp)
         }
-        var findUser = new Promise(function (resolve, reject) {
-            User.findOne({
-                email: user.email
+        let findAdmin = new Promise(function (resolve, reject) {
+            Admin.findOne({
+                mail: admin.mail
             }, function (err, result) {
                 if (err) {
                     reject(500);
@@ -29,9 +29,9 @@ function signup(req, res) {
             })
         })
 
-        findUser.then(function () {
-            var _u = new User(user);
-            _u.save(function (err, user) {
+        findAdmin.then(function () {
+            let _a = new Admin(admin);
+            _a.save(function (err, admin) {
                 if (err) {
                     res.status(500).json({
                         "text": "Erreur interne"
@@ -39,7 +39,7 @@ function signup(req, res) {
                 } else {
                     res.status(200).json({
                         "text": "Succès",
-                        "token": user.getToken()
+                        "token": admin.getToken()
                     })
                 }
             })
@@ -64,28 +64,29 @@ function signup(req, res) {
     }
 }
 
+//-- CONNEXION en tant qu'Admin
 function login(req, res) {
-    if (!req.body.email || !req.body.password) {
+    if (!req.body.mail || !req.body.mdp) {
         //Le cas où l'email ou bien le password ne serait pas soumit ou nul
         res.status(400).json({
             "text": "Requête invalide"
         })
     } else {
-        User.findOne({
-            email: req.body.email
-        }, function (err, user) {
+        Admin.findOne({
+            mail: req.body.mail
+        }, function (err, admin) {
             if (err) {
                 res.status(500).json({
                     "text": "Erreur interne"
                 })
-            } else if (!user) {
+            } else if (!admin) {
                 res.status(401).json({
                     "text": "L'utilisateur n'existe pas"
                 })
             } else {
-                if (user.authenticate(req.body.password)) {
+                if (admin.authenticate(req.body.mdp)) {
                     res.status(200).json({
-                        "token": user.getToken(),
+                        "token": admin.getToken(),
                         "text": "Authentification réussi"
                     })
                 } else {
