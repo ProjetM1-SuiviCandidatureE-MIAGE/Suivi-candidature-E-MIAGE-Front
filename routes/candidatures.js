@@ -61,7 +61,7 @@ router.get('/delete/:id', (req, res) =>{
 /*ATTENTION ECRIRE EN DERNIER*/ 
 router.get('/:id', (req, res) =>{
     Candidature.findById(req.params.id).populate('candidats').then(candidature => {
-        res.render('nom du chemin DAMIEN', { candidature: candidature });
+        res.render('index', { candidature: candidature });
     },
     err => res.status(500).send(err));
 });
