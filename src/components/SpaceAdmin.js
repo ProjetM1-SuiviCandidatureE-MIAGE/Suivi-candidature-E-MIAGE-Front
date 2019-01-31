@@ -3,20 +3,18 @@ import { Button, Collapse } from 'reactstrap';
 import SpaceNavbar from './SpaceNavbar';
 import './SpaceAdmin.css';
 
-const candNT = ["hello"];
-const candEA = [];
-const candT = [];
-
 // Le composant qui affiche la page de l'espace administrateur
 class SpaceAdmin extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-          candNonTraite: false,
-          candAttente:false,
-          candTraite:false,
-          candidatures: []
+          boolCandNonTraitees: false,
+          boolCandEnAttentes: false,
+          boolCandTraitees: false,
+          candidaturesNonTraitees: [],
+          candidaturesEnAttentes: [],
+          candidaturesTraitees: []
         };
         this.componentDidMount = this.componentDidMount.bind(this);
         this.toggleNonTraite = this.toggleNonTraite.bind(this);
@@ -25,42 +23,67 @@ class SpaceAdmin extends React.Component {
         this.renderCandidaturesNonTraitees = this.renderCandidaturesNonTraitees.bind(this);
         this.renderCandidaturesEnAttentes = this.renderCandidaturesEnAttentes.bind(this);
         this.renderCandidaturesTraitees = this.renderCandidaturesTraitees.bind(this);
+
+        fetch('/candidatures/testGet')
+          .then(res => res.json())
+          .then(data => this.setState({ candidaturesNonTraitees : data }))
+          .catch(error => console.log(error));
     }
     // test api
     componentDidMount() {
-        fetch('/candidatures/test')
-          .then(res => res.json())
-          .then(candidatures => this.setState({ candidatures }, () => console.log("Data fetched :" + candidatures)));
+        
     }
 
     // Fonction pour afficher le div qui contient les candidatures non traitées
     toggleNonTraite() {
         this.setState({
-          candNonTraite: !this.state.candNonTraite,
-          candAttente:false,
-          candTraite:false
+          boolCandNonTraitees: !this.state.boolCandNonTraitees,
+          boolCandEnAttentes:false,
+          boolCandTraitees:false
         });
     }
     // Fonction pour afficher le div qui contient les candidatures en attentes
     toggleAttente() {
         this.setState({
-          candAttente: !this.state.candAttente,
-          candNonTraite:false,
-          candTraite:false
+          boolCandEnAttentes: !this.state.boolCandEnAttentes,
+          boolCandNonTraitees:false,
+          boolCandTraitees:false
         });
     }
     // Fonction pour afficher le div qui contient les candidatures traitées
     toggleTraite() {
         this.setState({
-          candTraite: !this.state.candTraite,
-          candNonTraite:false,
-          candAttente:false
+          boolCandTraitees: !this.state.boolCandTraitees,
+          boolCandNonTraitees:false,
+          boolCandEnAttentes:false
         });
     }
     // Fonction pour afficher les candidatures non traitées
     renderCandidaturesNonTraitees() {
-        if(candNT.length === 0) {
+        if(this.state.candidaturesNonTraitees.length === 0) {
             return <div className="divPerso" style={{backgroundColor: "silver"}}>IL N'Y A PAS DE CANDIDATURES NON TRAITEES :'(</div>;
+        } else {
+            return (
+                <div id="accordion" className="divPerso">
+                    {this.state.candidaturesNonTraitees.map( (item, index) => 
+                        <div className="card" style={{backgroundColor: "silver"}}>
+                            <div className="card-header" id={"heading"+ index} role="button" data-toggle="collapse" data-target={"#collapse"+ index} 
+                            aria-expanded="false" aria-controls={"collapse"+ index} >
+                                <div>Candidature : {index} </div>
+                            </div>
+                            <div id={"collapse"+ index} className="collapse" data-toggle="collapse" data-target={"#collapse"+ index} aria-labelledby={"heading"+ index} data-parent="#accordion">
+                                <div className="card-body">{JSON.stringify(item)}</div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+    }
+    // Fonction pour afficher les candidatures en attentes
+    renderCandidaturesEnAttentes() {
+        if(this.state.candidaturesEnAttentes.length === 0) {
+            return <div className="divPerso" style={{backgroundColor: "gray"}}>IL N'Y A PAS DE CANDIDATURES EN ATTENTES :'(</div>;
         } else {
             return (
                 <div id="accordion" className="divPerso">
@@ -131,17 +154,9 @@ class SpaceAdmin extends React.Component {
             );
         }
     }
-    // Fonction pour afficher les candidatures en attentes
-    renderCandidaturesEnAttentes() {
-        if(candEA.length === 0) {
-            return <div className="divPerso" style={{backgroundColor: "gray"}}>IL N'Y A PAS DE CANDIDATURES EN ATTENTES :'(</div>;
-        } else {
-            return <div className="divPerso" style={{backgroundColor: "gray"}}>LISTE DES CANDIDATURES EN ATTENTES :</div>;
-        }
-    }
     // Fonction pour afficher les candidatures traitées
     renderCandidaturesTraitees() {
-        if(candT.length === 0) {
+        if(this.state.candidaturesTraitees.length === 0) {
             return <div className="divPerso" style={{backgroundColor: "black"}}>IL N'Y A PAS DE CANDIDATURES TRAITEES :'(</div>;
         } else {
             return <div className="divPerso" style={{backgroundColor: "black"}}>LISTE DES CANDIDATURES TRAITEES :</div>;
@@ -159,13 +174,13 @@ class SpaceAdmin extends React.Component {
                     <Button onClick={this.toggleAttente}>Afficher les candidatures en attentes</Button>
                     <Button onClick={this.toggleTraite}>Afficher les candidatures traitées</Button>
                 </div>    
-                <Collapse isOpen={this.state.candNonTraite}>
+                <Collapse isOpen={this.state.boolCandNonTraitees}>
                     {this.renderCandidaturesNonTraitees()}
                 </Collapse>
-                <Collapse isOpen={this.state.candAttente}>
+                <Collapse isOpen={this.state.boolCandEnAttentes}>
                     {this.renderCandidaturesEnAttentes()}
                 </Collapse>
-                <Collapse isOpen={this.state.candTraite}>
+                <Collapse isOpen={this.state.boolCandTraitees}>
                     {this.renderCandidaturesTraitees()}
                 </Collapse>
             </div>
