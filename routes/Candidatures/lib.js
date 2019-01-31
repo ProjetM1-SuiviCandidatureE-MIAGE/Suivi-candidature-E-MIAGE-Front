@@ -1,5 +1,4 @@
 const Candidature = require('../../models/Candidature.js');
-const passwordHash = require("password-hash");
 
 function newCandidature(req, res) {
     console.log(JSON.stringify(req.body));
