@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Home from './components/Home';
 import SpaceCandidat from './components/SpaceCandidat';
 import SpaceAdmin from './components/SpaceAdmin';
+import Mentions from './components/MentionsLegales';
 
 // Composant principale qui contient les routes pour les autre composants
 class App extends Component {
@@ -14,7 +15,8 @@ class App extends Component {
           <Route exact path="/" component={Home} />
           <Route path="/spaceAdmin" component={SpaceAdmin} />
           <Route path="/spaceCandidat" component={SpaceCandidat} />
-        </div>
+          <Mentions></Mentions>
+        </div> 
       </Router>
     );
   }

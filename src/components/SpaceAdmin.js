@@ -9,17 +9,20 @@ class SpaceAdmin extends React.Component {
         super(props);
 
         this.state = {
-          boolCandNonTraitees: false,
-          boolCandEnAttentes: false,
-          boolCandTraitees: false,
-          candidaturesNonTraitees: [],
-          candidaturesEnAttentes: [],
-          candidaturesTraitees: []
+            boolMesInformations: false,
+            boolCandNonTraitees: false,
+            boolCandEnAttentes: false,
+            boolCandTraitees: false,
+            candidaturesNonTraitees: [],
+            candidaturesEnAttentes: [],
+            candidaturesTraitees: []
         };
-        this.componentDidMount = this.componentDidMount.bind(this);
         this.toggleNonTraite = this.toggleNonTraite.bind(this);
         this.toggleAttente = this.toggleAttente.bind(this);
         this.toggleTraite = this.toggleTraite.bind(this);
+        this.toggleMesInformations = this.toggleMesInformations.bind(this);
+
+        this.renderMesInformations = this.toggleMesInformations.bind(this);
         this.renderCandidaturesNonTraitees = this.renderCandidaturesNonTraitees.bind(this);
         this.renderCandidaturesEnAttentes = this.renderCandidaturesEnAttentes.bind(this);
         this.renderCandidaturesTraitees = this.renderCandidaturesTraitees.bind(this);
@@ -29,34 +32,45 @@ class SpaceAdmin extends React.Component {
           .then(data => this.setState({ candidaturesNonTraitees : data }))
           .catch(error => console.log(error));
     }
-    // test api
-    componentDidMount() {
-        
-    }
 
     // Fonction pour afficher le div qui contient les candidatures non traitées
     toggleNonTraite() {
         this.setState({
-          boolCandNonTraitees: !this.state.boolCandNonTraitees,
-          boolCandEnAttentes:false,
-          boolCandTraitees:false
+            boolCandNonTraitees: !this.state.boolCandNonTraitees,
+            boolMesInformations: false,
+            boolCandEnAttentes:false,
+            boolCandTraitees:false
         });
     }
     // Fonction pour afficher le div qui contient les candidatures en attentes
     toggleAttente() {
         this.setState({
-          boolCandEnAttentes: !this.state.boolCandEnAttentes,
-          boolCandNonTraitees:false,
-          boolCandTraitees:false
+            boolCandEnAttentes: !this.state.boolCandEnAttentes,
+            boolMesInformations: false,
+            boolCandNonTraitees:false,
+            boolCandTraitees:false
         });
     }
     // Fonction pour afficher le div qui contient les candidatures traitées
     toggleTraite() {
         this.setState({
-          boolCandTraitees: !this.state.boolCandTraitees,
-          boolCandNonTraitees:false,
-          boolCandEnAttentes:false
+            boolCandTraitees: !this.state.boolCandTraitees,
+            boolMesInformations: false,
+            boolCandNonTraitees:false,
+            boolCandEnAttentes:false
         });
+    }
+    // Fonction pour afficher le div qui contient les informations de l'admin
+    toggleMesInformations() {
+        this.setState({
+            boolMesInformations: !this.state.boolMesInformations,
+            boolCandTraitees: false,
+            boolCandNonTraitees:false,
+            boolCandEnAttentes:false
+        })
+    }
+    renderMesInformations() {
+        return <div className="divPerso text-center">Mes Informations</div>;
     }
     // Fonction pour afficher les candidatures non traitées
     renderCandidaturesNonTraitees() {
@@ -72,7 +86,7 @@ class SpaceAdmin extends React.Component {
                                 <div>Candidature : {index} </div>
                             </div>
                             <div id={"collapse"+ index} className="collapse" data-toggle="collapse" data-target={"#collapse"+ index} aria-labelledby={"heading"+ index} data-parent="#accordion">
-                                <div className="card-body">{JSON.stringify(item)}</div>
+                                <div className="card-body">Nom : {item.etat}  --  email : {item.date}</div>
                             </div>
                         </div>
                     )}
@@ -86,71 +100,7 @@ class SpaceAdmin extends React.Component {
             return <div className="divPerso" style={{backgroundColor: "gray"}}>IL N'Y A PAS DE CANDIDATURES EN ATTENTES :'(</div>;
         } else {
             return (
-                <div id="accordion" className="divPerso">
-                    <div className="card" style={{backgroundColor: "silver"}}>
-                        <div className="card-header" id="headingOne" role="button" data-toggle="collapse" data-target="#collapseOne" 
-                            aria-expanded="false" aria-controls="collapseOne" >
-                            <div>
-                            Candidature de prénom NOM, le 28 Janvier 2019 
-                            </div>
-                        </div>
-                        <div id="collapseOne" className="collapse" data-toggle="collapse" data-target="#collapseOne" aria-labelledby="headingOne" data-parent="#accordion">
-                            <div className="card-body">
-                            VOUS POUVEZ CLIQUER ICI POUR REFERMER LE TEXTE
-
-                            -------------------------------------------------------
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
-                            richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
-                            dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf
-                            moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
-                            assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore
-                            wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur
-                            butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim
-                            aesthetic synth nesciunt you probably haven't heard of them accusamus
-                            labore sustainable VHS.
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card" style={{backgroundColor: "silver"}}>
-                        <div className="card-header" id="headingTwo" role="button" data-toggle="collapse" data-target="#collapseTwo" 
-                            aria-expanded="false" aria-controls="collapseTwo">
-                            <div>
-                            Candidature de prénom NOM, le 28 Janvier 2019 
-                            </div>
-                        </div>
-                        <div id="collapseTwo" className="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                            <div className="card-body">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
-                            richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
-                            dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf
-                            moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
-                            assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore
-                            wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur
-                            butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim
-                            aesthetic synth nesciunt you probably haven't heard of them accusamus
-                            labore sustainable VHS.
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card" style={{backgroundColor: "silver"}}>
-                        <div className="card-header" id="headingThree"  role="button" data-toggle="collapse" data-target="#collapseThree" 
-                            aria-expanded="false" aria-controls="collapseThree">
-                            <div>
-                            Candidature de prénom NOM, le 28 Janvier 2019 
-                            </div>
-                        </div>
-                        <div id="collapseThree" className="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-                        <div className="card-body">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf 
-                            moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. 
-                            Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch 
-                            et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan 
-                            excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you 
-                            probably haven't heard of them accusamus labore sustainable VHS.
-                        </div>
-                        </div>
-                    </div>
-                </div>
+                <div className="divPerso" style={{backgroundColor: "gray"}}>Liste des candidatures en attentes : ;D</div>
             );
         }
     }
@@ -167,8 +117,11 @@ class SpaceAdmin extends React.Component {
             <div>
                 <SpaceNavbar></SpaceNavbar>
                 <div className="text-center">
-                    <Button>Mes Informations</Button>
+                    <Button onClick={this.toggleMesInformations} color="info" size="lg" >Mes Informations</Button>
                 </div>
+                <Collapse isOpen={this.state.boolMesInformations}>
+                    <div className="text-center">coucou</div>
+                </Collapse>
                 <div className="text-center">
                     <Button onClick={this.toggleNonTraite}>Afficher les candidatures non traitées</Button>
                     <Button onClick={this.toggleAttente}>Afficher les candidatures en attentes</Button>

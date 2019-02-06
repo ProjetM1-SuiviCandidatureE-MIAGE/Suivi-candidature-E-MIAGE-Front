@@ -1,0 +1,10 @@
+/* CSS Mentions légales */
+.mentions {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(77, 90, 90);
+    color: white;
+    text-align: center;
+    font-size: 1em;
+    bottom: 0px;
+}
