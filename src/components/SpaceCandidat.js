@@ -35,7 +35,7 @@ class SpaceCandidat extends React.Component {
             <div>
                 <SpaceNavbar></SpaceNavbar>
                 <div className="text-center">
-                    <Button onClick={this.toggleInformationsForm} size="lg">Mes informations</Button>
+                    <Button onClick={this.toggleInformationsForm} color="info" size="lg">Mes informations</Button>
                 </div>
                 <Collapse isOpen={this.state.toggleInformations}>
                     <div className="text-center">--->  Hello World !  ---> Hello You !</div>
