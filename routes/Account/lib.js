@@ -1,17 +1,20 @@
 const Admin = require('../../models/Admin.js');
-const passwordHash = require("password-hash");
+const bcrypt = require("bcrypt");
 
 // --INSCRIPTION ADMINISTRATEUR
 function signup(req, res) {
     if (!req.body.mail || !req.body.mdp) {
         //Le cas où l'email ou bien le password ne serait pas soumit ou nul
+        console.log(req.body.mail);
         res.status(400).json({
             "text": "Requête invalide"
         })
     } else {
+        salt = bcrypt.genSaltSync(10);
         let admin = {
             mail: req.body.mail,
-            mdp: passwordHash.generate(req.body.mdp)
+            //mdp: req.body.mdp
+            mdp: bcrypt.hashSync(req.body.mdp,salt)
         }
         let findAdmin = new Promise(function (resolve, reject) {
             Admin.findOne({
@@ -84,12 +87,15 @@ function login(req, res) {
                     "text": "L'utilisateur n'existe pas"
                 })
             } else {
+                
                 if (admin.authenticate(req.body.mdp)) {
+                    console.log("connected");
                     res.status(200).json({
                         "token": admin.getToken(),
                         "text": "Authentification réussi"
                     })
                 } else {
+                    console.log("not connected");
                     res.status(401).json({
                         "text": "Mot de passe incorrect"
                     })

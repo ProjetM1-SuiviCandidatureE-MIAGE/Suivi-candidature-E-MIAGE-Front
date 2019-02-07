@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const passwordHash = require('password-hash');
+const bcrypt = require('bcrypt');
 const jwt = require('jwt-simple');
 const config = require('../config/config');
 
@@ -16,7 +16,7 @@ let adminSchema = new mongoose.Schema({
 
 adminSchema.methods = {
 	authenticate: function (password) {
-		return passwordHash.verify(mdp, this.password);
+		return bcrypt.compareSync(password, this.mdp);
 	},
 	getToken: function () {
 		return jwt.encode(this, config.secret);
