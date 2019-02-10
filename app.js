@@ -1,6 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+//--CONSTANT POUR LE TEST GESTION DES FICHIERS
+const Grid = require('gridfs-stream');
+const methodOverride = require('method-override');
+//--END CONSTANT
 
 // Connexion à la BDD'candidature'
 mongoose.connect('mongodb://localhost/candidature',{useNewUrlParser:true}).then(() => {
@@ -18,6 +22,19 @@ let urlencodedParser = bodyParser.urlencoded({
 });
 app.use(urlencodedParser);
 app.use(bodyParser.json());
+
+//--PARTIE TEST POUR LA GESTION DES FICHIERS----
+app.use(methodOverride('_method'));
+
+// Init gfs
+let gfs;
+
+conn.once('open', () => {
+  // Init stream
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection('uploads');
+});
+//-- END PARTIE TEST POUR LA GESTION DES FICHIERS---
 
 //Définition des CORS
 app.use(function (req, res, next) {
