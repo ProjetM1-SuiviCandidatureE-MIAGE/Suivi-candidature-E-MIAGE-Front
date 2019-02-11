@@ -6,6 +6,7 @@ let account = require('./Account/lib.js');
 
 //--inscription
 router.post('/signup', account.signup );
+
 //--Connexion
 router.post('/login', account.login);
 
