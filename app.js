@@ -15,6 +15,10 @@ mongoose.connect('mongodb://localhost/candidature',{useNewUrlParser:true}).then(
 });
 
 const app = express();
+const mongoURI = 'mongodb://localhost/candidature';
+
+// Create mongo connection
+const conn = mongoose.createConnection(mongoURI);
 
 //Body Parser
 let urlencodedParser = bodyParser.urlencoded({
