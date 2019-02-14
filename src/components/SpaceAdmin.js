@@ -9,10 +9,12 @@ class SpaceAdmin extends React.Component {
         super(props);
 
         this.state = {
+            // Les booléens pour les fonctions toggle des boutons
             boolMesInformations: false,
             boolCandNonTraitees: false,
             boolCandEnAttentes: false,
             boolCandTraitees: false,
+            //
             candidaturesNonTraitees: [],
             candidaturesEnAttentes: [],
             candidaturesTraitees: []
@@ -78,15 +80,22 @@ class SpaceAdmin extends React.Component {
             return <div className="divPerso" style={{backgroundColor: "silver"}}>IL N'Y A PAS DE CANDIDATURES NON TRAITEES :'(</div>;
         } else {
             return (
-                <div id="accordion" className="divPerso">
+                <div id="accordion"> 
+                    <h1 style={{color:"black"}}>Liste des candidatures non traitées :</h1>
                     {this.state.candidaturesNonTraitees.map( (item, index) => 
                         <div className="card" style={{backgroundColor: "silver"}}>
                             <div className="card-header" id={"heading"+ index} role="button" data-toggle="collapse" data-target={"#collapse"+ index} 
                             aria-expanded="false" aria-controls={"collapse"+ index} >
-                                <div>Candidature : {index} </div>
+                                <div>Candidature numéro : {index +1} </div>
                             </div>
-                            <div id={"collapse"+ index} className="collapse" data-toggle="collapse" data-target={"#collapse"+ index} aria-labelledby={"heading"+ index} data-parent="#accordion">
-                                <div className="card-body">Nom : {item.etat}  --  email : {item.date}</div>
+                            <div id={"collapse"+ index} className="collapse" aria-labelledby={"heading"+ index} data-parent="#accordion">
+                                <div className="card-body">
+                                    <h2>Nom : {item.etat}</h2>  
+                                    <p>email : {item.date} </p>
+                                </div>
+                                <Button color="danger" data-toggle="collapse" data-target={"#collapse"+ index}>FERMER</Button>
+                                <Button color="warning" data-toggle="collapse" data-target={"#collapse"+ index}>METTRE EN ATTENTE</Button>
+                                <Button color="success" data-toggle="collapse" data-target={"#collapse"+ index}>ACCEPTER</Button>
                             </div>
                         </div>
                     )}
@@ -120,7 +129,7 @@ class SpaceAdmin extends React.Component {
                     <Button onClick={this.toggleMesInformations} color="info" size="lg" >Mes Informations</Button>
                 </div>
                 <Collapse isOpen={this.state.boolMesInformations}>
-                    <div className="text-center">coucou</div>
+                    <div className="text-center">Voici vos informations</div>
                 </Collapse>
                 <div className="text-center">
                     <Button onClick={this.toggleNonTraite}>Afficher les candidatures non traitées</Button>

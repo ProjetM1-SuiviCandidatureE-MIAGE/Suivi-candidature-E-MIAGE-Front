@@ -3,7 +3,6 @@
     height: 100%;
     text-align: center;
     color:white;
-    border-radius: 30px;
     padding: 0 10%;
 }
 
@@ -21,6 +20,29 @@
 .text-center {
     margin-top: 3em;
 }
-.card-header, #collapseOne {
+.card-header {
     cursor: pointer;
+    background-color: transparent !important;
+    border-bottom: none !important;
+}
+
+#accordion {
+    margin-bottom: 2em;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    color:white;
+    padding: 0 10%;
+}
+
+.card {
+    border-radius: 20px;
+}
+
+.card-body {
+    border-top: black solid 1px;
+}
+
+.collapse .btn {
+    margin-bottom: 1em;
 }

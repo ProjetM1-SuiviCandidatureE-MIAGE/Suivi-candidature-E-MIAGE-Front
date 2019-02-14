@@ -1,9 +1,8 @@
 {
-  "name": "ReactJs",
+  "name": "reactjs",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "concurrently": "^4.1.0",
     "create-react-app": "^2.1.3",

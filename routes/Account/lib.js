@@ -1,6 +1,4 @@
-
 const User = require('../../schema/schemaUser.js');
-const passwordHash = require("password-hash");
 
 function signup(req, res) {
     if (!req.body.email || !req.body.password) {

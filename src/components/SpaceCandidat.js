@@ -11,11 +11,12 @@ class SpaceCandidat extends React.Component {
         this.toggleCandidatureForm = this.toggleCandidatureForm.bind(this);
         this.toggleInformationsForm = this.toggleInformationsForm.bind(this);
         this.state = {
-          toggleCandidature: false,
-          toggleInformations: false
+            // Booléens pour le toggle des boutons
+            toggleCandidature: false,
+            toggleInformations: false
         };
     }
-
+    
     toggleCandidatureForm() {
         this.setState({
           toggleCandidature: !this.state.toggleCandidature,
