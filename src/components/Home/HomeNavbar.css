@@ -1,0 +1,9 @@
+#link {
+    color:rgb(0, 0, 0) !important;
+    font-weight: 650;
+    font-size: 19px;
+}
+
+.navbar-toggler {
+    background-color: black;
+}

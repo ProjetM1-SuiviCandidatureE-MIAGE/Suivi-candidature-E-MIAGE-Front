@@ -1,0 +1,65 @@
+.candidatureDiv {
+    margin: 0% 20%;
+    -webkit-border-radius: 20px;
+    border-radius: 20px;
+    background-color: rgb(148, 147, 147);
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'Helvetica', sans-serif;
+}
+
+.candidatureForm {
+    padding: 5% 10%;
+    display: block;
+    position: relative;
+}
+
+.formGroup {
+    margin: 10% 10%;
+}
+
+.inputText {
+    width:100%;
+    -webkit-border-radius: 25px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 700;
+    display: block;
+    position: relative;
+    font-weight: bold;
+    z-index: 2;
+    background: none;
+    border:none;
+    border-bottom: 1px solid white;
+    font-family: 'Helvetica', sans-serif;
+}
+
+.labelText {
+    display: block;
+    top:-30px;
+    font-family: 'Helvetica', sans-serif;
+    left:10px;
+    position: relative;
+    align-content: center;
+    color:black;
+    font-family: 'Helvetica', sans-serif;
+    font-size: 16px;
+    z-index: 1;
+    transition: all 0.3s ease-out;
+}
+
+.inputText:focus + .labelText, .inputText:valid + .labelText{
+    top: -45px;
+    font-size: 11px;
+    color: white;
+}
+
+.inputText:focus, .inputText:valid {
+    outline: none;
+    padding: 0px 10px;
+}
+
+input, label {
+    display: block;
+    position: relative;
+}
