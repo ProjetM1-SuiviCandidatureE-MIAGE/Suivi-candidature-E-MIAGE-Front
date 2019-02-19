@@ -42,9 +42,12 @@ let candidatureSchema = new mongoose.Schema({
     ],
 
     candidat : {
-
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Candidat'
+        nom : String,
+        prenom : String,
+        mail : String,
+        mdp : String
+        /* type: mongoose.Schema.Types.ObjectId,
+        ref: 'Candidat' */
 
     }
 

@@ -8,9 +8,13 @@ class CandidatureForm extends Component {
       super(props);
 
       this.state = {
-        firstName:'',
-        name:'',
-        email:''
+        statut: '',
+        date: '',
+        candidat: {
+          firstName:'Damien',
+          name:'DONNADIEU',
+          email:'ddonnadieu@gmail.com'
+        }
       };
       // On bind toutes les fonctions qui vont utiliser le this.state
       this.handleFirstnameChange = this.handleFirstnameChange.bind(this);
@@ -22,15 +26,39 @@ class CandidatureForm extends Component {
 
     // Méthode pour changer le prénom dans l'input
     handleFirstnameChange(e) {
-      this.setState({firstName: e.target.value});
+      const value = e.target.value;
+      this.setState((state) => {
+        return {
+          candidat: {
+            ...state.candidat,
+            firstName: value
+          }
+        };
+      });
     }
     // Méthode pour changer le nom dans l'input
     handleNameChange(e) {
-      this.setState({name: e.target.value});
+      const value = e.target.value;
+      this.setState((state) => {
+        return {
+          candidat: {
+            ...state.candidat,
+            name: value
+          }
+        };
+      });
     }
     // Méthode pour changer le mail dans l'input
     handleEmailChange(e) {
-      this.setState({email: e.target.value});
+      const value = e.target.value;
+      this.setState((state) => {
+        return {
+          candidat: {
+            ...state.candidat,
+            email: value
+          }
+        };
+      });
     }
     // Méthode pour envoyer les informations du formulaire en BDD
     handleSubmit(e) {
@@ -38,9 +66,15 @@ class CandidatureForm extends Component {
       fetch('/candidatures/newCandidature',{
         method: 'POST',
         body: JSON.stringify({
-          etat: this.state.firstName,
-          commentaire: this.state.name,
-          date: this.state.email
+          etat: 'non traitée',
+          commentaire: "",
+          date: new Date(),
+          candidat: {
+            nom: this.state.candidat.name,
+            prenom: this.state.candidat.firstName,
+            mail: this.state.candidat.email,
+            mdp: ''
+          }
         }),
         headers: {"Content-Type": "application/json"}
       })
@@ -50,32 +84,49 @@ class CandidatureForm extends Component {
         console.log(body);
       });
       this.handleResetForm(e);
+      this.props.toggle();
     }
     // Méthode pour reset le formulaire avec aucunes valeurs
     handleResetForm(e) {
       e.preventDefault();
       this.setState({
-        firstName:'',
-        name:'',
-        email:''
+        statut: '',
+        date: '',
+        Candidat: {
+          firstName:'',
+          name:'',
+          email:''
+        }
       })
+      this.props.toggle();
     }
-
     // La fonction qui permet d'afficher le code html du composant CandidatureForm donc le formulaire
     render() {
       return(
           <div className="candidatureDiv">
             <form method="POST" action="/candidatures/newCandidature" className="candidatureForm">
               <div className="formGroup">
-                <input className="inputText" type="text" name="firstName" value={this.state.firstName} onChange={this.handleFirstnameChange} required/>
+                <input className="inputText" type="text" name="firstName" 
+                  value={this.state.candidat.firstName} 
+                  onChange={this.handleFirstnameChange} 
+                  required
+                />
                 <label className="labelText" htmlFor="firstName">Prénom(s)</label>
               </div>
               <div className="formGroup">
-                <input className="inputText" type="text" name="name" value={this.state.name} onChange={this.handleNameChange} required/>
+                <input className="inputText" type="text" name="name" 
+                  value={this.state.candidat.name} 
+                  onChange={this.handleNameChange} 
+                  required
+                />
                 <label className="labelText" htmlFor="name">Nom</label>
               </div>
               <div className="formGroup">
-                <input className="inputText" type="email" name="email" value={this.state.email} onChange={this.handleEmailChange} required/>
+                <input className="inputText" type="text" name="email" 
+                  value={this.state.candidat.email} 
+                  onChange={this.handleEmailChange} 
+                  required
+                />
                 <label className="labelText" htmlFor="email">Email</label>
               </div>
               <div className="formGroup">

@@ -1,7 +1,7 @@
-import CandidatureForm from './CandidatureForm';
+import CandidatureForm from '../CandidatureForm/CandidatureForm';
 import React from 'react';
 import { Button, Collapse } from 'reactstrap';
-import SpaceNavbar from './SpaceNavbar';
+import SpaceNavbar from '../SpaceNavbar';
 import './SpaceCandidat.css';
 
 class SpaceCandidat extends React.Component {
@@ -11,11 +11,12 @@ class SpaceCandidat extends React.Component {
         this.toggleCandidatureForm = this.toggleCandidatureForm.bind(this);
         this.toggleInformationsForm = this.toggleInformationsForm.bind(this);
         this.state = {
-          toggleCandidature: false,
-          toggleInformations: false
+            // Booléens pour le toggle des boutons
+            toggleCandidature: false,
+            toggleInformations: false
         };
     }
-
+    
     toggleCandidatureForm() {
         this.setState({
           toggleCandidature: !this.state.toggleCandidature,
@@ -44,7 +45,7 @@ class SpaceCandidat extends React.Component {
                     <Button onClick={this.toggleCandidatureForm} size="lg" color="primary">Créer une candidature</Button>
                 </div>
                 <Collapse isOpen={this.state.toggleCandidature}>
-                    <CandidatureForm></CandidatureForm>
+                    <CandidatureForm toggle={this.toggleCandidatureForm}></CandidatureForm>
                 </Collapse>
             </div>
         );
