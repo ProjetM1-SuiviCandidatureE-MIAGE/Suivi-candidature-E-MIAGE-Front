@@ -12,20 +12,23 @@ let candidatureSchema = new mongoose.Schema({
 
         nom : String,
         date : String,
-        fichier : String
+        fichier : String,
+        type : String
     },
 
     lm : {
 
         nom : String,
         date : String,
-        fichier : String
+        fichier : String,
+        type : String
     },
 
     releveNote : {
         nom : String,
         date : String,
-        fichier : String
+        fichier : String,
+        type : String
     },
 
     autresFichier : [
@@ -34,6 +37,7 @@ let candidatureSchema = new mongoose.Schema({
         nom : String,
         date : String,
         fichier : String,
+        type : String,
         }
     ],
 

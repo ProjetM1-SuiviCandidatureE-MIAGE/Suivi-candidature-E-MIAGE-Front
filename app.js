@@ -1,8 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+//--CONSTANT POUR LE TEST GESTION DES FICHIERS
+const Grid = require('gridfs-stream');
+const methodOverride = require('method-override');
+//--END CONSTANT
 
-// La BDD s'appelle 'candidature'
+// Connexion à la BDD'candidature'
 mongoose.connect('mongodb://localhost/candidature',{useNewUrlParser:true}).then(() => {
     console.log('Connected to mongoDB')
 }).catch(e => {
@@ -11,6 +15,10 @@ mongoose.connect('mongodb://localhost/candidature',{useNewUrlParser:true}).then(
 });
 
 const app = express();
+const mongoURI = 'mongodb://localhost/candidature';
+
+// Create mongo connection
+const conn = mongoose.createConnection(mongoURI);
 
 //Body Parser
 let urlencodedParser = bodyParser.urlencoded({
@@ -18,6 +26,19 @@ let urlencodedParser = bodyParser.urlencoded({
 });
 app.use(urlencodedParser);
 app.use(bodyParser.json());
+
+//--PARTIE TEST POUR LA GESTION DES FICHIERS----
+app.use(methodOverride('_method'));
+
+// Init gfs
+let gfs;
+
+conn.once('open', () => {
+  // Init stream
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection('uploads');
+});
+//-- END PARTIE TEST POUR LA GESTION DES FICHIERS---
 
 //Définition des CORS
 app.use(function (req, res, next) {
@@ -32,13 +53,6 @@ app.use('/candidatures', require('./routes/candidatures'));
 app.use('/admins', require('./routes/admins'));
 app.use('/apprenants', require('./routes/apprenants'));
 app.use('/candidats', require('./routes/candidats'));
-
-/*
-//Définition du routeur
-var router = express.Router();
-app.use('/candidature', router);
-require('./routes/candidatures')(router);
-*/
 
 console.log('le server est connecté sur le port 3010');
 app.listen(3010);
