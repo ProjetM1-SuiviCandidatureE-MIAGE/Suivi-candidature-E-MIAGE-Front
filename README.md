@@ -1,4 +1,7 @@
-﻿# Suivi-candidature-E-MIAGE
+﻿Pour exécuter le front et le back en même temps, utiliser la commande suivante : 
+npm run startall
+
+# Suivi-candidature-E-MIAGE
 							Cahier des Charges :
 							projet  site de candidature E-MIAGE
 							
