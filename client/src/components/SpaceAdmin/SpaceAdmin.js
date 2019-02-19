@@ -88,12 +88,13 @@ class SpaceAdmin extends React.Component {
     // Fonction pour accepter une candidature
     acceptCandidature(id) {
         alert("Clicked id : "+ id);
-        fetch(`/candidature/edit/:${id}`,{
-            method: 'POST',
+        fetch('/candidature/update',{
+            method: 'PUT',
             body: JSON.stringify({
-              etat: 'acceptée',
-              commentaire: "",
-              dateTraitement: new Date(),
+                _id: {id},
+                etat: 'acceptée',
+                commentaire: "",
+                dateTraitement: new Date(),
             }),
             headers: {"Content-Type": "application/json"}
         })
@@ -106,14 +107,18 @@ class SpaceAdmin extends React.Component {
     // Fonction pour refuser une candidature
     refuseCandidature(id) {
         alert("Clicked id : "+ id);
-        fetch(`/candidature/edit/:${id}`,{
-            method: 'POST',
+        fetch(`/candidature/edit/${id}`,{
+            method: 'PUT',
             body: JSON.stringify({
-              etat: 'refusée',
-              commentaire: "",
-              dateTraitement: new Date(),
+                _id: id,
+                etat: 'refusée',
+                commentaire: "",
+                dateTraitement: new Date(),
             }),
-            headers: {"Content-Type": "application/json"}
+            headers: {
+                Accept : 'application/json',
+                "Content-Type": "application/json"
+            }
         })
         .then(function(response){
             return response.json()
@@ -134,7 +139,7 @@ class SpaceAdmin extends React.Component {
                 <div id="accordion"> 
                     <h1 style={{color:"black"}}>Liste des candidatures non traitées :</h1>
                     {this.state.candidaturesNonTraitees.map( (item, index) => 
-                        <div className="card" style={{backgroundColor: "silver"}}>
+                        <div key={index} className="card" style={{backgroundColor: "silver"}}>
                             <div className="card-header" id={"heading"+ index} role="button" data-toggle="collapse" data-target={"#collapse"+ index} 
                             aria-expanded="false" aria-controls={"collapse"+ index} >
                                 <div className="nameCand">Candidature de {item.candidat.prenom} {item.candidat.nom} </div>
@@ -147,7 +152,8 @@ class SpaceAdmin extends React.Component {
                                     <h2>Etat candidature : {item.etat}</h2>  
                                     <p>email candidat : {item.candidat.mail} </p>
                                 </div>
-                                <form method="POST" action="/candidatures/edit/:id">
+                                <form method="POST" action="/candidatures/edit/{{item.id}}?_method=PUT">
+                                {/* <form method="POST" action="/candidatures/edit"> */}
                                     <Button onClick={() => this.refuseCandidature(item._id)} color="danger" data-toggle="collapse" data-target={"#collapse"+ index}>REFUSER</Button>
                                     <Button color="warning" data-toggle="collapse" data-target={"#collapse"+ index}>METTRE EN ATTENTE</Button>
                                     <Button onClick={() => this.acceptCandidature(item._id)} color="success" data-toggle="collapse" data-target={"#collapse"+ index}>ACCEPTER</Button>
@@ -168,7 +174,7 @@ class SpaceAdmin extends React.Component {
                 <div id="accordion"> 
                     <h1 style={{color:"black"}}>Liste des candidatures en attentes :</h1>
                     {this.state.candidaturesEnAttentes.map( (item, index) => 
-                        <div className="card" style={{backgroundColor: "silver"}}>
+                        <div key={index} className="card" style={{backgroundColor: "silver"}}>
                             <div className="card-header" id={"heading"+ index} role="button" data-toggle="collapse" data-target={"#collapse"+ index} 
                             aria-expanded="false" aria-controls={"collapse"+ index} >
                                 <div className="nameCand">Candidature de {item.candidat.prenom} {item.candidat.nom} </div>
@@ -199,7 +205,7 @@ class SpaceAdmin extends React.Component {
                 <div id="accordion"> 
                     <h1 style={{color:"black"}}>Liste des candidatures traitées :</h1>
                     {this.state.candidaturesTraitees.map( (item, index) => 
-                        <div className="card" style={{backgroundColor: "silver"}}>
+                        <div key={index} className="card" style={{backgroundColor: "silver"}}>
                             <div className="card-header" id={"heading"+ index} role="button" data-toggle="collapse" data-target={"#collapse"+ index} 
                             aria-expanded="false" aria-controls={"collapse"+ index} >
                                 <div className="nameCand">Candidature de {item.candidat.prenom} {item.candidat.nom} </div>

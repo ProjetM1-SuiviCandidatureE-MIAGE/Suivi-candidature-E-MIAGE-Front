@@ -37,8 +37,7 @@ router.post('/newCandidature',ajoutCandidature.newCandidature);
 
 //-- modification des informations pour une candidature
 router.put('/edit/:id', (req, res) =>{
-    console.log("coucou");
-    Candidature.findOne({_id : req.params.id}).then((candidature)=>{
+    /* Candidature.findOne({_id : req.params.id}).then((candidature)=>{
         if(candidature){
             res.status(200).send(candidature)
         }else{
@@ -46,7 +45,32 @@ router.put('/edit/:id', (req, res) =>{
         }
     },(err)=>{
         res.status(400).json(err)
-    });
+    }); */
+/*     Candidature.findByIdAndUpdate({_id : req.param.id}, {$set : req.body}, (err, candidature) => {
+        if(err) {
+            res.status(400).send(err);
+        } else {
+            res.status(200).send(candidature);
+        }
+    }) */
+    Candidature.updateOne({_id: req.params.id}, {$set : req.body}, (err, candidature) => {
+        if(err) {;
+            res.status(400).send(err);
+        } else {
+            res.status(200).send(candidature)
+        }
+    })
+});
+
+router.put('/update', function(req, res) {
+    var id = req.body._id;
+    Candidature.updateOne(id, {$set : req.body}, (err, candidature) => {
+        if(err) {;
+            res.status(400).send(err);
+        } else {
+            res.status(200).send(candidature)
+        }
+    })
 });
 
 //--Suppression d'une candidature
