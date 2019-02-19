@@ -1,5 +1,5 @@
-﻿Pour exécuter le front et le back en même temps, utiliser la commande suivante : 
-npm run startall
+﻿--> Pour exécuter le front et le back en même temps, utiliser la commande suivante : 
+--> npm run startall
 
 # Suivi-candidature-E-MIAGE
 							Cahier des Charges :

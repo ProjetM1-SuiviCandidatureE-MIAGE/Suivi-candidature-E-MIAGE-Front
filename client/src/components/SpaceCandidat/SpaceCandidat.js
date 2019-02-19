@@ -1,7 +1,7 @@
 import CandidatureForm from '../CandidatureForm/CandidatureForm';
 import React from 'react';
 import { Button, Collapse } from 'reactstrap';
-import SpaceNavbar from '../SpaceNavbar';
+import SpaceNavbar from '../SpaceNavbar/SpaceNavbar';
 import './SpaceCandidat.css';
 
 class SpaceCandidat extends React.Component {

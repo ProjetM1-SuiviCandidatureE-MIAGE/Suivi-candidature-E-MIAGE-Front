@@ -9,17 +9,16 @@ const ajoutCandidature = require ('./Candidatures/lib.js');
 //--afficher toutes les candidatures
 router.get('/gAC', (req, res)=>{
     Candidature.find({}).populate('candidats').then(candidatures => {
-        res.render('index', { candidatures: candidatures });
+        res.send('index', { candidatures: candidatures });
     })
 });
 
 //Get all candidatures
-router.get('/testGet', function(req,res) {
+router.get('/getAllCandidatures', function(req,res) {
     Candidature.find( {}, function(err,candidatures) {
         if(err) {
             console.log(err);
         }
-        console.log("hello" + candidatures);
         res.send(candidatures);
     });
 });
@@ -38,11 +37,12 @@ router.post('/newCandidature',ajoutCandidature.newCandidature);
 
 //-- modification des informations pour une candidature
 router.put('/edit/:id', (req, res) =>{
-    Candidature.findOne({id : req.params.id}).then((candidature)=>{
+    console.log("coucou");
+    Candidature.findOne({_id : req.params.id}).then((candidature)=>{
         if(candidature){
-            res.status(200).json(candidature)
+            res.status(200).send(candidature)
         }else{
-            res.status(404).json({message : "Not Found"})
+            res.status(404).send({message : "Not Found"})
         }
     },(err)=>{
         res.status(400).json(err)
@@ -61,7 +61,7 @@ router.get('/delete/:id', (req, res) =>{
 /*ATTENTION ECRIRE EN DERNIER*/ 
 router.get('/:id', (req, res) =>{
     Candidature.findById(req.params.id).populate('candidats').then(candidature => {
-        res.render('index', { candidature: candidature });
+        res.send('index', { candidature: candidature });
     },
     err => res.status(500).send(err));
 });
