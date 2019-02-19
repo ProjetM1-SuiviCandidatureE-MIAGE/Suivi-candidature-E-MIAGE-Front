@@ -36,7 +36,7 @@ router.get('/new', (req, res) => {
 router.post('/newCandidature',ajoutCandidature.newCandidature);
 
 //-- modification des informations pour une candidature
-router.put('/edit/:id', (req, res) =>{
+/*router.put('/edit/:id', (req, res) =>{
     /* Candidature.findOne({_id : req.params.id}).then((candidature)=>{
         if(candidature){
             res.status(200).send(candidature)
@@ -52,7 +52,8 @@ router.put('/edit/:id', (req, res) =>{
         } else {
             res.status(200).send(candidature);
         }
-    }) */
+    }) 
+    
     Candidature.updateOne({_id: req.params.id}, {$set : req.body}, (err, candidature) => {
         if(err) {;
             res.status(400).send(err);
@@ -67,10 +68,33 @@ router.put('/update', function(req, res) {
     Candidature.updateOne(id, {$set : req.body}, (err, candidature) => {
         if(err) {;
             res.status(400).send(err);
+            
         } else {
             res.status(200).send(candidature)
         }
     })
+});*/
+// -- UPDATE
+router.put('/edit/:id', function (req, res) {
+    Candidature.updateOne({id : req.params.id}, {$set : req.body}, (err, updatedCandidature)=>{
+       if(err){
+           res.status(400).json(err);
+       }else{
+           res.status(200).json(updatedCandidature)
+       }
+    });
+});
+// -- READ
+router.get('/edit/:id', function (req, res) {
+    Candidature.findOne({id : req.params.id}).then((candidature)=>{
+        if(candidature){
+            res.status(200).json(candidature)
+        }else{
+            res.status(404).json({message : "Not Found"})
+        }
+    },(err)=>{
+        res.status(400).json(err)
+    });
 });
 
 //--Suppression d'une candidature
