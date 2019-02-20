@@ -1,5 +1,5 @@
 const router = require('express').Router();
-
+const mongoose = require('mongoose');
 const Candidature = require('../models/Candidature');
 
 const Candidat = require ('../models/Candidat');
@@ -35,58 +35,30 @@ router.get('/new', (req, res) => {
 //--Creation d'une candidature
 router.post('/newCandidature',ajoutCandidature.newCandidature);
 
-//-- modification des informations pour une candidature
-/*router.put('/edit/:id', (req, res) =>{
-    /* Candidature.findOne({_id : req.params.id}).then((candidature)=>{
-        if(candidature){
-            res.status(200).send(candidature)
-        }else{
-            res.status(404).send({message : "Not Found"})
-        }
-    },(err)=>{
-        res.status(400).json(err)
-    }); */
-/*     Candidature.findByIdAndUpdate({_id : req.param.id}, {$set : req.body}, (err, candidature) => {
-        if(err) {
-            res.status(400).send(err);
-        } else {
-            res.status(200).send(candidature);
-        }
-    }) 
-    
-    Candidature.updateOne({_id: req.params.id}, {$set : req.body}, (err, candidature) => {
-        if(err) {;
-            res.status(400).send(err);
-        } else {
-            res.status(200).send(candidature)
-        }
-    })
-});
-
-router.put('/update', function(req, res) {
-    var id = req.body._id;
-    Candidature.updateOne(id, {$set : req.body}, (err, candidature) => {
-        if(err) {;
-            res.status(400).send(err);
-            
-        } else {
-            res.status(200).send(candidature)
-        }
-    })
-});*/
 // -- UPDATE
 router.put('/edit/:id', function (req, res) {
-    Candidature.updateOne({id : req.params.id}, {$set : req.body}, (err, updatedCandidature)=>{
+    console.log(JSON.stringify(req.body));
+    Candidature.updateOne({_id : mongoose.Types.ObjectId(req.params.id)}, {$set : req.body}, (err, updatedCandidature)=>{
        if(err){
-           res.status(400).json(err);
+           res.status(400).json(err + {message: "problème"});
        }else{
            res.status(200).json(updatedCandidature)
        }
     });
 });
+
+router.post('/update', function (req,res) {
+    Candidature.updateOne({_id : mongoose.Types.ObjectId(req.body.id)}, {$set : req.body}, (err, updatedCandidature)=>{
+        if(err){
+            res.status(400).json(err + {message: "problème"});
+        }else{
+            res.status(200).json(updatedCandidature)
+        }
+    });
+});
 // -- READ
-router.get('/edit/:id', function (req, res) {
-    Candidature.findOne({id : req.params.id}).then((candidature)=>{
+router.get('/read/:id', function (req, res) {
+    Candidature.findOne({_id : mongoose.Types.ObjectId(req.params.id)}).then((candidature)=>{
         if(candidature){
             res.status(200).json(candidature)
         }else{
@@ -98,7 +70,7 @@ router.get('/edit/:id', function (req, res) {
 });
 
 //--Suppression d'une candidature
-router.get('/delete/:id', (req, res) =>{
+router.delete('/delete/:id', (req, res) =>{
     Candidature.find({id : req.params.id}).deleteOne().then(()=>{
         res.status(204).json()
     },(err)=>{

@@ -87,16 +87,18 @@ class SpaceAdmin extends React.Component {
     }
     // Fonction pour accepter une candidature
     acceptCandidature(id) {
-        alert("Clicked id : "+ id);
-        fetch('/candidature/update',{
+        alert("Clicked id : "+ id._id);
+        fetch(`/candidature/edit/${id._id}`,{
             method: 'PUT',
             body: JSON.stringify({
-                _id: {id},
-                etat: 'acceptée',
+                etat: "acceptée",
                 commentaire: "",
-                dateTraitement: new Date(),
+                dateTraitement: new Date()
             }),
-            headers: {"Content-Type": "application/json"}
+            headers: {
+                "Accept" : "application/json",
+                "Content-Type": "application/json"
+            }
         })
         .then(function(response){
             return response.json()
@@ -106,17 +108,15 @@ class SpaceAdmin extends React.Component {
     }
     // Fonction pour refuser une candidature
     refuseCandidature(id) {
-        alert("Clicked id : "+ id);
-        fetch(`/candidature/edit/${id}`,{
-            method: 'PUT',
+        alert("Clicked refus id : "+ id._id);
+        fetch(`/candidature/update`,{
+            method: 'POST',
             body: JSON.stringify({
-                _id: id,
-                etat: 'refusée',
-                commentaire: "",
-                dateTraitement: new Date(),
+                id: {id},
+                etat: "refusée"
             }),
             headers: {
-                Accept : 'application/json',
+                "Accept" : "application/json",
                 "Content-Type": "application/json"
             }
         })
@@ -152,11 +152,10 @@ class SpaceAdmin extends React.Component {
                                     <h2>Etat candidature : {item.etat}</h2>  
                                     <p>email candidat : {item.candidat.mail} </p>
                                 </div>
-                                <form method="POST" action="/candidatures/edit/{{item.id}}?_method=PUT">
-                                {/* <form method="POST" action="/candidatures/edit"> */}
-                                    <Button onClick={() => this.refuseCandidature(item._id)} color="danger" data-toggle="collapse" data-target={"#collapse"+ index}>REFUSER</Button>
+                                <form action={`/candidatures/update`} method="POST" >
+                                    <Button onClick={() => this.refuseCandidature(item)} color="danger" data-toggle="collapse" data-target={"#collapse"+ index}>REFUSER</Button>
                                     <Button color="warning" data-toggle="collapse" data-target={"#collapse"+ index}>METTRE EN ATTENTE</Button>
-                                    <Button onClick={() => this.acceptCandidature(item._id)} color="success" data-toggle="collapse" data-target={"#collapse"+ index}>ACCEPTER</Button>
+                                    <Button onClick={() => this.acceptCandidature(item)} color="success" data-toggle="collapse" data-target={"#collapse"+ index}>ACCEPTER</Button>
                                 </form>
                             </div>
                         </div>
