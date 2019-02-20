@@ -42,12 +42,13 @@ router.put('/edit/:id', function (req, res) {
        if(err){
            res.status(400).json(err + {message: "problème"});
        }else{
+           
            res.status(200).json(updatedCandidature)
        }
     });
 });
 
-router.post('/update', function (req,res) {
+/*router.post('/update', function (req,res) {
     Candidature.updateOne({_id : mongoose.Types.ObjectId(req.body.id)}, {$set : req.body}, (err, updatedCandidature)=>{
         if(err){
             res.status(400).json(err + {message: "problème"});
@@ -55,7 +56,7 @@ router.post('/update', function (req,res) {
             res.status(200).json(updatedCandidature)
         }
     });
-});
+});*/
 // -- READ
 router.get('/read/:id', function (req, res) {
     Candidature.findOne({_id : mongoose.Types.ObjectId(req.params.id)}).then((candidature)=>{
