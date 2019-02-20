@@ -6,6 +6,7 @@ const Candidat = require ('../models/Candidat');
 
 const ajoutCandidature = require ('./Candidatures/lib.js');
 
+
 //--afficher toutes les candidatures
 router.get('/gAC', (req, res)=>{
     Candidature.find({}).populate('candidats').then(candidatures => {
@@ -35,9 +36,18 @@ router.get('/new', (req, res) => {
 //--Creation d'une candidature
 router.post('/newCandidature',ajoutCandidature.newCandidature);
 
+router.get('/candidats', function(req, res){
+    res.send({type:'GET'});
+});
+//update
+router.put('/candidats/:id', function(req, res){
+    res.send({type:'PUT'});
+});
+
+
 //-- modification des informations pour une candidature
 /*router.put('/edit/:id', (req, res) =>{
-    /* Candidature.findOne({_id : req.params.id}).then((candidature)=>{
+    Candidature.findOne({id : req.params.id}).then((candidature)=>{
         if(candidature){
             res.status(200).send(candidature)
         }else{
@@ -45,8 +55,8 @@ router.post('/newCandidature',ajoutCandidature.newCandidature);
         }
     },(err)=>{
         res.status(400).json(err)
-    }); */
-/*     Candidature.findByIdAndUpdate({_id : req.param.id}, {$set : req.body}, (err, candidature) => {
+    }); 
+     Candidature.findByIdAndUpdate({_id : req.param.id}, {$set : req.body}, (err, candidature) => {
         if(err) {
             res.status(400).send(err);
         } else {
@@ -80,12 +90,15 @@ router.put('/edit/:id', function (req, res) {
        if(err){
            res.status(400).json(err);
        }else{
+           //res.send({type:'PUT'});
            res.status(200).json(updatedCandidature)
+           
        }
     });
 });
+
 // -- READ
-router.get('/edit/:id', function (req, res) {
+router.get('/update/:id', function (req, res) {
     Candidature.findOne({id : req.params.id}).then((candidature)=>{
         if(candidature){
             res.status(200).json(candidature)
@@ -98,8 +111,9 @@ router.get('/edit/:id', function (req, res) {
 });
 
 //--Suppression d'une candidature
-router.get('/delete/:id', (req, res) =>{
+router.delete('/delete/:id', (req, res) =>{
     Candidature.find({id : req.params.id}).deleteOne().then(()=>{
+       // res.send({type:'DELETE'})
         res.status(204).json()
     },(err)=>{
         res.status(400).json(err);
