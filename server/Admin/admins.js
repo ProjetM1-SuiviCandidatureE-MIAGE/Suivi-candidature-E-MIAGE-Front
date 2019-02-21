@@ -1,7 +1,7 @@
 let router = require('express').Router();
 
-let Admin = require('./../models/Admin');
-let account = require('./Account/lib.js');
+let Admin = require('./Admin');
+let account = require('../Account/lib');
 
 
 //--inscription

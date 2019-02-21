@@ -1,10 +1,10 @@
 const router = require('express').Router();
 
-const Candidature = require('../models/Candidature');
+const Candidature = require('./Candidature');
 
-const Candidat = require ('../models/Candidat');
+const Candidat = require ('../Candidat/Candidat');
 
-const ajoutCandidature = require ('./Candidatures/lib.js');
+const ajoutCandidature = require ('./lib');
 
 //--afficher toutes les candidatures
 router.get('/gAC', (req, res)=>{

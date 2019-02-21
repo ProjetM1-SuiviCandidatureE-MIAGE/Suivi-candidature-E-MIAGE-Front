@@ -1,6 +1,6 @@
 let router = require('express').Router();
-let Candidat = require ('./../models/Candidat');
-let account = require('./Account/lib.js');
+let Candidat = require ('./Candidat');
+let account = require('../Account/lib');
 
 //--inscription
 router.post('/signup', account.signupCandidat);

@@ -1,4 +1,4 @@
-const Candidature = require('../../models/Candidature.js');
+const Candidature = require('./Candidature');
 
 function newCandidature(req, res) {
     console.log(JSON.stringify(req.body));

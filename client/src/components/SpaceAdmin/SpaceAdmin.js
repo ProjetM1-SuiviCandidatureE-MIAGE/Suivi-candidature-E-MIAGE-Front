@@ -48,7 +48,9 @@ class SpaceAdmin extends React.Component {
             }))
           .catch(error => console.log(error));
     }
-
+    fetchData() {
+        
+    }
     // Fonction pour afficher le div qui contient les candidatures non traitées
     toggleNonTraite() {
         this.setState({
