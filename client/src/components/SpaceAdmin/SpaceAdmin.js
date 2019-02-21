@@ -32,7 +32,15 @@ class SpaceAdmin extends React.Component {
 
         this.acceptCandidature = this.acceptCandidature.bind(this);
         this.refuseCandidature = this.refuseCandidature.bind(this);
-        // Récupération de toutes les candidatures de la  base de données
+        this.enAttenteCandidature = this.enAttenteCandidature.bind(this);
+        this.fetchData = this.fetchData.bind(this);
+    }
+    // s'exécute au lancement du composant
+    componentDidMount() {
+        this.fetchData();
+    }
+    // Fonction pour récupérer les candidatures et les filtrer
+    fetchData() {
         fetch('/candidatures/getAllCandidatures')
           .then(res => res.json())
           .then(data => this.setState({ 
@@ -48,8 +56,9 @@ class SpaceAdmin extends React.Component {
             }))
           .catch(error => console.log(error));
     }
-    fetchData() {
-        
+    // Fonction qui s'exécute quand le composant est modifié
+    componentDidUpdate() {
+        this.fetchData();
     }
     // Fonction pour afficher le div qui contient les candidatures non traitées
     toggleNonTraite() {
@@ -127,6 +136,25 @@ class SpaceAdmin extends React.Component {
             console.log(body);
         });
     }
+    enAttenteCandidature(item) {
+        fetch(`/candidatures/edit/${item._id}`,{
+            method: 'PUT',
+            body: JSON.stringify({
+                etat: "en attente",
+                commentaire: "",
+                dateTraitement: new Date()
+            }),
+            headers: {
+                "Accept" : "application/json",
+                "Content-Type": "application/json"
+            }
+        })
+        .then(function(response){
+            return response.json()
+        }).then(function(body){
+            console.log(body);
+        });
+    }
     // Fonction pour afficher les informations du compte et la modification du mot de passe
     renderMesInformations() {
         return <div className="divPerso text-center">Mes Informations</div>;
@@ -155,7 +183,7 @@ class SpaceAdmin extends React.Component {
                                 </div>
                                 <form action={`/candidatures/edit/${item}?_method=PUT`} method="POST" >
                                     <Button onClick={() => this.refuseCandidature(item)} color="danger" data-toggle="collapse" data-target={"#collapse"+ index}>REFUSER</Button>
-                                    <Button color="warning" data-toggle="collapse" data-target={"#collapse"+ index}>METTRE EN ATTENTE</Button>
+                                    <Button onClick={() => this.enAttenteCandidature(item)} color="warning" data-toggle="collapse" data-target={"#collapse"+ index}>METTRE EN ATTENTE</Button>
                                     <Button onClick={() => this.acceptCandidature(item)} color="success" data-toggle="collapse" data-target={"#collapse"+ index}>ACCEPTER</Button>
                                 </form>
                             </div>
@@ -179,7 +207,7 @@ class SpaceAdmin extends React.Component {
                             aria-expanded="false" aria-controls={"collapse"+ index} >
                                 <div className="nameCand">Candidature de {item.candidat.prenom} {item.candidat.nom} </div>
                                 <div className="dateCand"> en attente depuis le 
-                                    <Moment format="DD/MM/YYYY">{item.date}</Moment>
+                                    <Moment format=" DD/MM/YYYY">{item.dateTraitement}</Moment>
                                 </div>
                             </div>
                             <div id={"collapse"+ index} className="collapse" aria-labelledby={"heading"+ index} data-parent="#accordion">
@@ -187,8 +215,10 @@ class SpaceAdmin extends React.Component {
                                     <h2>Etat candidature : {item.etat}</h2>  
                                     <p>email candidat : {item.candidat.mail} </p>
                                 </div>
-                                <Button color="danger" data-toggle="collapse" data-target={"#collapse"+ index}>REFUSER</Button>
-                                <Button color="success" data-toggle="collapse" data-target={"#collapse"+ index}>ACCEPTER</Button>
+                                <form action={`/candidatures/edit/${item}?_method=PUT`} method="POST" >
+                                    <Button onClick={() => this.refuseCandidature(item)} color="danger" data-toggle="collapse" data-target={"#collapse"+ index}>REFUSER</Button>
+                                    <Button onClick={() => this.acceptCandidature(item)} color="success" data-toggle="collapse" data-target={"#collapse"+ index}>ACCEPTER</Button>
+                                </form>
                             </div>
                         </div>
                     )}
@@ -209,8 +239,8 @@ class SpaceAdmin extends React.Component {
                             <div className="card-header" id={"heading"+ index} role="button" data-toggle="collapse" data-target={"#collapse"+ index} 
                             aria-expanded="false" aria-controls={"collapse"+ index} >
                                 <div className="nameCand">Candidature de {item.candidat.prenom} {item.candidat.nom} </div>
-                                <div className="dateCand">
-                                    <Moment format="DD/MM/YYYY">{item.date}</Moment>
+                                <div className="dateCand">{item.etat} le 
+                                    <Moment format=" DD/MM/YYYY">{item.dateTraitement}</Moment>
                                 </div>
                             </div>
                             <div id={"collapse"+ index} className="collapse" aria-labelledby={"heading"+ index} data-parent="#accordion">
