@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const mongoose = require('mongoose');
+
 const Candidature = require('../models/Candidature');
 
 const Candidat = require ('../models/Candidat');
@@ -37,28 +37,18 @@ router.post('/newCandidature',ajoutCandidature.newCandidature);
 
 // -- UPDATE
 router.put('/edit/:id', function (req, res) {
-    console.log(JSON.stringify(req.body));
-    Candidature.updateOne({_id : mongoose.Types.ObjectId(req.params.id)}, {$set : req.body}, (err, updatedCandidature)=>{
+    Candidature.updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedCandidature)=>{
        if(err){
-           res.status(400).json(err + {message: "problème"});
+           res.status(400).json(err);
        }else{
            res.status(200).json(updatedCandidature)
        }
     });
 });
 
-router.post('/update', function (req,res) {
-    Candidature.updateOne({_id : mongoose.Types.ObjectId(req.body.id)}, {$set : req.body}, (err, updatedCandidature)=>{
-        if(err){
-            res.status(400).json(err + {message: "problème"});
-        }else{
-            res.status(200).json(updatedCandidature)
-        }
-    });
-});
 // -- READ
 router.get('/read/:id', function (req, res) {
-    Candidature.findOne({_id : mongoose.Types.ObjectId(req.params.id)}).then((candidature)=>{
+    Candidature.findOne({_id : req.params.id}).then((candidature)=>{
         if(candidature){
             res.status(200).json(candidature)
         }else{

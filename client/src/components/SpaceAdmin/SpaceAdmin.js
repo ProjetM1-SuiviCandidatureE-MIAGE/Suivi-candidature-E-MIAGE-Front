@@ -33,7 +33,7 @@ class SpaceAdmin extends React.Component {
         this.acceptCandidature = this.acceptCandidature.bind(this);
         this.refuseCandidature = this.refuseCandidature.bind(this);
         // Récupération de toutes les candidatures de la  base de données
-        fetch('/candidatures//getAllCandidatures')
+        fetch('/candidatures/getAllCandidatures')
           .then(res => res.json())
           .then(data => this.setState({ 
               candidaturesNonTraitees : data.filter(item => {
@@ -86,9 +86,8 @@ class SpaceAdmin extends React.Component {
         })
     }
     // Fonction pour accepter une candidature
-    acceptCandidature(id) {
-        alert("Clicked id : "+ id._id);
-        fetch(`/candidature/edit/${id._id}`,{
+    acceptCandidature(item) {
+        fetch(`/candidatures/edit/${item._id}`,{
             method: 'PUT',
             body: JSON.stringify({
                 etat: "acceptée",
@@ -107,13 +106,13 @@ class SpaceAdmin extends React.Component {
         });
     }
     // Fonction pour refuser une candidature
-    refuseCandidature(id) {
-        alert("Clicked refus id : "+ id._id);
-        fetch(`/candidature/update`,{
-            method: 'POST',
+    refuseCandidature(item) {
+        fetch(`/candidatures/edit/${item._id}`,{
+            method: 'PUT',
             body: JSON.stringify({
-                id: {id},
-                etat: "refusée"
+                etat: "refusée",
+                commentaire: "",
+                dateTraitement: new Date()
             }),
             headers: {
                 "Accept" : "application/json",
@@ -152,7 +151,7 @@ class SpaceAdmin extends React.Component {
                                     <h2>Etat candidature : {item.etat}</h2>  
                                     <p>email candidat : {item.candidat.mail} </p>
                                 </div>
-                                <form action={`/candidatures/update`} method="POST" >
+                                <form action={`/candidatures/edit/${item}?_method=PUT`} method="POST" >
                                     <Button onClick={() => this.refuseCandidature(item)} color="danger" data-toggle="collapse" data-target={"#collapse"+ index}>REFUSER</Button>
                                     <Button color="warning" data-toggle="collapse" data-target={"#collapse"+ index}>METTRE EN ATTENTE</Button>
                                     <Button onClick={() => this.acceptCandidature(item)} color="success" data-toggle="collapse" data-target={"#collapse"+ index}>ACCEPTER</Button>
