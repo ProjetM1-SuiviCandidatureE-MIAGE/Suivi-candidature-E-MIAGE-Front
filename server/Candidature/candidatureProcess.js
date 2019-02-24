@@ -8,7 +8,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 
 
-const Routes = require('./candidatRoute');
-const Actions = require('./candidatAction');
-const Model = require('./candidatModel');
-
+const Routes = require('./candidatureRoute');
+const Actions = require('./candidatureAction');
+const Model = require('./candidatureModel');
