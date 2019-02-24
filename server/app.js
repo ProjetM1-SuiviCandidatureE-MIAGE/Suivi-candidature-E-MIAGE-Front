@@ -40,6 +40,11 @@ conn.once('open', () => {
 });
 //-- END PARTIE TEST POUR LA GESTION DES FICHIERS---
 
+//---TEST UPLOAD FICHIER
+const path = require('path');
+app.use('/images', express.static(path.join(__dirname, 'images')));
+//---FIN TEST UPLOAD FICHIER 
+
 //Définition des CORS
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');

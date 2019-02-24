@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const multer = require('multer');
 const GridFsStorage = require('multer-gridfs-storage');
 let router = require('express').Router();
+const gfs = require('gfs');
 
 // Mongo URI
 const mongoURI = 'mongodb://localhost/candidature';
