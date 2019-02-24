@@ -3,16 +3,33 @@ const bcrypt = require('bcrypt');
 const jwt = require('jwt-simple');
 const config = require('../config/config');
 
-let adminSchema = new mongoose.Schema({
+const validateEmail = function(email) {
+    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return re.test(email)
+};
+const adminSchema = new mongoose.Schema({
     
-    nom : String,
-    prenom : String,
-    mail : String,
-    mdp : String,
+	nom : {
+		type : String,
+	//	required : [true,'Le champs nom ne peut pas être vide']
+	},
+	prenom : {
+		type : String,
+	//	required : [true,'Le champs prenom ne peut pas être vide']
+	},
+	mail : {
+		type: String,
+	//	required: [true,'Le champs mail ne peut pas être vide']
+	},
+	mdp : {
+		type : String,
+	//	required : [true,'Le champs mdp ne peut pas être vide']
+   
+	},
     droit : String
-    
-
 });
+
+
 
 adminSchema.methods = {
 	authenticate: function (password) {
