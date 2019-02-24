@@ -1,6 +1,6 @@
-const Admin = require('../Admin/Admin');
-const Apprenant = require('../Apprenant/Apprenant');
-const Candidat = require('../Candidat/Candidat');
+const Admin = require('../Admin/adminModel');
+const Apprenant = require('../Apprenant/apprenantModel');
+const Candidat = require('../Candidat/candidatModel');
 const bcrypt = require("bcrypt");
 
 // --INSCRIPTION ADMINISTRATEUR

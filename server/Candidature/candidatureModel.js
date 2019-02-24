@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
 
+const validateEmail = function(email) {
+    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return re.test(email)
+};
+
 //model pour une candidature
-let candidatureSchema = new mongoose.Schema({
+const candidatureSchema = new mongoose.Schema({
 
     etat : String,
     commentaire : String,
@@ -42,16 +47,28 @@ let candidatureSchema = new mongoose.Schema({
     ],
 
     candidat : {
-        nom : String,
-        prenom : String,
-        mail : String,
-        mdp : String
+        nom : {
+            type : String,
+         //   required : [true,'Le champs truc prenom ne peut pas être vide']
+        },
+        prenom : {
+            type : String,
+         //   required : [true,'Le champs prenom ne peut pas être vide']
+        },
+        mail : {
+            type: String,
+         //   required: [true,'Le champs mail ne peut pas être vide']
+        },
+        mdp : {
+            type : String,
+         //   required : [true,'Le champs mdp ne peut pas être vide']
+       
+        },
         /* type: mongoose.Schema.Types.ObjectId,
         ref: 'Candidat' */
-
     }
 
 });
 
-let Candidature = mongoose.model('Candidature', candidatureSchema);
+const Candidature = mongoose.model('Candidature', candidatureSchema);
 module.exports = Candidature;

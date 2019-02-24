@@ -1,53 +1,58 @@
-const router = require('express').Router();
+const Candidature = require('./candidatureModel');
+const Candidat = require ('../Candidat/candidatModel');
 
-const Candidature = require('./Candidature');
+//--ajouter une nouvelle candidature
+function newCandidature(req, res) {
+    console.log(JSON.stringify(req.body));
+    let newCandidature = new Candidature(req.body);
+    newCandidature.id = newCandidature._id;
 
-const Candidat = require ('../Candidat/Candidat');
-
-const ajoutCandidature = require ('./lib');
+    newCandidature.save().then(()=>{
+        res.status(200).json(newCandidature)
+    },(err)=>{
+        res.status(400).json(err);
+    })
+}
 
 //--afficher toutes les candidatures
-router.get('/gAC', (req, res)=>{
+function displayAll (req, res){
     Candidature.find({}).populate('candidats').then(candidatures => {
         res.send('index', { candidatures: candidatures });
     })
-});
+}
 
 //Get all candidatures
-router.get('/getAllCandidatures', function(req,res) {
+function getAllCandidatures (req, res){
     Candidature.find( {}, function(err,candidatures) {
         if(err) {
             console.log(err);
         }
         res.send(candidatures);
     });
-});
+}
 
 //--afficher les nouvelle candidatures
-router.get('/new', (req, res) => {
+function DisplayNewCandidature (req, res){
+
     Candidat.find({}).then(candidats => {
         let candidature = new Candidature();
         res.render('index', { candidature: candidature, candidats: candidats, endpoint: '/' });
     });
-
-});
-
-//--Creation d'une candidature
-router.post('/newCandidature',ajoutCandidature.newCandidature);
+}
 
 // -- UPDATE
-router.put('/edit/:id', function (req, res) {
+function editCandidature (req,res){
     Candidature.updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedCandidature)=>{
-       if(err){
-           res.status(400).json(err);
-       }else{
-           res.status(200).json(updatedCandidature)
-       }
+        if(err){
+            res.status(400).json(err);
+        }else{
+            res.status(200).json(updatedCandidature)
+        }
     });
-});
+}
 
 // -- READ
-router.get('/read/:id', function (req, res) {
+function readCandidature (req, res){
     Candidature.findOne({_id : req.params.id}).then((candidature)=>{
         if(candidature){
             res.status(200).json(candidature)
@@ -57,23 +62,31 @@ router.get('/read/:id', function (req, res) {
     },(err)=>{
         res.status(400).json(err)
     });
-});
+}
 
 //--Suppression d'une candidature
-router.delete('/delete/:id', (req, res) =>{
+function deleteCandidature(req, res){
     Candidature.find({id : req.params.id}).deleteOne().then(()=>{
         res.status(204).json()
     },(err)=>{
         res.status(400).json(err);
     });
-});
+}
 
-/*ATTENTION ECRIRE EN DERNIER*/ 
-router.get('/:id', (req, res) =>{
+/*ATTENTION ECRIRE EN DERNIER
+recupération d'une candidature en fonction de l'id*/ 
+function getIdCandidat(req, res){
     Candidature.findById(req.params.id).populate('candidats').then(candidature => {
         res.send('index', { candidature: candidature });
     },
     err => res.status(500).send(err));
-});
+}
 
-module.exports = router;
+exports.newCandidature = newCandidature;
+exports.displayAll = displayAll;
+exports.getAllCandidatures = getAllCandidatures;
+exports.DisplayNewCandidature = DisplayNewCandidature;
+exports.editCandidature = editCandidature;
+exports.readCandidature = readCandidature;
+exports.deleteCandidature = deleteCandidature;
+exports.getIdCandidat = getIdCandidat;

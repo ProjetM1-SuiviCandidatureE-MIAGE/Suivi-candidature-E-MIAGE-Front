@@ -1,7 +1,6 @@
-let router = require('express').Router();
+const router = require('express').Router();
 
-let Admin = require('./Admin');
-let account = require('../Account/lib');
+const account = require('../Account/lib');
 
 
 //--inscription
