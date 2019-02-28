@@ -37,3 +37,45 @@ a.active > i {
   box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
   outline: 0;
 }
+
+.btnModal {
+  border-radius: 30px;
+  padding: 1em 1em;
+}
+
+.blue-gradient {
+  color: white;
+  background: #007bff;
+  border: #007bff;
+  transition: all 0.2s ease-in-out;
+}
+
+.blue-gradient:hover,
+.blue-gradient:focus,
+.blue-gradient:active {
+  transform: scale(1.1);
+}
+
+.btnInfo {
+  border: 1px solid #007bff;
+  color: #007bff;
+  background-color: white;
+  margin-right: 3em !important;
+}
+
+.btnInfo:hover,
+.btnInfo:focus,
+.btnInfo:active {
+  color: white;
+  background-color: #007bff;
+}
+
+.modalHeader {
+  border: none;
+  padding: 0;
+}
+
+.modalHeader .close {
+  padding: 1rem 1rem;
+  margin: 0;
+}

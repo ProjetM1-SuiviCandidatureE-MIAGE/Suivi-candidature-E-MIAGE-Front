@@ -3,7 +3,6 @@ import {
   FormGroup,
   Input,
   Label,
-  Button,
   Modal,
   ModalHeader,
   ModalBody,
@@ -17,7 +16,16 @@ export default class ModalHome extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      mailConnexion: "",
+      passwordConnexion: "",
+
+      prenomInscription: "",
+      nomInscription: "",
+      mailInscription: "",
+      passwordInscription: "",
+      passwordConfirm: ""
+    };
   }
 
   render() {
@@ -28,32 +36,39 @@ export default class ModalHome extends Component {
           isOpen={this.props.isOpen}
           toggle={() => this.props.toggle()}
           id="modalLRForm"
-          tabIndex="-1"
-          aria-labelledby="myModalLabel"
-          aria-hidden="true"
         >
-          <div className="modal-dialog cascading-modal" role="document">
+          <div className="cascading-modal" role="document">
             <div className="modal-content">
               <div className="modal-c-tabs">
-                <Nav
-                  className="nav-tabs md-tabs tabs-2 light-blue darken-3"
-                  role="tablist"
+                <ModalHeader
+                  toggle={() => this.props.toggle()}
+                  className="modalHeader"
                 >
-                  <NavItem>
-                    <NavLink active data-toggle="tab" href="#panel7" role="tab">
-                      <i className="fa fa-user" />
-                      Se connecter
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink data-toggle="tab" href="#panel8" role="tab">
-                      <i className="fa fa-user-plus" />
-                      S'inscrire
-                    </NavLink>
-                  </NavItem>
-                </Nav>
+                  <Nav
+                    className="nav-tabs md-tabs tabs-2 light-blue darken-3"
+                    role="tablist"
+                  >
+                    <NavItem>
+                      <NavLink
+                        active
+                        data-toggle="tab"
+                        href="#panel7"
+                        role="tab"
+                      >
+                        <i className="fa fa-user" />
+                        Se connecter
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink data-toggle="tab" href="#panel8" role="tab">
+                        <i className="fa fa-user-plus" />
+                        S'inscrire
+                      </NavLink>
+                    </NavItem>
+                  </Nav>
+                </ModalHeader>
 
-                <div class="tab-content">
+                <div className="tab-content">
                   {/* Panel avec le formulaire de connexion */}
                   <div
                     className="tab-pane fade in show active"
@@ -61,21 +76,17 @@ export default class ModalHome extends Component {
                     role="tabpanel"
                   >
                     <ModalBody>
-                      <Form>
+                      <Form autoComplete="on">
                         <FormGroup className="md-form form-sm mb-5">
                           <i className="fa fa-envelope prefix" />
                           <Input
                             type="email"
                             id="emailConnexion"
                             className="form-control form-control-sm validate"
+                            autoComplete="on"
+                            required
                           />
-                          <Label
-                            data-error="wrong"
-                            data-success="right"
-                            htmlFor="emailConnexion"
-                          >
-                            E-mail
-                          </Label>
+                          <Label htmlFor="emailConnexion">E-mail</Label>
                         </FormGroup>
 
                         <FormGroup className="md-form form-sm mb-4">
@@ -83,13 +94,11 @@ export default class ModalHome extends Component {
                           <Input
                             type="password"
                             id="passwordConnexion"
-                            class="form-control form-control-sm validate"
+                            autoComplete="on"
+                            className="form-control form-control-sm validate"
+                            required
                           />
-                          <Label
-                            data-error="wrong"
-                            data-success="right"
-                            htmlFor="passwordConnexion"
-                          >
+                          <Label htmlFor="passwordConnexion">
                             Mot de passe
                           </Label>
                         </FormGroup>
@@ -103,74 +112,93 @@ export default class ModalHome extends Component {
                       </div>
                     </ModalBody>
                     <ModalFooter>
-                      <Button outline color="info" className="shadow-effect">
+                      <button
+                        className="shadow-effect btnModal btnInfo"
+                        onClick={() => this.props.toggle()}
+                      >
                         Je ne suis pas un candidat
-                      </Button>
-                      <Button color="info" className="shadow-effect">
-                        Se connecter <i className="fa fa-sign-in" />
-                      </Button>
+                      </button>
+                      <button className="shadow-effect btnModal blue-gradient">
+                        Se connecter
+                      </button>
                     </ModalFooter>
                   </div>
 
                   {/* Panel avec le formulaire d'inscription */}
                   <div className="tab-pane fade" id="panel8" role="tabpanel">
                     <ModalBody>
-                      <div class="md-form form-sm mb-5">
-                        <i className="fa fa-envelope prefix" />
-                        <Input
-                          type="email"
-                          id="modalLRInput12"
-                          className="form-control form-control-sm validate"
-                        />
-                        <Label
-                          data-error="wrong"
-                          data-success="right"
-                          htmlFor="modalLRInput12"
-                        >
-                          E-mail
-                        </Label>
-                      </div>
+                      <Form autoComplete="on">
+                        <FormGroup className="md-form form-sm mb-5">
+                          <i className="fa fa-user" />
+                          <Input
+                            type="text"
+                            id="prenomInscription"
+                            autoComplete="on"
+                            className="form-control form-control-sm validate"
+                            required
+                          />
+                          <Label htmlFor="prenomInscription">Prénom</Label>
+                        </FormGroup>
+                        <FormGroup className="md-form form-sm mb-5">
+                          <i className="fa fa-user" />
+                          <Input
+                            type="text"
+                            id="nomInscription"
+                            autoComplete="on"
+                            className="form-control form-control-sm validate"
+                            required
+                          />
+                          <Label htmlFor="nomInscription">Nom</Label>
+                        </FormGroup>
+                        <FormGroup className="md-form form-sm mb-5">
+                          <i className="fa fa-envelope prefix" />
+                          <Input
+                            type="email"
+                            id="mailInscription"
+                            autoComplete="on"
+                            className="form-control form-control-sm validate"
+                            required
+                          />
+                          <Label htmlFor="mailInscription">E-mail</Label>
+                        </FormGroup>
 
-                      <FormGroup className="md-form form-sm mb-5">
-                        <i className="fa fa-lock prefix" />
-                        <Input
-                          type="password"
-                          id="modalLRInput13"
-                          className="form-control form-control-sm validate"
-                        />
-                        <Label
-                          data-error="wrong"
-                          data-success="right"
-                          htmlFor="modalLRInput13"
-                        >
-                          Mot de passe
-                        </Label>
-                      </FormGroup>
+                        <FormGroup className="md-form form-sm mb-5">
+                          <i className="fa fa-lock prefix" />
+                          <Input
+                            type="password"
+                            id="passwordInscription"
+                            autoComplete="on"
+                            className="form-control form-control-sm validate"
+                            required
+                          />
+                          <Label htmlFor="passwordInscription">
+                            Mot de passe
+                          </Label>
+                        </FormGroup>
 
-                      <FormGroup className="md-form form-sm mb-4">
-                        <i className="fa fa-lock prefix" />
-                        <Input
-                          type="password"
-                          id="modalLRInput14"
-                          className="form-control form-control-sm validate"
-                        />
-                        <Label
-                          data-error="wrong"
-                          data-success="right"
-                          htmlFor="modalLRInput14"
-                        >
-                          Confirmation mot de passe
-                        </Label>
-                      </FormGroup>
+                        <FormGroup className="md-form form-sm mb-4">
+                          <i className="fa fa-lock prefix" />
+                          <Input
+                            type="password"
+                            id="passwordConfirm"
+                            className="form-control form-control-sm validate"
+                            required
+                          />
+                          <Label htmlFor="passwordConfirm">Confirmation</Label>
+                        </FormGroup>
+                      </Form>
                     </ModalBody>
                     {/* Footer du modal des candidats */}
                     <ModalFooter>
-                      <Button outline color="info" className="shadow-effect">
+                      <button
+                        className="shadow-effect btnModal btnInfo"
+                        onClick={() => this.props.toggle()}
+                      >
                         Je ne suis pas un candidat
-                      </Button>
-                      <Button color="info" className="shadow-effect">
+                      </button>
+                      <button className="shadow-effect btnModal blue-gradient">
                         S'inscrire
-                      </Button>
+                      </button>
                     </ModalFooter>
                   </div>
                 </div>
