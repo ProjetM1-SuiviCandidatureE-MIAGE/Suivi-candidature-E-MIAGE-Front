@@ -8,6 +8,9 @@ router.post('/signup', account.signupCandidat);
 //--Connexion
 router.post('/login', account.loginCandidat);
 
+//--Creation d'une candidature
+router.post('/newCandidat',candidatAction.newCandidature);
+
 //--afficher les candidatures
 router.get('/candidat', candidatAction.getCandidat);
 

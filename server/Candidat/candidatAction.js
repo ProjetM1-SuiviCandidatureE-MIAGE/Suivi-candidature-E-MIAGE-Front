@@ -1,7 +1,19 @@
 const Candidat = require('./candidatModel');
 
-   
+// new Candidat
+function newCandidat(req, res) {
+    console.log(JSON.stringify(req.body));
+    let newCandidature = new Candidat(req.body);
+    newCandidature.id = newCandidature._id;
 
+    newCandidature.save().then(()=>{
+        res.status(200).json(newCandidature)
+    },(err)=>{
+        res.status(400).json(err);
+    })
+}
+
+// get candidat
 function getCandidat(req, res) {
     console.log(JSON.stringify(req.body));
     Candidat.findOne({ nom: req.params.candidat }).populate('candidatures').then(candidat => {
@@ -13,4 +25,5 @@ function getCandidat(req, res) {
     }, err => console.log(err));
 }
 
+exports.newCandidat = newCandidat;
 exports.getCandidat = getCandidat;
