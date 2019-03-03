@@ -5,24 +5,23 @@ const validateEmail = function(email) {
     return re.test(email)
 };
 const candidatSchema = new mongoose.Schema({
-    nom : {
-        type : String,
-      //  required : [true,'Le champs nom ne peut pas être vide']
-    },
-    prenom : {
-        type : String,
-      //  required : [true,'Le champs prenom ne peut pas être vide']
-    },
-    mail : {
-        type: String,
-       // required: [true,'Le champs mail ne peut pas être vide']
-    },
-    mdp : {
-        type : String,
-      //  required : [true,'Le champs mdp ne peut pas être vide']
-   
-    },
+  nom : {
+    type : String,
+    require : [true,'Le champs prenom ne peut pas être vide']
+  },
+  prenom : {
+      type : String,
+      require : [true,'Le champs prenom ne peut pas être vide']
+  },
+  mail : {
+      type: String,
+      require: [true,'Le champs mail ne peut pas être vide']
+  },
+  mdp : {
+      type : String,
+      require : [true,'Le champs mdp ne peut pas être vide']
 
+  }
 });
 
 
