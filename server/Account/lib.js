@@ -14,6 +14,8 @@ function signup(req, res) {
   } else {
     const salt = bcrypt.genSaltSync(10);
     let admin = {
+      nom : req.body.nom,
+      prenom : req.body.prenom,
       mail: req.body.mail,
       //mdp: req.body.mdp
       mdp: bcrypt.hashSync(req.body.mdp, salt)
@@ -86,6 +88,8 @@ function signupCandidat(req, res) {
   } else {
     const salt = bcrypt.genSaltSync(10);
     let candidat = {
+      nom : req.body.nom,
+      prenom : req.body.prenom,
       mail: req.body.mail,
       //mdp: req.body.mdp
       mdp: bcrypt.hashSync(req.body.mdp, salt)
@@ -111,7 +115,7 @@ function signupCandidat(req, res) {
 
     findCandidat.then(
       function() {
-        let _a = new Admin(candidat);
+        let _a = new Candidat(candidat);
         _a.save(function(err, candidat) {
           if (err) {
             res.status(500).json({
@@ -158,6 +162,8 @@ function signupApprenant(req, res) {
   } else {
     const salt = bcrypt.genSaltSync(10);
     let apprenant = {
+      nom : req.body.nom,
+      prenom : req.body.prenom,
       mail: req.body.mail,
       //mdp: req.body.mdp
       mdp: bcrypt.hashSync(req.body.mdp, salt)
@@ -183,7 +189,7 @@ function signupApprenant(req, res) {
 
     findApprenant.then(
       function() {
-        let _a = new Admin(apprenant);
+        let _a = new Apprenant(apprenant);
         _a.save(function(err, apprenant) {
           if (err) {
             res.status(500).json({
