@@ -29,8 +29,11 @@ export default class ModalHome extends Component {
       activeTab: "1"
     };
     this.toggleTab = this.toggleTab.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.SignUp = this.SignUp.bind(this);
   }
 
+  // Fonction pour afficher l'autre contenu du Tabs
   toggleTab(tab) {
     if (this.state.activeTab !== tab) {
       this.setState({
@@ -38,6 +41,69 @@ export default class ModalHome extends Component {
       });
     }
   }
+  // Fonction pour modifier les valeurs des inputs
+  handleInputChange = event => {
+    const { value, name } = event.target;
+    this.setState({
+      [name]: value
+    });
+  };
+  // Fonction pour s'inscrire
+  SignUp = event => {
+    event.preventDefault();
+    const newCandidat = {
+      nom: this.state.nomInscription,
+      prenom: this.state.prenomInscription,
+      mail: this.state.mailInscription,
+      mdp: this.state.passwordInscription
+    };
+    console.log(JSON.stringify(newCandidat));
+    fetch("/candidats/signup", {
+      method: "POST",
+      body: JSON.stringify(newCandidat),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(body) {
+        console.log(body);
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Error sign up please try again");
+      });
+  };
+  // Fonction pour se connecter
+  Login = event => {
+    event.preventDefault();
+    const Candidat = {
+      mail: this.state.mailConnexion,
+      mdp: this.state.passwordConnexion
+    };
+    alert("Authentication coming soon!");
+    console.log(JSON.stringify(Candidat));
+
+    fetch("/candidats/login", {
+      method: "POST",
+      body: JSON.stringify(Candidat),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(body) {
+        console.log(body);
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Error logging in please try again");
+      });
+  };
 
   render() {
     // Modal pour accéder à l'espace candidat
@@ -81,110 +147,142 @@ export default class ModalHome extends Component {
               </NavItem>
             </Nav>
           </MDBModalHeader>
-
           {/* Le composant qui contient la page connexion et inscription */}
           <TabContent activeTab={this.state.activeTab}>
             {/* Panel avec le formulaire de connexion */}
             <TabPane tabId="1">
-              <MDBModalBody>
-                <MDBInput
-                  type="email"
-                  id="emailConnexion"
-                  label="E-mail"
-                  icon="envelope"
-                  group
-                  validate
-                />
+              <form method="POST" action="/candidats/login">
+                <MDBModalBody>
+                  <MDBInput
+                    type="email"
+                    name="emailConnexion"
+                    label="E-mail"
+                    icon="envelope"
+                    onChange={this.handleInputChange}
+                    value={this.state.mailConnexion}
+                    group
+                    validate
+                    required
+                  />
 
-                <MDBInput
-                  type="password"
-                  id="passwordConnexion"
-                  icon="lock"
-                  label="Mot de passe"
-                  group
-                  validate
-                />
-                <div className="options text-center text-md-right mt-1">
-                  <p>
-                    <a href="/" className="blue-text">
-                      Mot de passe oublié ?
-                    </a>
-                  </p>
-                </div>
-              </MDBModalBody>
-              <MDBModalFooter className="ModalFooter">
-                <button
-                  className="shadow-effect btnModal btnInfo"
-                  onClick={() => this.props.toggle()}
-                >
-                  Je ne suis pas un candidat
-                </button>
-                <button className="shadow-effect btnModal blue-gradient">
-                  Se connecter
-                </button>
-              </MDBModalFooter>
+                  <MDBInput
+                    type="password"
+                    name="passwordConnexion"
+                    icon="lock"
+                    label="Mot de passe"
+                    onChange={this.handleInputChange}
+                    value={this.state.passwordConnexion}
+                    group
+                    validate
+                    required
+                  />
+                  <div className="options text-center text-md-right mt-1">
+                    <p>
+                      <a href="/" className="blue-text">
+                        Mot de passe oublié ?
+                      </a>
+                    </p>
+                  </div>
+                </MDBModalBody>
+                <MDBModalFooter className="ModalFooter">
+                  <button
+                    className="shadow-effect btnModal btnInfo"
+                    onClick={() => this.props.toggle()}
+                  >
+                    Je ne suis pas un candidat
+                  </button>
+                  <button
+                    type="submit"
+                    className="shadow-effect btnModal blue-gradient"
+                    onClick={this.Login}
+                  >
+                    Se connecter
+                  </button>
+                </MDBModalFooter>
+              </form>
             </TabPane>
 
             {/* Panel avec le formulaire d'inscription */}
             <TabPane tabId="2">
-              <MDBModalBody>
-                <MDBInput
-                  type="text"
-                  id="prenomInscription"
-                  icon="user"
-                  label="Prénom"
-                  group
-                  validate
-                />
+              <form method="POST" action="/candidats/signup">
+                <MDBModalBody>
+                  <MDBInput
+                    type="text"
+                    name="prenomInscription"
+                    icon="user"
+                    label="Prénom"
+                    onChange={this.handleInputChange}
+                    value={this.state.prenomInscription}
+                    group
+                    validate
+                    required
+                  />
 
-                <MDBInput
-                  type="text"
-                  id="nomInscription"
-                  icon="user"
-                  label="Nom"
-                  group
-                  validate
-                />
+                  <MDBInput
+                    type="text"
+                    name="nomInscription"
+                    icon="user"
+                    label="Nom"
+                    onChange={this.handleInputChange}
+                    value={this.state.nomInscription}
+                    group
+                    validate
+                    required
+                  />
 
-                <MDBInput
-                  type="email"
-                  id="mailInscription"
-                  label="E-mail"
-                  icon="envelope"
-                  group
-                  validate
-                />
+                  <MDBInput
+                    type="email"
+                    name="mailInscription"
+                    label="E-mail"
+                    icon="envelope"
+                    onChange={this.handleInputChange}
+                    value={this.state.mailInscription}
+                    group
+                    validate
+                    required
+                  />
 
-                <MDBInput
-                  type="password"
-                  id="passwordInscription"
-                  icon="lock"
-                  label="Mot de passe"
-                  group
-                  validate
-                />
+                  <MDBInput
+                    type="password"
+                    name="passwordInscription"
+                    icon="lock"
+                    label="Mot de passe"
+                    group
+                    onChange={this.handleInputChange}
+                    value={this.state.passwordInscription}
+                    validate
+                    required
+                  />
 
-                <MDBInput
-                  type="password"
-                  id="passwordConfirm"
-                  label="Confirmation"
-                  icon="lock"
-                  group
-                  validate
-                />
-              </MDBModalBody>
-              {/* Footer du modal des candidats */}
-              <MDBModalFooter className="ModalFooter">
-                <button
-                  className="shadow-effect btnModal btnInfo"
-                  onClick={() => this.props.toggle()}
-                >
-                  Je ne suis pas un candidat
-                </button>
-                <button className="shadow-effect btnModal blue-gradient">
-                  S'inscrire
-                </button>
-              </MDBModalFooter>
+                  <MDBInput
+                    type="password"
+                    name="passwordConfirm"
+                    label="Confirmation"
+                    icon="lock"
+                    onChange={this.handleInputChange}
+                    value={this.state.passwordConfirm}
+                    group
+                    validate
+                    required
+                  />
+                </MDBModalBody>
+                {/* Footer du modal des candidats */}
+                <MDBModalFooter className="ModalFooter">
+                  <button
+                    className="shadow-effect btnModal btnInfo"
+                    onClick={() => this.props.toggle()}
+                  >
+                    Je ne suis pas un candidat
+                  </button>
+                  <button
+                    type="submit"
+                    className="shadow-effect btnModal blue-gradient"
+                    onClick={this.SignUp}
+                  >
+                    S'inscrire
+                  </button>
+                </MDBModalFooter>
+              </form>
             </TabPane>
           </TabContent>
         </MDBModal>
