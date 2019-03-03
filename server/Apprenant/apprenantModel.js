@@ -8,21 +8,20 @@ const apprenantSchema = new mongoose.Schema({
 
 	nom : {
 		type : String,
-	//	required : [true,'Le champs truc nom ne peut pas être vide']
+		require : [true,'Le champs prenom ne peut pas être vide']
 	},
 	prenom : {
-			type : String,
-	//		required : [true,'Le champs prenom ne peut pas être vide']
+		type : String,
+		require : [true,'Le champs prenom ne peut pas être vide']
 	},
 	mail : {
-			type: String,
-	//		required: [true,'Le champs mail ne peut pas être vide']
-
+		type: String,
+		require: [true,'Le champs mail ne peut pas être vide']
 	},
 	mdp : {
-			type : String,
-	//		required : [true,'Le champs mdp ne peut pas être vide']
-
+		type : String,
+		require : [true,'Le champs mdp ne peut pas être vide']
+   
 	}
 });
 
