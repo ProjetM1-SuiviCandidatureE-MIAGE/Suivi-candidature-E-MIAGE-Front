@@ -3,11 +3,11 @@ const Candidat = require('./candidatModel');
 // new Candidat
 function newCandidat(req, res) {
     console.log(JSON.stringify(req.body));
-    let newCandidature = new Candidat(req.body);
-    newCandidature.id = newCandidature._id;
+    let newCandidat = new Candidat(req.body);
+    newCandidat.id = newCandidat._id;
 
-    newCandidature.save().then(()=>{
-        res.status(200).json(newCandidature)
+    newCandidat.save().then(()=>{
+        res.status(200).json(newCandidat)
     },(err)=>{
         res.status(400).json(err);
     })
