@@ -69,3 +69,10 @@ li .nav-link.active:hover {
   padding-bottom: 2em;
   padding-top: 2em;
 }
+
+.navbar.navbar-dark form .md-form input {
+  border-bottom: 1px solid #ced4da !important;
+}
+.navbar form .md-form input {
+  margin: 2.5em 2.5em 0 2.5em !important;
+}
