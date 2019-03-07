@@ -151,11 +151,11 @@ export default class ModalHome extends Component {
           <TabContent activeTab={this.state.activeTab}>
             {/* Panel avec le formulaire de connexion */}
             <TabPane tabId="1">
-              <form method="POST" action="/candidats/login">
+              <form method="POST" action="/candidats/login" autoComplete>
                 <MDBModalBody>
                   <MDBInput
                     type="email"
-                    name="emailConnexion"
+                    name="mailConnexion"
                     label="E-mail"
                     icon="envelope"
                     onChange={this.handleInputChange}
@@ -204,7 +204,7 @@ export default class ModalHome extends Component {
 
             {/* Panel avec le formulaire d'inscription */}
             <TabPane tabId="2">
-              <form method="POST" action="/candidats/signup">
+              <form method="POST" action="/candidats/signup" autoComplete>
                 <MDBModalBody>
                   <MDBInput
                     type="text"

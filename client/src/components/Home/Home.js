@@ -9,7 +9,7 @@ export default class Home extends Component {
     return (
       <div style={{position:"relative"}}>
         <HomeNavbar></HomeNavbar>
-        <Image src="pictures/home.jpg" className="header-image"></Image>
+        <Image src="pictures/home.jpg" className="header-image"/>
         <p style={{position:"absolute", top:'0',fontSize: '16px', fontWeight: '700', fontFamily: 'Helvetica'}}>~~ Photo by Anna Hliamshyna on Unsplash ~~</p>
       </div>
     )

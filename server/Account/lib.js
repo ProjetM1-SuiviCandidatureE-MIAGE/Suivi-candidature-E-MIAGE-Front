@@ -14,8 +14,8 @@ function signup(req, res) {
   } else {
     const salt = bcrypt.genSaltSync(10);
     let admin = {
-      nom : req.body.nom,
-      prenom : req.body.prenom,
+      nom: req.body.nom,
+      prenom: req.body.prenom,
       mail: req.body.mail,
       //mdp: req.body.mdp
       mdp: bcrypt.hashSync(req.body.mdp, salt)
@@ -79,22 +79,22 @@ function signup(req, res) {
 
 // --INSCRIPTION CANDIDAT
 function signupCandidat(req, res) {
-  if (!req.body.mail || !req.body.mdp) {
+  if (!req.body.mail || !req.body.mdp || !req.body.nom || !req.body.prenom) {
     //Le cas où l'email ou bien le password ne serait pas soumit ou nul
     console.log(req.body.mail);
     res.status(400).json({
-      text: "Requête invalide"
+      text: "Un champ est vide ou reqête invalide !"
     });
   } else {
     const salt = bcrypt.genSaltSync(10);
-    let candidat = {
-      nom : req.body.nom,
-      prenom : req.body.prenom,
+    const candidat = {
+      nom: req.body.nom,
+      prenom: req.body.prenom,
       mail: req.body.mail,
       //mdp: req.body.mdp
       mdp: bcrypt.hashSync(req.body.mdp, salt)
     };
-    let findCandidat = new Promise(function(resolve, reject) {
+    const findCandidat = new Promise(function(resolve, reject) {
       Candidat.findOne(
         {
           mail: candidat.mail
@@ -115,7 +115,7 @@ function signupCandidat(req, res) {
 
     findCandidat.then(
       function() {
-        let _a = new Candidat(candidat);
+        const _a = new Candidat(candidat);
         _a.save(function(err, candidat) {
           if (err) {
             res.status(500).json({
@@ -162,8 +162,8 @@ function signupApprenant(req, res) {
   } else {
     const salt = bcrypt.genSaltSync(10);
     let apprenant = {
-      nom : req.body.nom,
-      prenom : req.body.prenom,
+      nom: req.body.nom,
+      prenom: req.body.prenom,
       mail: req.body.mail,
       //mdp: req.body.mdp
       mdp: bcrypt.hashSync(req.body.mdp, salt)
@@ -230,7 +230,7 @@ function loginCandidat(req, res) {
   if (!req.body.mail || !req.body.mdp) {
     //Le cas où l'email ou bien le password ne serait pas soumit ou nul
     res.status(400).json({
-      text: "Requête invalide"
+      text: "Requête invalide ou mot de passe vide ou mail vide"
     });
   } else {
     Candidat.findOne(
