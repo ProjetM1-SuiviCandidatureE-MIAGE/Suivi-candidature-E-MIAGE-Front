@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const jwt = require('jwt-simple');
+const config = require('../config/config');
 
 const validateEmail = function(email) {
     var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -31,6 +34,17 @@ candidatSchema.virtual('candidatures', {
     localField: '_id',
     foreignField: 'candidat'
 });
+
+candidatSchema.methods = {
+	authenticate: function (password) {
+		return bcrypt.compareSync(password, this.mdp);
+	},
+	getToken: function () {
+		return jwt.encode(this, config.secret);
+	}
+}
+
+
 
 const Candidat = mongoose.model('Candidat', candidatSchema);
 module.exports = Candidat;

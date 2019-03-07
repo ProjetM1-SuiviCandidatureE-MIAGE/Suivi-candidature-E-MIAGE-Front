@@ -29,8 +29,6 @@ const adminSchema = new mongoose.Schema({
     droit : String
 });
 
-
-
 adminSchema.methods = {
 	authenticate: function (password) {
 		return bcrypt.compareSync(password, this.mdp);
