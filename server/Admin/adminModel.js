@@ -26,7 +26,8 @@ const adminSchema = new mongoose.Schema({
 		require : [true,'Le champs mdp ne peut pas être vide']
    
 	},
-    droit : String
+	droit : String,
+	token : String
 });
 
 adminSchema.methods = {
@@ -37,6 +38,22 @@ adminSchema.methods = {
 		return jwt.encode(this, config.secret);
 	}
 }
+
+adminSchema.methods.generateToken = function(){
+    return new Promise((resolve, reject) =>{
+        // ---- algo
+        this.token = Date.now();
+        this.save().then(()=>{
+            resolve({
+                id : this.id,
+                mail : this.mail,
+                token : this.token
+            })
+        },(err)=>{
+            reject(err)
+        })
+    })
+};
 
 let Admin = mongoose.model('Admin', adminSchema);
 module.exports = Admin;
