@@ -25,7 +25,8 @@ const apprenantSchema = new mongoose.Schema({
 		type : String,
 		require : [true,'Le champs mdp ne peut pas être vide']
    
-	}
+	},
+	token : String
 });
 
 apprenantSchema.methods = {
@@ -36,6 +37,22 @@ apprenantSchema.methods = {
 		return jwt.encode(this, config.secret);
 	}
 }
+
+apprenantSchema.methods.generateToken = function(){
+    return new Promise((resolve, reject) =>{
+        // ---- algo
+        this.token = Date.now();
+        this.save().then(()=>{
+            resolve({
+                id : this.id,
+                mail : this.mail,
+                token : this.token
+            })
+        },(err)=>{
+            reject(err)
+        })
+    })
+};
 
 
 const Apprenant = mongoose.model('Apprenant', apprenantSchema);

@@ -1,4 +1,29 @@
 const Candidat = require('./candidatModel');
+let auth = module.exports;
+
+// AUTHENTIFICATION
+auth.checkAuth = function(req, res, next){
+    console.info('Check Auth');
+
+    // --- Base de donnees
+    let mongoose = require('mongoose');
+
+    // -- Recup Token Authorization
+    let token = req.headers.authorization || req.query.authorization;
+
+    //mongoose.model('candidatModel')
+    Candidat.findOne({token : token}).then((candidat)=>{
+        if(candidat){
+            console.log ("ok" + candidat);
+            req.currentUser = candidat;
+            next();
+        }else{
+            res.status(401).json({message : "Not Authorize"})
+        }
+    },(err)=>{
+        res.status(400).json(err)
+    });
+};
 
 // new Candidat
 function newCandidat(req, res) {
