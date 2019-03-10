@@ -151,7 +151,7 @@ export default class ModalHome extends Component {
           <TabContent activeTab={this.state.activeTab}>
             {/* Panel avec le formulaire de connexion */}
             <TabPane tabId="1">
-              <form method="POST" action="/candidats/login" autoComplete>
+              <form method="POST" action="/candidats/login" autoComplete="on">
                 <MDBModalBody>
                   <MDBInput
                     type="email"
@@ -173,6 +173,7 @@ export default class ModalHome extends Component {
                     onChange={this.handleInputChange}
                     value={this.state.passwordConnexion}
                     group
+                    autoComplete="current-password"
                     validate
                     required
                   />
@@ -204,7 +205,7 @@ export default class ModalHome extends Component {
 
             {/* Panel avec le formulaire d'inscription */}
             <TabPane tabId="2">
-              <form method="POST" action="/candidats/signup" autoComplete>
+              <form method="POST" action="/candidats/signup" autoComplete="on">
                 <MDBModalBody>
                   <MDBInput
                     type="text"
@@ -250,6 +251,7 @@ export default class ModalHome extends Component {
                     group
                     onChange={this.handleInputChange}
                     value={this.state.passwordInscription}
+                    autoComplete="new-password"
                     validate
                     required
                   />
@@ -261,6 +263,7 @@ export default class ModalHome extends Component {
                     icon="lock"
                     onChange={this.handleInputChange}
                     value={this.state.passwordConfirm}
+                    autoComplete="new-password"
                     group
                     validate
                     required
