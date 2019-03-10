@@ -24,27 +24,42 @@ const candidatSchema = new mongoose.Schema({
       type : String,
       require : [true,'Le champs mdp ne peut pas être vide']
 
-  }
+  },
+  token : String
 });
 
 
 //champs qui n'est pas stocké dans la base calculé et permet la relation entre les différents candidats
 candidatSchema.virtual('candidatures', {
-    ref: 'Candidature',
+    ref: 'candidatureModel',
     localField: '_id',
     foreignField: 'candidat'
 });
 
-candidatSchema.methods = {
+/*candidatSchema.methods = {
 	authenticate: function (password) {
 		return bcrypt.compareSync(password, this.mdp);
 	},
 	getToken: function () {
 		return jwt.encode(this, config.secret);
 	}
-}
+}*/
 
-
+candidatSchema.methods.generateToken = function(){
+    return new Promise((resolve, reject) =>{
+        // ---- algo
+        this.token = Date.now();
+        this.save().then(()=>{
+            resolve({
+                id : this.id,
+                mail : this.mail,
+                token : this.token
+            })
+        },(err)=>{
+            reject(err)
+        })
+    })
+};
 
 const Candidat = mongoose.model('Candidat', candidatSchema);
 module.exports = Candidat;
