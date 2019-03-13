@@ -278,7 +278,6 @@ class SpaceAdmin extends React.Component {
                 className="card-header"
                 id={"heading" + index}
                 role="button"
-                data-toggle="collapse"
                 data-target={"#collapse" + index}
                 aria-expanded="false"
                 aria-controls={"collapse" + index}
@@ -384,7 +383,7 @@ class SpaceAdmin extends React.Component {
   }
   render() {
     return (
-      <div>
+      <div class="Admin">
         <SpaceNavbar />
         <div className="text-center">
           <Button

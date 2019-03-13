@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import {
   Navbar,
   Nav,
@@ -9,10 +8,11 @@ import {
   NavbarToggler
 } from "reactstrap";
 import "./HomeNavbar.css";
-import ModalHome from "./ModalHome/ModalHome";
+import { withRouter } from "react-router-dom";
+import ModalHome from "../ModalHome/ModalHome";
 
 // La barre de navigation de la page d'accueil
-export default class CustomNavbar extends Component {
+class CustomNavbar extends Component {
   constructor(props) {
     super(props);
 
@@ -25,6 +25,7 @@ export default class CustomNavbar extends Component {
     this.openAdminModal = this.openAdminModal.bind(this);
     this.openCandidatModal = this.openCandidatModal.bind(this);
   }
+
   // Fonction pour dérouler la navbar quand on est sur smartphone
   toggleNavbar() {
     this.setState({
@@ -53,38 +54,32 @@ export default class CustomNavbar extends Component {
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="ml-auto" navbar>
             <NavItem>
-              <NavLink id="link" href="/SpaceAdmin" component={Link} to="/">
+              <NavLink id="link" onClick={this.openAdminModal}>
                 Espace admin
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink id="link" href="/SpaceCandidat" component={Link} to="/">
+              <NavLink id="link" onClick={this.openCandidatModal}>
                 Espace candidat
               </NavLink>
-            </NavItem>
-            <NavItem>
-              <button type="button" onClick={this.openCandidatModal}>
-                Candidat
-              </button>
-            </NavItem>
-            <NavItem>
-              <button type="button" onClick={this.openAdminModal}>
-                Admin
-              </button>
             </NavItem>
           </Nav>
         </Collapse>
         <ModalHome
           isOpen={this.state.showCandidatModal}
           toggle={this.openCandidatModal}
+          toggleAutre={this.openAdminModal}
           inscription="true"
         />
         <ModalHome
           isOpen={this.state.showAdminModal}
           toggle={this.openAdminModal}
+          toggleAutre={this.openCandidatModal}
           inscription="false"
         />
       </Navbar>
     );
   }
 }
+
+export default withRouter(CustomNavbar);

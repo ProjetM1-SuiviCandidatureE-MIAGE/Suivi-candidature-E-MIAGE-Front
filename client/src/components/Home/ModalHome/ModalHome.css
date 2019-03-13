@@ -70,9 +70,6 @@ li .nav-link.active:hover {
   padding-top: 2em;
 }
 
-.navbar.navbar-dark form .md-form input {
-  border-bottom: 1px solid #ced4da !important;
-}
 .navbar form .md-form input {
   color: #495057 !important;
   margin: 2.5em 2.5em 0 2.5em !important;
@@ -80,4 +77,8 @@ li .nav-link.active:hover {
 
 .modal-dialog.cascading-modal {
   margin-top: 5% !important;
+}
+
+.navbar.navbar-dark form .md-form input {
+  border-bottom: 1px solid #ced4da;
 }

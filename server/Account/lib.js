@@ -7,20 +7,18 @@ const bcrypt = require("bcrypt");
 function signup(req, res) {
   if (!req.body.mail || !req.body.mdp) {
     //Le cas où l'email ou bien le password ne serait pas soumit ou nul
-    console.log(req.body.mail);
     res.status(400).json({
       text: "Requête invalide"
     });
   } else {
     const salt = bcrypt.genSaltSync(10);
-    let admin = {
+    const admin = {
       nom: req.body.nom,
       prenom: req.body.prenom,
       mail: req.body.mail,
-      //mdp: req.body.mdp
       mdp: bcrypt.hashSync(req.body.mdp, salt)
     };
-    let findAdmin = new Promise(function(resolve, reject) {
+    const findAdmin = new Promise(function(resolve, reject) {
       Admin.findOne(
         {
           mail: admin.mail
@@ -41,7 +39,7 @@ function signup(req, res) {
 
     findAdmin.then(
       function() {
-        let _a = new Admin(admin);
+        const _a = new Admin(admin);
         _a.save(function(err, admin) {
           if (err) {
             res.status(500).json({
@@ -91,7 +89,6 @@ function signupCandidat(req, res) {
       nom: req.body.nom,
       prenom: req.body.prenom,
       mail: req.body.mail,
-      //mdp: req.body.mdp
       mdp: bcrypt.hashSync(req.body.mdp, salt)
     };
     const findCandidat = new Promise(function(resolve, reject) {
@@ -165,10 +162,9 @@ function signupApprenant(req, res) {
       nom: req.body.nom,
       prenom: req.body.prenom,
       mail: req.body.mail,
-      //mdp: req.body.mdp
       mdp: bcrypt.hashSync(req.body.mdp, salt)
     };
-    let findApprenant = new Promise(function(resolve, reject) {
+    const findApprenant = new Promise(function(resolve, reject) {
       Apprenant.findOne(
         {
           mail: apprenant.mail
@@ -189,7 +185,7 @@ function signupApprenant(req, res) {
 
     findApprenant.then(
       function() {
-        let _a = new Apprenant(apprenant);
+        const _a = new Apprenant(apprenant);
         _a.save(function(err, apprenant) {
           if (err) {
             res.status(500).json({
