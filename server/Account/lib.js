@@ -221,6 +221,10 @@ function signupApprenant(req, res) {
   }
 }
 
+<<<<<<< HEAD
+
+//On exporte nos 3 fonctions
+=======
 //-- CONNEXION en tant que Candidat
 function loginCandidat(req, res) {
   if (!req.body.mail || !req.body.mdp) {
@@ -340,14 +344,8 @@ function login(req, res) {
     );
   }
 }
+>>>>>>> master
 
-//On exporte nos six fonctions
-
-exports.login = login;
 exports.signup = signup;
-
-exports.loginCandidat = loginCandidat;
 exports.signupCandidat = signupCandidat;
-
-exports.loginApprenant = loginApprenant;
 exports.signupApprenant = signupApprenant;
