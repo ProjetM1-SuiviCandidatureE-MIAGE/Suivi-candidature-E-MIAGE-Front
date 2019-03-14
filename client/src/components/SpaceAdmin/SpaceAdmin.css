@@ -57,3 +57,7 @@
   text-align: left;
   margin-right: 30%;
 }
+
+.Admin .collapsing {
+  transition: none;
+}
