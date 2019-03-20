@@ -280,25 +280,28 @@ class SpaceAdmin extends React.Component {
             >
               <div
                 className="card-header"
-                id={"heading" + index}
+                id={"headingAttentes" + index}
                 role="button"
                 data-target={"#collapseAttentes" + index}
                 aria-expanded="false"
                 aria-controls={"collapseAttentes" + index}
               >
                 <div className="nameCand">
-                  Candidature de {item.candidat.prenom} {item.candidat.nom}{" "}
+                  Candidature de {item.candidat.prenom}{" "}
+                  {item.candidat.nom}{" "}
                 </div>
                 <div className="dateCand">
                   {" "}
                   en attente depuis le
-                  <Moment format=" DD/MM/YYYY">{item.dateTraitement}</Moment>
+                  <Moment format=" DD/MM/YYYY">
+                    {item.dateTraitement}
+                  </Moment>
                 </div>
               </div>
               <div
                 id={"collapseAttentes" + index}
                 className="collapse"
-                aria-labelledby={"heading" + index}
+                aria-labelledby={"headingAttentes" + index}
                 data-parent="#accordion"
               >
                 <div className="card-body">
@@ -347,7 +350,7 @@ class SpaceAdmin extends React.Component {
             >
               <div
                 className="card-header"
-                id={"heading" + index}
+                id={"headingTraitees" + index}
                 role="button"
                 data-toggle="collapse"
                 data-target={"#collapseTraitees" + index}
@@ -365,7 +368,7 @@ class SpaceAdmin extends React.Component {
               <div
                 id={"collapseTraitees" + index}
                 className="collapse"
-                aria-labelledby={"heading" + index}
+                aria-labelledby={"headingTraitees" + index}
                 data-parent="#accordion"
               >
                 <div className="card-body">

@@ -17,9 +17,23 @@ export default class InformationForm extends Component {
     this.state = {
       prenom: "",
       nom: "",
-      mail: ""
+      mail: "",
+      password: "",
+
+      newPrenom: "",
+      newNom: "",
+      newMail: "",
+      newPassword: "",
+      newPasswordConfirm: ""
     };
   }
+  // Fonction pour modifier les valeurs des inputs
+  handleInputChange = event => {
+    const { value, name } = event.target;
+    this.setState({
+      [name]: value
+    });
+  };
   // Fonction qui retourne le html du composant
   render() {
     return (
@@ -27,32 +41,74 @@ export default class InformationForm extends Component {
         <MDBCardTitle className="font-weight-bold mb-3 mx-auto CardTitle">
           Votre Profil
         </MDBCardTitle>
-        <MDBCardBody className="CardBody">
-          <MDBInput label="Prénom" icon="user" />
-          <MDBInput label="Nom" icon="user" />
-          <MDBInput label="Mail" icon="envelope" />
-          <MDBInput label="Nouveau mot de passe" icon="lock" />
-          <MDBInput label="Confirmation" icon="lock" />
-        </MDBCardBody>
-        <MDBCardText className="CardText">
-          <MDBBtn
-            outline
-            color="primary"
-            size="lg"
-            className="CloseButton"
-            onClick={() => this.props.toggle()}
-          >
-            Fermer
-          </MDBBtn>
-          <MDBBtn
-            color="primary"
-            size="lg"
-            className="SaveButton"
-            onClick={() => this.props.toggle()}
-          >
-            Sauvegarder
-          </MDBBtn>
-        </MDBCardText>
+        <form method="POST" autoComplete="new-password">
+          <MDBCardBody className="CardBody">
+            <MDBInput
+              label="Prénom"
+              icon="user"
+              type="text"
+              name="newPrenom"
+              onChange={this.handleInputChange}
+              value={this.state.newPrenom}
+              autoComplete="off"
+            />
+            <MDBInput
+              label="Nom"
+              icon="user"
+              type="text"
+              name="newNom"
+              onChange={this.handleInputChange}
+              value={this.state.newNom}
+              autoComplete="off"
+            />
+            <MDBInput
+              label="Mail"
+              icon="envelope"
+              type="email"
+              name="newMail"
+              onChange={this.handleInputChange}
+              value={this.state.newMail}
+              autoComplete="new-password"
+            />
+            <MDBInput
+              label="Nouveau mot de passe"
+              icon="lock"
+              type="password"
+              name="newPassword"
+              onChange={this.handleInputChange}
+              value={this.state.newPassword}
+              autoComplete="new-password"
+            />
+            <MDBInput
+              label="Confirmation"
+              icon="lock"
+              type="password"
+              name="newPasswordConfirm"
+              onChange={this.handleInputChange}
+              value={this.state.newPasswordConfirm}
+              autoComplete="off"
+            />
+          </MDBCardBody>
+          <MDBCardText className="CardText">
+            <MDBBtn
+              outline
+              color="primary"
+              size="lg"
+              className="CloseButton"
+              onClick={() => this.props.toggle()}
+            >
+              Fermer
+            </MDBBtn>
+            <MDBBtn
+              color="primary"
+              size="lg"
+              className="SaveButton"
+              onClick={() => this.props.toggle()}
+            >
+              Sauvegarder
+            </MDBBtn>
+          </MDBCardText>
+        </form>
       </MDBCard>
     );
   }

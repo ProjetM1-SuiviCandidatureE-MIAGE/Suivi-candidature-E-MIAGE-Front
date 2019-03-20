@@ -210,7 +210,12 @@ class ModalHome extends Component {
           <TabContent activeTab={this.state.activeTab}>
             {/* Panel avec le formulaire de connexion */}
             <TabPane tabId="1">
-              <form method="POST" action="/candidats/login" autoComplete="on">
+              <form
+                method="POST"
+                action="/candidats/login"
+                autoComplete="on"
+                validate
+              >
                 <MDBModalBody>
                   <MDBInput
                     type="email"
@@ -221,7 +226,6 @@ class ModalHome extends Component {
                     value={this.state.mailConnexion}
                     autoComplete="username"
                     group
-                    validate
                     required
                   />
 
@@ -234,7 +238,6 @@ class ModalHome extends Component {
                     value={this.state.passwordConnexion}
                     group
                     autoComplete="current-password"
-                    validate
                     required
                   />
                   <div className="options text-center text-md-right mt-1">
@@ -266,7 +269,12 @@ class ModalHome extends Component {
 
             {/* Panel avec le formulaire d'inscription */}
             <TabPane tabId="2">
-              <form method="POST" action="/candidats/signup" autoComplete="on">
+              <form
+                method="POST"
+                action="/candidats/signup"
+                autoComplete="on"
+                validate
+              >
                 <MDBModalBody>
                   <MDBInput
                     type="text"
@@ -277,7 +285,6 @@ class ModalHome extends Component {
                     value={this.state.prenomInscription}
                     autoComplete="given-name"
                     group
-                    validate
                     required
                   />
 
@@ -290,7 +297,6 @@ class ModalHome extends Component {
                     value={this.state.nomInscription}
                     autoComplete="family-name"
                     group
-                    validate
                     required
                   />
 
@@ -303,7 +309,6 @@ class ModalHome extends Component {
                     value={this.state.mailInscription}
                     autoComplete="email"
                     group
-                    validate
                     required
                   />
 
@@ -316,7 +321,6 @@ class ModalHome extends Component {
                     onChange={this.handleInputChange}
                     value={this.state.passwordInscription}
                     autoComplete="new-password"
-                    validate
                     required
                   />
 
@@ -329,7 +333,6 @@ class ModalHome extends Component {
                     value={this.state.passwordConfirm}
                     autoComplete="new-password"
                     group
-                    validate
                     required
                   />
                 </MDBModalBody>
