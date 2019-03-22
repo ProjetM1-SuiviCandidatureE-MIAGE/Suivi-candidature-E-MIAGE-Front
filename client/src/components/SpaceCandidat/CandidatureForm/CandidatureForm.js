@@ -1,13 +1,18 @@
 import React, { Component } from "react";
-import "./CandidatureForm.css";
+/* import "./CandidatureForm.css"; */
 import {
   MDBInput,
   MDBCard,
   MDBCardBody,
   MDBCardTitle,
   MDBCardText,
-  MDBBtn
+  MDBBtn,
+  MDBIcon
 } from "mdbreact";
+import { FilePond, registerPlugin } from "react-filepond";
+import "filepond/dist/filepond.min.css";
+
+const maxFiles = 5;
 
 // Le formulaire de création d'une candidature
 class CandidatureForm extends Component {
@@ -17,6 +22,7 @@ class CandidatureForm extends Component {
     this.state = {
       statut: "",
       date: "",
+      files: "",
       candidat: {
         firstName: "Damien",
         name: "DONNADIEU",
@@ -109,6 +115,9 @@ class CandidatureForm extends Component {
     });
     this.props.toggle();
   }
+  handleInit() {
+    console.log("FilePond créé", this.pond);
+  }
   // La fonction qui permet d'afficher le code html du composant CandidatureForm donc le formulaire
   render() {
     return (
@@ -149,16 +158,33 @@ class CandidatureForm extends Component {
               className="MDBInputText"
               type="text"
               name="email"
-              label="Mail"
+              label="Mail professionnel"
               icon="envelope"
               value={this.state.candidat.email}
               onChange={this.handleEmailChange}
               required
               autoComplete="new-password"
             />
-            <MDBInput type="file" name="cv" id="cvFile" />
-            <MDBInput type="file" name="lm" id="lmFile" />
-            <MDBInput type="file" name="files" id="otherFiles" multiple />
+            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> CV, lettre
+            de motivation et autres fichiers (max {maxFiles} fichiers){" "}
+            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" />
+            <FilePond
+              ref={ref => (this.pond = ref)}
+              files={this.state.files}
+              allowMultiple={true}
+              maxFiles={maxFiles}
+              oninit={() => this.handleInit()}
+              labelIdle={"Glissez et déposez vos fichiers ici"}
+              server="/files/"
+              onupdatefiles={fileItems => {
+                this.setState(
+                  {
+                    files: fileItems.map(fileItem => fileItem.file)
+                  },
+                  console.log(this.state.files)
+                );
+              }}
+            />
           </MDBCardBody>
           <MDBCardText className="CardText">
             <MDBBtn

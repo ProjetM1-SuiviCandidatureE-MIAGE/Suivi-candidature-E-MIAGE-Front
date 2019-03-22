@@ -268,7 +268,7 @@ class SpaceAdmin extends React.Component {
   renderCandidaturesEnAttentes() {
     if (this.state.candidaturesEnAttentes.length !== 0) {
       return (
-        <div id="accordion">
+        <div id="accordionAttentes">
           <h1 style={{ color: "black" }}>
             Liste des candidatures en attentes :
           </h1>
@@ -282,27 +282,25 @@ class SpaceAdmin extends React.Component {
                 className="card-header"
                 id={"headingAttentes" + index}
                 role="button"
+                data-toggle="collapse"
                 data-target={"#collapseAttentes" + index}
                 aria-expanded="false"
                 aria-controls={"collapseAttentes" + index}
               >
                 <div className="nameCand">
-                  Candidature de {item.candidat.prenom}{" "}
-                  {item.candidat.nom}{" "}
+                  Candidature de {item.candidat.prenom} {item.candidat.nom}{" "}
                 </div>
                 <div className="dateCand">
                   {" "}
                   en attente depuis le
-                  <Moment format=" DD/MM/YYYY">
-                    {item.dateTraitement}
-                  </Moment>
+                  <Moment format=" DD/MM/YYYY">{item.dateTraitement}</Moment>
                 </div>
               </div>
               <div
                 id={"collapseAttentes" + index}
                 className="collapse"
                 aria-labelledby={"headingAttentes" + index}
-                data-parent="#accordion"
+                data-parent="#accordionAttentes"
               >
                 <div className="card-body">
                   <h2>Etat candidature : {item.etat}</h2>
@@ -340,7 +338,7 @@ class SpaceAdmin extends React.Component {
   renderCandidaturesTraitees() {
     if (this.state.candidaturesTraitees.length !== 0) {
       return (
-        <div id="accordion">
+        <div id="accordionTraitees">
           <h1 style={{ color: "black" }}>Liste des candidatures traitées :</h1>
           {this.state.candidaturesTraitees.map((item, index) => (
             <div
@@ -369,7 +367,7 @@ class SpaceAdmin extends React.Component {
                 id={"collapseTraitees" + index}
                 className="collapse"
                 aria-labelledby={"headingTraitees" + index}
-                data-parent="#accordion"
+                data-parent="#accordionTraitees"
               >
                 <div className="card-body">
                   <h2>Etat candidature : {item.etat}</h2>

@@ -210,12 +210,7 @@ class ModalHome extends Component {
           <TabContent activeTab={this.state.activeTab}>
             {/* Panel avec le formulaire de connexion */}
             <TabPane tabId="1">
-              <form
-                method="POST"
-                action="/candidats/login"
-                autoComplete="on"
-                validate
-              >
+              <form method="POST" action="/candidats/login" autoComplete="on">
                 <MDBModalBody>
                   <MDBInput
                     type="email"
@@ -269,12 +264,7 @@ class ModalHome extends Component {
 
             {/* Panel avec le formulaire d'inscription */}
             <TabPane tabId="2">
-              <form
-                method="POST"
-                action="/candidats/signup"
-                autoComplete="on"
-                validate
-              >
+              <form method="POST" action="/candidats/signup" autoComplete="on">
                 <MDBModalBody>
                   <MDBInput
                     type="text"
@@ -404,7 +394,6 @@ class ModalHome extends Component {
                     value={this.state.mailConnexionAdmin}
                     autoComplete="username"
                     group
-                    validate
                     required
                   />
 
@@ -417,7 +406,6 @@ class ModalHome extends Component {
                     value={this.state.passwordConnexionAdmin}
                     group
                     autoComplete="current-password"
-                    validate
                     required
                   />
                   <div className="options text-center text-md-right mt-1">
