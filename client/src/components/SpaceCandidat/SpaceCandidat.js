@@ -8,6 +8,7 @@ import { MDBBtn, MDBCollapse } from "mdbreact";
 class SpaceCandidat extends React.Component {
   constructor(props) {
     super(props);
+    console.log(this.props);
     // Fonctions pour toggle les différents éléments de la page
     this.toggleCandidatureForm = this.toggleCandidatureForm.bind(this);
     this.toggleInformationForm = this.toggleInformationForm.bind(this);

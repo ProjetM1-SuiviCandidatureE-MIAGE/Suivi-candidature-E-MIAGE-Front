@@ -40,11 +40,10 @@ class ModalHome extends Component {
     this.LoginCandidat = this.LoginCandidat.bind(this);
     this.LoginAdmin = this.LoginAdmin.bind(this);
   }
-
+  // Fonction qui se lance à la création du composant pour récupèrer les props et les stocker
   componentDidMount() {
     props = this.props;
   }
-
   // Fonction pour afficher l'autre contenu du Tabs
   toggleTab(tab) {
     if (this.state.activeTab !== tab) {
@@ -85,6 +84,13 @@ class ModalHome extends Component {
         if (body.text === "Succès") {
           Auth.loginCandidat();
           props.history.push("/SpaceCandidat");
+          const User = {
+            prenom: newCandidat.prenom,
+            nom: newCandidat.nom,
+            mail: newCandidat.mail,
+            token: body.token
+          };
+          props.props.change(User);
         } else {
           alert(body.text);
         }
@@ -96,6 +102,7 @@ class ModalHome extends Component {
       });
   };
 
+  //////////////////////////////////////////////
   // Fonction de connexion pour le candidat
   LoginCandidat = event => {
     event.preventDefault();
@@ -117,6 +124,13 @@ class ModalHome extends Component {
       })
       .then(function(body) {
         if (body.text === "Authentification réussi") {
+          const User = {
+            prenom: body.prenom,
+            nom: body.nom,
+            mail: Candidat.mail,
+            token: body.token
+          };
+          props.props.change(User);
           Auth.loginCandidat();
           props.history.push("/SpaceCandidat");
         } else {
@@ -152,6 +166,13 @@ class ModalHome extends Component {
         if (body.text === "Authentification réussi") {
           Auth.loginAdmin();
           props.history.push("/SpaceAdmin");
+          const User = {
+            prenom: body.prenom,
+            nom: body.nom,
+            mail: Admin.mail,
+            token: body.token
+          };
+          props.props.change(User);
         } else {
           alert(body.text);
         }

@@ -10,7 +10,7 @@ import InformationForm from "../InformationForm/InformationForm";
 class SpaceAdmin extends React.Component {
   constructor(props) {
     super(props);
-
+    console.log(this.props);
     this.state = {
       // Les booléens pour les fonctions toggle des boutons
       boolMesInformations: false,
