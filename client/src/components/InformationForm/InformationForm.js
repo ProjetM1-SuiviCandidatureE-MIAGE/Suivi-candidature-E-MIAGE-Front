@@ -9,10 +9,13 @@ import {
 } from "mdbreact";
 import "./InformationForm.css";
 
+var propsUSer = "";
+
 // Le composant qui créé le formulaire avec les informations de la personne connectée
 export default class InformationForm extends Component {
   constructor(props) {
     super(props);
+    propsUSer = this.props.props.user;
 
     this.state = {
       prenom: "",
@@ -26,6 +29,18 @@ export default class InformationForm extends Component {
       newPassword: "",
       newPasswordConfirm: ""
     };
+  }
+  // Fonction qui s'éxecute à la création du composant
+  componentDidMount() {
+    this.setState({
+      prenom: propsUSer.prenom,
+      nom: propsUSer.nom,
+      mail: propsUSer.mail,
+
+      newPrenom: propsUSer.prenom,
+      newNom: propsUSer.nom,
+      newMail: propsUSer.mail
+    });
   }
   // Fonction pour modifier les valeurs des inputs
   handleInputChange = event => {
@@ -70,7 +85,7 @@ export default class InformationForm extends Component {
               value={this.state.newMail}
               autoComplete="new-password"
             />
-            <MDBInput
+            {/*             <MDBInput
               label="Nouveau mot de passe"
               icon="lock"
               type="password"
@@ -87,7 +102,7 @@ export default class InformationForm extends Component {
               onChange={this.handleInputChange}
               value={this.state.newPasswordConfirm}
               autoComplete="off"
-            />
+            /> */}
           </MDBCardBody>
           <MDBCardText className="CardText">
             <MDBBtn

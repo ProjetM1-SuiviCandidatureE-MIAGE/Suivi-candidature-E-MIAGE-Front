@@ -8,15 +8,15 @@ import { MDBBtn, MDBCollapse } from "mdbreact";
 class SpaceCandidat extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
-    // Fonctions pour toggle les différents éléments de la page
-    this.toggleCandidatureForm = this.toggleCandidatureForm.bind(this);
-    this.toggleInformationForm = this.toggleInformationForm.bind(this);
+
     this.state = {
       // Booléens pour le toggle des boutons
       toggleCandidature: false,
       toggleInformations: false
     };
+    // Fonctions pour toggle les différents éléments de la page
+    this.toggleCandidatureForm = this.toggleCandidatureForm.bind(this);
+    this.toggleInformationForm = this.toggleInformationForm.bind(this);
   }
   // Fonction pour afficher/masquer le div pour créer une candidature
   toggleCandidatureForm() {
@@ -36,7 +36,7 @@ class SpaceCandidat extends React.Component {
   render() {
     return (
       <div>
-        <SpaceNavbar />
+        <SpaceNavbar props={this.props} />
         <div className="text-center">
           <MDBBtn
             onClick={this.toggleInformationForm}
@@ -48,7 +48,10 @@ class SpaceCandidat extends React.Component {
           </MDBBtn>
         </div>
         <MDBCollapse isOpen={this.state.toggleInformations}>
-          <InformationForm toggle={this.toggleInformationForm} />
+          <InformationForm
+            toggle={this.toggleInformationForm}
+            props={this.props}
+          />
         </MDBCollapse>
         <div className="text-center">
           <MDBBtn
@@ -61,7 +64,10 @@ class SpaceCandidat extends React.Component {
           </MDBBtn>
         </div>
         <MDBCollapse isOpen={this.state.toggleCandidature}>
-          <CandidatureForm toggle={this.toggleCandidatureForm} />
+          <CandidatureForm
+            toggle={this.toggleCandidatureForm}
+            props={this.props}
+          />
         </MDBCollapse>
       </div>
     );

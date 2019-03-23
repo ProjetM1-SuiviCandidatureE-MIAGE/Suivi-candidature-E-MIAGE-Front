@@ -26,6 +26,7 @@ class App extends Component {
       }
     };
     this.setUser = this.setUser.bind(this);
+    this.resetUser = this.resetUser.bind(this);
   }
   // Fonction pour modifier la variable User après la connexion
   setUser(userConnected) {
@@ -37,6 +38,20 @@ class App extends Component {
           nom: userConnected.nom,
           mail: userConnected.mail,
           token: userConnected.token
+        }
+      };
+    });
+  }
+  // Fonction pour reset les champs de User
+  resetUser() {
+    this.setState(state => {
+      return {
+        User: {
+          ...state.User,
+          prenom: "",
+          nom: "",
+          mail: "",
+          token: ""
         }
       };
     });
@@ -59,12 +74,14 @@ class App extends Component {
               path="/SpaceCandidat"
               component={SpaceCandidat}
               user={this.state.User}
+              reset={this.resetUser}
             />
             <PrivateRoute2
               exact
               path="/SpaceAdmin"
               component={SpaceAdmin}
               user={this.state.User}
+              reset={this.resetUser}
             />
           </Switch>
           <Mentions />

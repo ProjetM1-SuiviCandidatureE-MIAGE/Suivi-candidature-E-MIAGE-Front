@@ -10,7 +10,7 @@ import InformationForm from "../InformationForm/InformationForm";
 class SpaceAdmin extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
+
     this.state = {
       // Les booléens pour les fonctions toggle des boutons
       boolMesInformations: false,
@@ -55,40 +55,40 @@ class SpaceAdmin extends React.Component {
     fetch("/candidatures/getAllCandidatures")
       .then(res => res.json())
       .then(data =>
-        this.setState(
-          {
-            candidaturesNonTraitees: data.filter(item => {
-              return item.etat.includes("non traitée");
-            }),
-            candidaturesEnAttentes: data.filter(item => {
-              return item.etat.includes("en attente");
-            }),
-            candidaturesTraitees: data.filter(item => {
-              return (
-                item.etat.includes("acceptée") || item.etat.includes("refusée")
-              );
-            }),
-            NonTraitéesNumber:
-              this.state.candidaturesNonTraitees === undefined
-                ? "0"
-                : this.state.candidaturesNonTraitees.length,
-            EnAttentesNumber:
-              this.state.candidaturesEnAttentes === undefined
-                ? "0"
-                : this.state.candidaturesEnAttentes.length,
-            TraitéesNumber:
-              this.state.candidaturesTraitees === undefined
-                ? "0"
-                : this.state.candidaturesTraitees.length
-          },
-          console.log(this.state.NonTraitéesNumber)
-        )
+        this.setState({
+          candidaturesNonTraitees: data.filter(item => {
+            return item.etat.includes("non traitée");
+          }),
+          candidaturesEnAttentes: data.filter(item => {
+            return item.etat.includes("en attente");
+          }),
+          candidaturesTraitees: data.filter(item => {
+            return (
+              item.etat.includes("acceptée") || item.etat.includes("refusée")
+            );
+          })
+        })
       )
+      .then(() => this.sortingArray())
       .catch(error => console.log(error));
   }
-  // Fonction qui s'exécute quand le composant est modifié
-  componentDidUpdate() {
-    this.fetchData();
+  // Fonction pour trier les candidatures
+  sortingArray() {
+    console.log("Sorting array !");
+    this.setState({
+      NonTraitéesNumber:
+        this.state.candidaturesNonTraitees === "0"
+          ? "0"
+          : this.state.candidaturesNonTraitees.length,
+      EnAttentesNumber:
+        this.state.candidaturesEnAttentes === "0"
+          ? "0"
+          : this.state.candidaturesEnAttentes.length,
+      TraitéesNumber:
+        this.state.candidaturesTraitees === "0"
+          ? "0"
+          : this.state.candidaturesTraitees.length
+    });
   }
   // Fonction pour afficher le div qui contient les candidatures non traitées
   toggleNonTraite() {
@@ -141,6 +141,7 @@ class SpaceAdmin extends React.Component {
       }
     })
       .then(function(response) {
+        this.fetchData();
         return response.json();
       })
       .then(function(body) {
@@ -162,6 +163,7 @@ class SpaceAdmin extends React.Component {
       }
     })
       .then(function(response) {
+        this.fetchData();
         return response.json();
       })
       .then(function(body) {
@@ -182,6 +184,7 @@ class SpaceAdmin extends React.Component {
       }
     })
       .then(function(response) {
+        this.fetchData();
         return response.json();
       })
       .then(function(body) {
@@ -380,10 +383,11 @@ class SpaceAdmin extends React.Component {
       );
     }
   }
+  // Fonction qui affiche le code html du composant
   render() {
     return (
       <div className="Admin">
-        <SpaceNavbar />
+        <SpaceNavbar props={this.props} />
         <div className="text-center">
           <Button
             onClick={this.toggleMesInformations}
@@ -395,24 +399,27 @@ class SpaceAdmin extends React.Component {
           </Button>
         </div>
         <Collapse isOpen={this.state.boolMesInformations}>
-          <InformationForm toggle={this.toggleMesInformations} />
+          <InformationForm
+            toggle={this.toggleMesInformations}
+            props={this.props}
+          />
         </Collapse>
         <div className="text-center">
           <Button onClick={this.toggleNonTraite}>
             Afficher les candidatures non traitées
-            <MDBBadge color="primary" className="ml-2">
+            <MDBBadge color="primary" className="ml-3">
               {this.state.NonTraitéesNumber}
             </MDBBadge>
           </Button>
           <Button onClick={this.toggleAttente}>
             Afficher les candidatures en attentes
-            <MDBBadge color="primary" className="ml-2">
+            <MDBBadge color="primary" className="ml-3">
               {this.state.EnAttentesNumber}
             </MDBBadge>
           </Button>
           <Button onClick={this.toggleTraite}>
             Afficher les candidatures traitées
-            <MDBBadge color="primary" className="ml-2">
+            <MDBBadge color="primary" className="ml-3">
               {this.state.TraitéesNumber}
             </MDBBadge>
           </Button>

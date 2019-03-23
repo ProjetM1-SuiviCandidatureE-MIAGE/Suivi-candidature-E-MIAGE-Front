@@ -82,8 +82,6 @@ class ModalHome extends Component {
       })
       .then(function(body) {
         if (body.text === "Succès") {
-          Auth.loginCandidat();
-          props.history.push("/SpaceCandidat");
           const User = {
             prenom: newCandidat.prenom,
             nom: newCandidat.nom,
@@ -91,6 +89,8 @@ class ModalHome extends Component {
             token: body.token
           };
           props.props.change(User);
+          Auth.loginCandidat();
+          props.history.push("/SpaceCandidat");
         } else {
           alert(body.text);
         }
@@ -164,8 +164,6 @@ class ModalHome extends Component {
       })
       .then(function(body) {
         if (body.text === "Authentification réussi") {
-          Auth.loginAdmin();
-          props.history.push("/SpaceAdmin");
           const User = {
             prenom: body.prenom,
             nom: body.nom,
@@ -173,6 +171,8 @@ class ModalHome extends Component {
             token: body.token
           };
           props.props.change(User);
+          Auth.loginAdmin();
+          props.history.push("/SpaceAdmin");
         } else {
           alert(body.text);
         }

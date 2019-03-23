@@ -13,20 +13,22 @@ import { FilePond, registerPlugin } from "react-filepond";
 import "filepond/dist/filepond.min.css";
 
 const maxFiles = 5;
+var propsUSer = "";
 
 // Le formulaire de création d'une candidature
 class CandidatureForm extends Component {
   constructor(props) {
     super(props);
+    propsUSer = this.props.props.user;
 
     this.state = {
       statut: "",
       date: "",
       files: "",
       candidat: {
-        firstName: "Damien",
-        name: "DONNADIEU",
-        email: "ddonnadieu@gmail.com"
+        firstName: "",
+        name: "",
+        email: ""
       }
     };
     // On bind toutes les fonctions qui vont utiliser le this.state
@@ -36,7 +38,19 @@ class CandidatureForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleResetForm = this.handleResetForm.bind(this);
   }
-
+  // Fonction qui s'éxecute à la création du composant mais après le constructor et le render
+  componentDidMount() {
+    this.setState(state => {
+      return {
+        candidat: {
+          ...state.candidat,
+          firstName: propsUSer.prenom,
+          name: propsUSer.nom,
+          email: propsUSer.mail
+        }
+      };
+    });
+  }
   // Méthode pour changer le prénom dans l'MDBInput
   handleFirstnameChange(e) {
     const value = e.target.value;
@@ -175,7 +189,7 @@ class CandidatureForm extends Component {
               maxFiles={maxFiles}
               oninit={() => this.handleInit()}
               labelIdle={"Glissez et déposez vos fichiers ici"}
-              server="/files/"
+              /* server="/files/" */
               onupdatefiles={fileItems => {
                 this.setState(
                   {

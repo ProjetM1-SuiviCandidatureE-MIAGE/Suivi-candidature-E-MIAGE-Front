@@ -62,3 +62,10 @@
 .Admin .collapsing {
   transition: none;
 }
+
+/* CSS des badges pour les candidatures */
+.ml-3 {
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  padding: 8px 8px;
+}
