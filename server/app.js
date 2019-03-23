@@ -2,9 +2,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const busboy = require("connect-busboy");
-//--CONSTANT POUR LE TEST GESTION DES FICHIERS
-const Grid = require("gridfs-stream");
-const methodOverride = require("method-override");
 let fs = require("fs"),
   path = require("path"),
   async = require("async");
@@ -70,11 +67,11 @@ app.post("/files/", function(req, res) {
   try {
     req.busboy.on("file", function(fieldname, file, filename) {
       console.info("Uploading: " + filename);
-
+      let uploadsFolder = __dirname + '/uploads/';
       // --- Create a path to the image
-      let fstream = fs.createWriteStream(
-        path.join(__dirname, filename.replace(" ", "-"))
-      );
+        let fstream = fs.createWriteStream(
+        path.join(/*__dirname*/uploadsFolder , filename.replace(" ", "-"))
+        );
 
       file.pipe(fstream);
 
