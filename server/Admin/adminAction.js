@@ -22,6 +22,8 @@ auth.checkAuth = function(req, res, next) {
           console.log("connected");
           res.status(200).json({
             text: "Authentification réussi",
+            prenom: admin.prenom,
+            nom: admin.nom,
             token: admin.getToken()
           });
         } else {

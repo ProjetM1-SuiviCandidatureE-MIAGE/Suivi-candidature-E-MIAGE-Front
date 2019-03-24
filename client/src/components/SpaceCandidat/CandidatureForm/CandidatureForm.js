@@ -1,19 +1,34 @@
 import React, { Component } from "react";
-import { Button } from "reactstrap";
-import "./CandidatureForm.css";
+/* import "./CandidatureForm.css"; */
+import {
+  MDBInput,
+  MDBCard,
+  MDBCardBody,
+  MDBCardTitle,
+  MDBCardText,
+  MDBBtn,
+  MDBIcon
+} from "mdbreact";
+import { FilePond, registerPlugin } from "react-filepond";
+import "filepond/dist/filepond.min.css";
+
+const maxFiles = 5;
+var propsUSer = "";
 
 // Le formulaire de création d'une candidature
 class CandidatureForm extends Component {
   constructor(props) {
     super(props);
+    propsUSer = this.props.props.user;
 
     this.state = {
       statut: "",
       date: "",
+      files: "",
       candidat: {
-        firstName: "Damien",
-        name: "DONNADIEU",
-        email: "ddonnadieu@gmail.com"
+        firstName: "",
+        name: "",
+        email: ""
       }
     };
     // On bind toutes les fonctions qui vont utiliser le this.state
@@ -23,8 +38,20 @@ class CandidatureForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleResetForm = this.handleResetForm.bind(this);
   }
-
-  // Méthode pour changer le prénom dans l'input
+  // Fonction qui s'éxecute à la création du composant mais après le constructor et le render
+  componentDidMount() {
+    this.setState(state => {
+      return {
+        candidat: {
+          ...state.candidat,
+          firstName: propsUSer.prenom,
+          name: propsUSer.nom,
+          email: propsUSer.mail
+        }
+      };
+    });
+  }
+  // Méthode pour changer le prénom dans l'MDBInput
   handleFirstnameChange(e) {
     const value = e.target.value;
     this.setState(state => {
@@ -36,7 +63,7 @@ class CandidatureForm extends Component {
       };
     });
   }
-  // Méthode pour changer le nom dans l'input
+  // Méthode pour changer le nom dans l'MDBInput
   handleNameChange(e) {
     const value = e.target.value;
     this.setState(state => {
@@ -48,7 +75,7 @@ class CandidatureForm extends Component {
       };
     });
   }
-  // Méthode pour changer le mail dans l'input
+  // Méthode pour changer le mail dans l'MDBInput
   handleEmailChange(e) {
     const value = e.target.value;
     this.setState(state => {
@@ -93,6 +120,7 @@ class CandidatureForm extends Component {
     this.setState({
       statut: "",
       date: "",
+
       Candidat: {
         firstName: "",
         name: "",
@@ -101,76 +129,100 @@ class CandidatureForm extends Component {
     });
     this.props.toggle();
   }
+  handleInit() {
+    console.log("FilePond créé", this.pond);
+  }
   // La fonction qui permet d'afficher le code html du composant CandidatureForm donc le formulaire
   render() {
     return (
-      <div className="candidatureDiv">
+      <MDBCard className="shadow-box-example z-depth-4 CardPerso mx-auto">
+        <MDBCardTitle className="font-weight-bold mb-3 mx-auto CardTitle">
+          Créer votre candidature
+        </MDBCardTitle>
         <form
           method="POST"
           action="/candidatures/newCandidature"
           className="candidatureForm"
+          autoComplete="new-password"
         >
-          <div className="formGroup">
-            <input
-              className="inputText"
+          <MDBCardBody className="CardBody">
+            <MDBInput
+              className="MDBInputText"
               type="text"
               name="firstName"
+              label="Prénom"
+              icon="user"
               value={this.state.candidat.firstName}
               onChange={this.handleFirstnameChange}
               required
+              autoComplete="new-password"
             />
-            <label className="labelText" htmlFor="firstName">
-              Prénom(s)
-            </label>
-          </div>
-          <div className="formGroup">
-            <input
-              className="inputText"
+            <MDBInput
+              className="MDBInputText"
               type="text"
               name="name"
+              label="Nom"
+              icon="user"
               value={this.state.candidat.name}
               onChange={this.handleNameChange}
               required
+              autoComplete="new-password"
             />
-            <label className="labelText" htmlFor="name">
-              Nom
-            </label>
-          </div>
-          <div className="formGroup">
-            <input
-              className="inputText"
+            <MDBInput
+              className="MDBInputText"
               type="text"
               name="email"
+              label="Mail professionnel"
+              icon="envelope"
               value={this.state.candidat.email}
               onChange={this.handleEmailChange}
               required
+              autoComplete="new-password"
             />
-            <label className="labelText" htmlFor="email">
-              Email
-            </label>
-          </div>
-          <div className="formGroup">
-            <label htmlFor="cv">Votre CV</label>
-            <input type="file" name="cv" id="cvFile" />
-          </div>
-          <div className="formGroup">
-            <label htmlFor="lm">Votre lettre de motivation</label>
-            <input type="file" name="lm" id="lmFile" />
-          </div>
-          <div className="formGroup">
-            <label htmlFor="files">Vos autres fichiers</label>
-            <input type="file" name="files" id="otherFiles" multiple />
-          </div>
-          <div className="text-center">
-            <Button type="submit" color="danger" onClick={this.handleResetForm}>
+            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> CV, lettre
+            de motivation et autres fichiers (max {maxFiles} fichiers){" "}
+            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" />
+            <FilePond
+              ref={ref => (this.pond = ref)}
+              files={this.state.files}
+              allowMultiple={true}
+              maxFiles={maxFiles}
+              oninit={() => this.handleInit()}
+              labelIdle={"Glissez et déposez vos fichiers ici"}
+              /* server="/files/" */
+              onupdatefiles={fileItems => {
+                this.setState(
+                  {
+                    files: fileItems.map(fileItem => fileItem.file)
+                  },
+                  console.log(this.state.files)
+                );
+              }}
+            />
+          </MDBCardBody>
+          <MDBCardText className="CardText">
+            <MDBBtn
+              type="submit"
+              outline
+              color="primary"
+              size="lg"
+              className="CloseButton"
+              onClick={this.handleResetForm}
+            >
               Annuler
-            </Button>
-            <Button type="submit" color="primary" onClick={this.handleSubmit}>
+            </MDBBtn>
+            <MDBBtn
+              type="submit"
+              color="primary"
+              size="lg"
+              className="SaveButton"
+              onClick={this.handleSubmit}
+            >
               Envoyer
-            </Button>
-          </div>
+            </MDBBtn>
+          </MDBCardText>
         </form>
-      </div>
+      </MDBCard>
     );
   }
 }

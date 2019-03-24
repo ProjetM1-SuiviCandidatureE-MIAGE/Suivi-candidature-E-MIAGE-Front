@@ -12,16 +12,17 @@ class SpaceNavbar extends Component {
     super(props);
     this.logout = this.logout.bind(this);
   }
-
+  // Fonction qui se lance à la création du composant
   componentDidMount() {
     props = this.props;
   }
-
+  // Fonction pour se déconnecter
   logout() {
+    props.props.reset();
     Auth.logout();
     props.history.push("/");
   }
-
+  // Fonction qui affiche le code html du composant
   render() {
     return (
       <Navbar light expand="md" className="customNavbar">

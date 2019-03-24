@@ -23,6 +23,8 @@ auth.checkAuth = function(req, res, next) {
           console.log("connected");
           res.status(200).json({
             text: "Authentification réussi",
+            prenom: candidat.prenom,
+            nom: candidat.nom,
             token: candidat.getToken()
           });
         } else {

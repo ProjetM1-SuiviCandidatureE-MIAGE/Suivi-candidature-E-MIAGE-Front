@@ -40,11 +40,10 @@ class ModalHome extends Component {
     this.LoginCandidat = this.LoginCandidat.bind(this);
     this.LoginAdmin = this.LoginAdmin.bind(this);
   }
-
+  // Fonction qui se lance à la création du composant pour récupèrer les props et les stocker
   componentDidMount() {
     props = this.props;
   }
-
   // Fonction pour afficher l'autre contenu du Tabs
   toggleTab(tab) {
     if (this.state.activeTab !== tab) {
@@ -83,6 +82,13 @@ class ModalHome extends Component {
       })
       .then(function(body) {
         if (body.text === "Succès") {
+          const User = {
+            prenom: newCandidat.prenom,
+            nom: newCandidat.nom,
+            mail: newCandidat.mail,
+            token: body.token
+          };
+          props.props.change(User);
           Auth.loginCandidat();
           props.history.push("/SpaceCandidat");
         } else {
@@ -96,6 +102,7 @@ class ModalHome extends Component {
       });
   };
 
+  //////////////////////////////////////////////
   // Fonction de connexion pour le candidat
   LoginCandidat = event => {
     event.preventDefault();
@@ -117,6 +124,13 @@ class ModalHome extends Component {
       })
       .then(function(body) {
         if (body.text === "Authentification réussi") {
+          const User = {
+            prenom: body.prenom,
+            nom: body.nom,
+            mail: Candidat.mail,
+            token: body.token
+          };
+          props.props.change(User);
           Auth.loginCandidat();
           props.history.push("/SpaceCandidat");
         } else {
@@ -150,6 +164,13 @@ class ModalHome extends Component {
       })
       .then(function(body) {
         if (body.text === "Authentification réussi") {
+          const User = {
+            prenom: body.prenom,
+            nom: body.nom,
+            mail: Admin.mail,
+            token: body.token
+          };
+          props.props.change(User);
           Auth.loginAdmin();
           props.history.push("/SpaceAdmin");
         } else {
@@ -221,7 +242,6 @@ class ModalHome extends Component {
                     value={this.state.mailConnexion}
                     autoComplete="username"
                     group
-                    validate
                     required
                   />
 
@@ -234,7 +254,6 @@ class ModalHome extends Component {
                     value={this.state.passwordConnexion}
                     group
                     autoComplete="current-password"
-                    validate
                     required
                   />
                   <div className="options text-center text-md-right mt-1">
@@ -277,7 +296,6 @@ class ModalHome extends Component {
                     value={this.state.prenomInscription}
                     autoComplete="given-name"
                     group
-                    validate
                     required
                   />
 
@@ -290,7 +308,6 @@ class ModalHome extends Component {
                     value={this.state.nomInscription}
                     autoComplete="family-name"
                     group
-                    validate
                     required
                   />
 
@@ -303,7 +320,6 @@ class ModalHome extends Component {
                     value={this.state.mailInscription}
                     autoComplete="email"
                     group
-                    validate
                     required
                   />
 
@@ -316,7 +332,6 @@ class ModalHome extends Component {
                     onChange={this.handleInputChange}
                     value={this.state.passwordInscription}
                     autoComplete="new-password"
-                    validate
                     required
                   />
 
@@ -329,7 +344,6 @@ class ModalHome extends Component {
                     value={this.state.passwordConfirm}
                     autoComplete="new-password"
                     group
-                    validate
                     required
                   />
                 </MDBModalBody>
@@ -401,7 +415,6 @@ class ModalHome extends Component {
                     value={this.state.mailConnexionAdmin}
                     autoComplete="username"
                     group
-                    validate
                     required
                   />
 
@@ -414,7 +427,6 @@ class ModalHome extends Component {
                     value={this.state.passwordConnexionAdmin}
                     group
                     autoComplete="current-password"
-                    validate
                     required
                   />
                   <div className="options text-center text-md-right mt-1">

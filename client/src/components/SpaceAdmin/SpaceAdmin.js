@@ -1,8 +1,10 @@
 import React from "react";
 import { Button, Collapse } from "reactstrap";
 import SpaceNavbar from "../SpaceNavbar/SpaceNavbar";
+import { MDBBadge } from "mdbreact";
 import "./SpaceAdmin.css";
 import Moment from "react-moment";
+import InformationForm from "../InformationForm/InformationForm";
 
 // Le composant qui affiche la page de l'espace administrateur
 class SpaceAdmin extends React.Component {
@@ -18,14 +20,17 @@ class SpaceAdmin extends React.Component {
       // Tableaux contenant les candidatures traitées, non traitées et en attentes
       candidaturesNonTraitees: [],
       candidaturesEnAttentes: [],
-      candidaturesTraitees: []
+      candidaturesTraitees: [],
+
+      NonTraitéesNumber: "0",
+      EnAttentesNumber: "0",
+      TraitéesNumber: "0"
     };
     this.toggleNonTraite = this.toggleNonTraite.bind(this);
     this.toggleAttente = this.toggleAttente.bind(this);
     this.toggleTraite = this.toggleTraite.bind(this);
     this.toggleMesInformations = this.toggleMesInformations.bind(this);
 
-    this.renderMesInformations = this.toggleMesInformations.bind(this);
     this.renderCandidaturesNonTraitees = this.renderCandidaturesNonTraitees.bind(
       this
     );
@@ -64,11 +69,26 @@ class SpaceAdmin extends React.Component {
           })
         })
       )
+      .then(() => this.sortingArray())
       .catch(error => console.log(error));
   }
-  // Fonction qui s'exécute quand le composant est modifié
-  componentDidUpdate() {
-    this.fetchData();
+  // Fonction pour trier les candidatures
+  sortingArray() {
+    console.log("Sorting array !");
+    this.setState({
+      NonTraitéesNumber:
+        this.state.candidaturesNonTraitees === "0"
+          ? "0"
+          : this.state.candidaturesNonTraitees.length,
+      EnAttentesNumber:
+        this.state.candidaturesEnAttentes === "0"
+          ? "0"
+          : this.state.candidaturesEnAttentes.length,
+      TraitéesNumber:
+        this.state.candidaturesTraitees === "0"
+          ? "0"
+          : this.state.candidaturesTraitees.length
+    });
   }
   // Fonction pour afficher le div qui contient les candidatures non traitées
   toggleNonTraite() {
@@ -121,6 +141,7 @@ class SpaceAdmin extends React.Component {
       }
     })
       .then(function(response) {
+        this.fetchData();
         return response.json();
       })
       .then(function(body) {
@@ -142,6 +163,7 @@ class SpaceAdmin extends React.Component {
       }
     })
       .then(function(response) {
+        this.fetchData();
         return response.json();
       })
       .then(function(body) {
@@ -162,25 +184,16 @@ class SpaceAdmin extends React.Component {
       }
     })
       .then(function(response) {
+        this.fetchData();
         return response.json();
       })
       .then(function(body) {
         console.log(body);
       });
   }
-  // Fonction pour afficher les informations du compte et la modification du mot de passe
-  renderMesInformations() {
-    return <div className="divPerso text-center">Mes Informations</div>;
-  }
   // Fonction pour afficher les candidatures non traitées
   renderCandidaturesNonTraitees() {
-    if (this.state.candidaturesNonTraitees.length === 0) {
-      return (
-        <div className="divPerso" style={{ backgroundColor: "silver" }}>
-          IL N'Y A PAS DE CANDIDATURES NON TRAITEES :'(
-        </div>
-      );
-    } else {
+    if (this.state.candidaturesNonTraitees.length !== 0) {
       return (
         <div id="accordion">
           <h1 style={{ color: "black" }}>
@@ -256,15 +269,9 @@ class SpaceAdmin extends React.Component {
   }
   // Fonction pour afficher les candidatures en attentes
   renderCandidaturesEnAttentes() {
-    if (this.state.candidaturesEnAttentes.length === 0) {
+    if (this.state.candidaturesEnAttentes.length !== 0) {
       return (
-        <div className="divPerso" style={{ backgroundColor: "gray" }}>
-          IL N'Y A PAS DE CANDIDATURES EN ATTENTES :'(
-        </div>
-      );
-    } else {
-      return (
-        <div id="accordion">
+        <div id="accordionAttentes">
           <h1 style={{ color: "black" }}>
             Liste des candidatures en attentes :
           </h1>
@@ -276,11 +283,12 @@ class SpaceAdmin extends React.Component {
             >
               <div
                 className="card-header"
-                id={"heading" + index}
+                id={"headingAttentes" + index}
                 role="button"
-                data-target={"#collapse" + index}
+                data-toggle="collapse"
+                data-target={"#collapseAttentes" + index}
                 aria-expanded="false"
-                aria-controls={"collapse" + index}
+                aria-controls={"collapseAttentes" + index}
               >
                 <div className="nameCand">
                   Candidature de {item.candidat.prenom} {item.candidat.nom}{" "}
@@ -292,10 +300,10 @@ class SpaceAdmin extends React.Component {
                 </div>
               </div>
               <div
-                id={"collapse" + index}
+                id={"collapseAttentes" + index}
                 className="collapse"
-                aria-labelledby={"heading" + index}
-                data-parent="#accordion"
+                aria-labelledby={"headingAttentes" + index}
+                data-parent="#accordionAttentes"
               >
                 <div className="card-body">
                   <h2>Etat candidature : {item.etat}</h2>
@@ -309,7 +317,7 @@ class SpaceAdmin extends React.Component {
                     onClick={() => this.refuseCandidature(item)}
                     color="danger"
                     data-toggle="collapse"
-                    data-target={"#collapse" + index}
+                    data-target={"#collapseAttentes" + index}
                   >
                     REFUSER
                   </Button>
@@ -317,7 +325,7 @@ class SpaceAdmin extends React.Component {
                     onClick={() => this.acceptCandidature(item)}
                     color="success"
                     data-toggle="collapse"
-                    data-target={"#collapse" + index}
+                    data-target={"#collapseAttentes" + index}
                   >
                     ACCEPTER
                   </Button>
@@ -331,15 +339,9 @@ class SpaceAdmin extends React.Component {
   }
   // Fonction pour afficher les candidatures traitées
   renderCandidaturesTraitees() {
-    if (this.state.candidaturesTraitees.length === 0) {
+    if (this.state.candidaturesTraitees.length !== 0) {
       return (
-        <div className="divPerso" style={{ backgroundColor: "black" }}>
-          IL N'Y A PAS DE CANDIDATURES TRAITEES :'(
-        </div>
-      );
-    } else {
-      return (
-        <div id="accordion">
+        <div id="accordionTraitees">
           <h1 style={{ color: "black" }}>Liste des candidatures traitées :</h1>
           {this.state.candidaturesTraitees.map((item, index) => (
             <div
@@ -349,12 +351,12 @@ class SpaceAdmin extends React.Component {
             >
               <div
                 className="card-header"
-                id={"heading" + index}
+                id={"headingTraitees" + index}
                 role="button"
                 data-toggle="collapse"
-                data-target={"#collapse" + index}
+                data-target={"#collapseTraitees" + index}
                 aria-expanded="false"
-                aria-controls={"collapse" + index}
+                aria-controls={"collapseTraitees" + index}
               >
                 <div className="nameCand">
                   Candidature de {item.candidat.prenom} {item.candidat.nom}{" "}
@@ -365,10 +367,10 @@ class SpaceAdmin extends React.Component {
                 </div>
               </div>
               <div
-                id={"collapse" + index}
+                id={"collapseTraitees" + index}
                 className="collapse"
-                aria-labelledby={"heading" + index}
-                data-parent="#accordion"
+                aria-labelledby={"headingTraitees" + index}
+                data-parent="#accordionTraitees"
               >
                 <div className="card-body">
                   <h2>Etat candidature : {item.etat}</h2>
@@ -381,10 +383,11 @@ class SpaceAdmin extends React.Component {
       );
     }
   }
+  // Fonction qui affiche le code html du composant
   render() {
     return (
-      <div class="Admin">
-        <SpaceNavbar />
+      <div className="Admin">
+        <SpaceNavbar props={this.props} />
         <div className="text-center">
           <Button
             onClick={this.toggleMesInformations}
@@ -396,17 +399,29 @@ class SpaceAdmin extends React.Component {
           </Button>
         </div>
         <Collapse isOpen={this.state.boolMesInformations}>
-          <div className="text-center">Voici vos informations</div>
+          <InformationForm
+            toggle={this.toggleMesInformations}
+            props={this.props}
+          />
         </Collapse>
         <div className="text-center">
           <Button onClick={this.toggleNonTraite}>
             Afficher les candidatures non traitées
+            <MDBBadge color="primary" className="ml-3">
+              {this.state.NonTraitéesNumber}
+            </MDBBadge>
           </Button>
           <Button onClick={this.toggleAttente}>
             Afficher les candidatures en attentes
+            <MDBBadge color="primary" className="ml-3">
+              {this.state.EnAttentesNumber}
+            </MDBBadge>
           </Button>
           <Button onClick={this.toggleTraite}>
             Afficher les candidatures traitées
+            <MDBBadge color="primary" className="ml-3">
+              {this.state.TraitéesNumber}
+            </MDBBadge>
           </Button>
         </div>
         <Collapse isOpen={this.state.boolCandNonTraitees}>

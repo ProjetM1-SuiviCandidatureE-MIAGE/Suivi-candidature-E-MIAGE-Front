@@ -70,12 +70,14 @@ class CustomNavbar extends Component {
           toggle={this.openCandidatModal}
           toggleAutre={this.openAdminModal}
           inscription="true"
+          props={this.props.props}
         />
         <ModalHome
           isOpen={this.state.showAdminModal}
           toggle={this.openAdminModal}
           toggleAutre={this.openCandidatModal}
           inscription="false"
+          props={this.props.props}
         />
       </Navbar>
     );
