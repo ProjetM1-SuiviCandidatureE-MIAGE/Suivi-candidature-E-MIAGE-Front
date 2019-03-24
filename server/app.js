@@ -104,10 +104,11 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use("/candidatures", require("./Candidature/candidatureRoute"));
-app.use("/admins", require("./Admin/adminRoute"));
-app.use("/apprenants", require("./Apprenant/apprenantRoute"));
-app.use("/candidats", require("./Candidat/candidatRoute"));
+app.use('/candidatures', require('./Candidature/candidatureRoute'));
+app.use('/admins', require('./Admin/adminRoute'));
+app.use('/apprenants', require('./Apprenant/apprenantRoute'));
+app.use('/candidats', require('./Candidat/candidatRoute'));
+app.use('/mail', require('./Candidature/Mail'));
 
 console.log("le server est connecté sur le port 3010");
 app.listen(3010);
