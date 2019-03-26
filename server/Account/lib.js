@@ -148,7 +148,7 @@ function signupApprenant(req, res) {
   }
 }
 
-//On exporte nos 3 fonctions
+//On exporte nos 2 fonctions
 
 exports.signupCandidat = signupCandidat;
 exports.signupApprenant = signupApprenant;
