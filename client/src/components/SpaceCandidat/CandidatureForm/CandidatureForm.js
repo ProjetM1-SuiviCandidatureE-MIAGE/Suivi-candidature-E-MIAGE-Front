@@ -111,13 +111,11 @@ class CandidatureForm extends Component {
       .then(function(body) {
         console.log(body);
       });
-    this.handleResetForm(e);
-    this.props.toggle();
 
     fetch("/mail/send", {
       method: "POST",
       body: JSON.stringify({
-        mail: "d.donnadieux@gmail.com"
+        mail: this.state.candidat.email
       }),
       headers: { "Content-Type": "application/json" }
     })
@@ -127,6 +125,9 @@ class CandidatureForm extends Component {
       .then(function(body) {
         console.log(body);
       });
+
+    this.handleResetForm(e);
+    this.props.toggle();
   }
   // Méthode pour reset le formulaire avec aucunes valeurs
   handleResetForm(e) {
