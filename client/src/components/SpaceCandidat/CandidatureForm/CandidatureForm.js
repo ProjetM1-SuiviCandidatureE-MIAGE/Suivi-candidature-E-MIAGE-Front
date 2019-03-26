@@ -112,10 +112,12 @@ class CandidatureForm extends Component {
         console.log(body);
       });
 
-    /*     fetch("/mail/send", {
+         fetch("/mail/send", {
       method: "POST",
       body: JSON.stringify({
-        mail: this.state.candidat.email
+        mail: this.state.candidat.email,
+        sujet : "Confirmation de la creation de votre candidature",
+        texte : "Bonjour "+this.state.candidat.firstName+",<br /> Votre candidature a bien été créée.<br />Cordialement"
       }),
       headers: { "Content-Type": "application/json" }
     })
@@ -124,7 +126,7 @@ class CandidatureForm extends Component {
       })
       .then(function(body) {
         console.log(body);
-      }); */
+      }); 
 
     this.handleResetForm(e);
     this.props.toggle();

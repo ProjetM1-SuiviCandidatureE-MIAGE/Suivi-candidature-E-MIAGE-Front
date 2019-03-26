@@ -27,10 +27,10 @@ app.post("/send", (req, res) => {
   let mailOptions = {
     from: "gestioncandidaturem1miaa@gmail.com", // sender address
     to: req.body.mail, // list of receivers
-    subject: "test", // Subject line
+    subject: req.body.sujet, // Subject line
     //text: "Hello world?", // plain text body
     //html: output // html body
-    html: "Hello there"
+    html: req.body.texte
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
