@@ -87,7 +87,7 @@ class CandidatureForm extends Component {
       };
     });
   }
-  // Méthode pour envoyer les informations du formulaire en BDD
+  // Méthode pour créer une candidature
   handleSubmit(e) {
     e.preventDefault();
     fetch("/candidatures/newCandidature", {
@@ -112,7 +112,7 @@ class CandidatureForm extends Component {
         console.log(body);
       });
 
-    fetch("/mail/send", {
+    /*     fetch("/mail/send", {
       method: "POST",
       body: JSON.stringify({
         mail: this.state.candidat.email
@@ -124,7 +124,7 @@ class CandidatureForm extends Component {
       })
       .then(function(body) {
         console.log(body);
-      });
+      }); */
 
     this.handleResetForm(e);
     this.props.toggle();
@@ -144,8 +144,22 @@ class CandidatureForm extends Component {
     });
     this.props.toggle();
   }
-  handleInit() {
-    console.log("FilePond créé", this.pond);
+  deleteFile(file) {
+    console.log("deleteFile() + ");
+    console.log(file);
+    fetch("/upload/deleteFile", {
+      method: "DELETE",
+      body: JSON.stringify({
+        fichier: file.name
+      }),
+      headers: { "Content-Type": "application/json" }
+    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(body) {
+        console.log(body);
+      });
   }
   // La fonction qui permet d'afficher le code html du composant CandidatureForm donc le formulaire
   render() {
@@ -202,17 +216,27 @@ class CandidatureForm extends Component {
               files={this.state.files}
               allowMultiple={true}
               maxFiles={maxFiles}
-              oninit={() => this.handleInit()}
               labelIdle={"Glissez et déposez vos fichiers ici"}
-              /* server="/files/" */
+              server={{
+                process: "/upload/uploadFile",
+                revert: null,
+                load: null,
+                restore: null,
+                fetch: null
+              }}
+              onremovefile={file => {
+                this.deleteFile(file.file);
+              }}
               onupdatefiles={fileItems => {
                 this.setState(
                   {
                     files: fileItems.map(fileItem => fileItem.file)
                   },
+                  console.log("variable files updated !"),
                   console.log(this.state.files)
                 );
               }}
+              labelTapToCancel={"Cliquez pour annuler "}
             />
           </MDBCardBody>
           <MDBCardText className="CardText">
