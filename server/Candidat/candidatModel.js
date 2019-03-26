@@ -3,10 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jwt-simple");
 const config = require("../config/config");
 
-const validateEmail = function(email) {
-  const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  return re.test(email);
-};
+
 const candidatSchema = new mongoose.Schema({
   nom: {
     type: String,
@@ -37,6 +34,10 @@ candidatSchema.virtual("candidatures", {
 candidatSchema.methods = {
   authenticate: function(password) {
     return bcrypt.compareSync(password, this.mdp);
+  },
+  validateEmail : function(email) {
+    const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return re.test(email);
   }
   /*
 	getToken: function () {
@@ -52,6 +53,11 @@ candidatSchema.methods.getToken = function() {
     this.save();
   }
   return this.token;
+};
+
+candidatSchema.methods.validateEmail = function(email) {
+  const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  return re.test(email);
 };
 
 const Candidat = mongoose.model("Candidat", candidatSchema);

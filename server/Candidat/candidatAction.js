@@ -37,21 +37,6 @@ auth.checkAuth = function(req, res, next) {
     });
   }
 };
-// new Candidat
-function newCandidat(req, res) {
-  console.log(JSON.stringify(req.body));
-  const newCandidat = new Candidat(req.body);
-  newCandidat.id = newCandidat._id;
-
-  newCandidat.save().then(
-    () => {
-      res.status(200).json(newCandidat);
-    },
-    err => {
-      res.status(400).json(err);
-    }
-  );
-}
 
 // get candidat
 function getCandidat(req, res) {
@@ -70,5 +55,5 @@ function getCandidat(req, res) {
     );
 }
 
-exports.newCandidat = newCandidat;
+
 exports.getCandidat = getCandidat;
