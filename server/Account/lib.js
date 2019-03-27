@@ -4,13 +4,27 @@ const bcrypt = require("bcrypt");
 
 // --INSCRIPTION CANDIDAT
 function signupCandidat(req, res) {
-  if (!req.body.mail || !req.body.mdp || !req.body.nom || !req.body.prenom) {
+  console.log("signUp");
+  console.log(Candidat.validateEmail);
+  console.log("signUp2");
+  if (!req.body.mail || !req.body.mdp || !req.body.nom || !req.body.prenom || !req.body.mdpConfirmation) {
     //Le cas où l'email ou bien le password ne serait pas soumit ou nul
     console.log(req.body.mail);
     res.status(400).json({
-      text: "Un champ est vide ou reqête invalide !"
+      text: "Un champ est vide ou requête invalide !"
     });
-  } else {
+  } 
+  else if (req.body.mdpConfirmation !== req.body.mdp){
+    res.status(401).json({
+      text: "Les mots de passe ne correspondent pas"
+    });
+  }
+  /*else if (Candidat.validateEmail(req.mail)){
+    res.status(401).json({
+      text: "Le mail n'est pas correct."
+    });
+  }*/
+  else {
     const salt = bcrypt.genSaltSync(10);
     const candidat = {
       nom: req.body.nom,

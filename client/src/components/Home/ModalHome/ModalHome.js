@@ -66,7 +66,8 @@ class ModalHome extends Component {
       nom: this.state.nomInscription,
       prenom: this.state.prenomInscription,
       mail: this.state.mailInscription,
-      mdp: this.state.passwordInscription
+      mdp: this.state.passwordInscription,
+      mdpConfirmation : this.state.passwordConfirm
     };
 
     console.log(JSON.stringify(newCandidat));
