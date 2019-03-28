@@ -5,7 +5,7 @@ const Candidat = require("../Candidat/candidatModel");
 //--ajouter une nouvelle candidature
 function newCandidature(req, res) {
   
-  console.log("TRUC "+JSON.stringify(req.body));
+  console.log(JSON.stringify(req.body));
   let newCandidature = new Candidature(req.body);
   newCandidature.id = newCandidature._id;
 

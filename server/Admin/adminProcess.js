@@ -1,13 +1,38 @@
-let express = require('express').app(),
-    app = express();
-   
-   
+const Admin = require("./adminModel");
+let auth = module.exports;
 
-let bodyParser = require('body-parser');
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended : true}));
-
-
-const Routes = require('./adminRoute');
-const Actions = require('./adminAction');
-const Model = require('./adminModel');
+auth.checkAuth = function(req, res, next) {
+  if (!req.body.mail || !req.body.mdp) {
+    //Le cas où l'email ou bien le password ne serait pas soumit ou nul
+    res.status(400).json({
+      text: "Mot de passe vide ou mail vide"
+    });
+  } else {
+    Admin.findOne({ mail: req.body.mail }, function(err, admin) {
+      if (err) {
+        res.status(500).json({
+          text: "Erreur interne"
+        });
+      } else if (!admin) {
+        res.status(401).json({
+          text: "L'utilisateur n'existe pas"
+        });
+      } else {
+        if (admin.authenticate(req.body.mdp)) {
+          console.log("connected");
+          res.status(200).json({
+            text: "Authentification réussi",
+            prenom: admin.prenom,
+            nom: admin.nom,
+            token: admin.getToken()
+          });
+        } else {
+          console.log("not connected");
+          res.status(401).json({
+            text: "Mot de passe incorrect"
+          });
+        }
+      }
+    });
+  }
+};
