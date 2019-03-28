@@ -1,5 +1,6 @@
 const Candidature = require("./candidatureModel");
 const Candidat = require("../Candidat/candidatModel");
+const CandidatureProcess = require("./candidatureProcess");
 
 //--ajouter une nouvelle candidature
 function newCandidature(req, res) {
@@ -48,19 +49,17 @@ function DisplayNewCandidature(req, res) {
   });
 }
 
-// -- UPDATE
 function editCandidature(req, res) {
-  Candidature.updateOne(
-    { _id: req.params.id },
-    { $set: req.body },
-    (err, updatedCandidature) => {
-      if (err) {
-        res.status(400).json(err);
-      } else {
-        res.status(200).json(updatedCandidature);
-      }
-    }
-  );
+
+  let candidat = new Candidat(req.body);
+  let idParam = CandidatureProcess.getIdCandidature(candidat);
+  
+  setTimeout(function() {
+    console.log("idParam : "+idParam);
+    CandidatureProcess.editCandidature(idParam);
+  }, 3000);
+  
+  
 }
 
 // -- READ

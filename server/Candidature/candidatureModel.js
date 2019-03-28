@@ -1,10 +1,5 @@
 const mongoose = require('mongoose');
 
-const validateEmail = function(email) {
-    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    return re.test(email)
-};
-
 //model pour une candidature
 const candidatureSchema = new mongoose.Schema({
 

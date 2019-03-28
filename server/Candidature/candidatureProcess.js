@@ -1,13 +1,32 @@
-let express = require('express').app(),
-    app = express();
+const Candidature = require("./candidatureModel");
+const Candidat = require("../Candidat/candidatModel");
    
-   
 
-let bodyParser = require('body-parser');
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended : true}));
+// -- UPDATE
+function editCandidature(req, res) {
+    console.log("Req : "+req);
+    Candidature.updateOne(
+      { _id: req },
+      { $set: req.body },
+      (err, updatedCandidature) => {
+        if (err) {
+          res.status(400).json(err);
+        } else {
+          res.status(200).json(updatedCandidature);
+        }
+      }
+    );
+  }
+
+  function getIdCandidature(req, res) {
 
 
-const Routes = require('./candidatureRoute');
-const Actions = require('./candidatureAction');
-const Model = require('./candidatureModel');
+    Candidature.findOne({"candidat.mail" : "pogoman28@gmail.com"}, function(err, result) {
+        if (err) throw err;
+        console.log("ID is : "+result._id);
+      });
+  }
+
+
+  exports.editCandidature = editCandidature;
+  exports.getIdCandidature = getIdCandidature;
