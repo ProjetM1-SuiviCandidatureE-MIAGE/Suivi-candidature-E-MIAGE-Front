@@ -1,10 +1,9 @@
-const Candidature = require("./candidatureModel");
 const Candidat = require("../Candidat/candidatModel");
 const CandidatureProcess = require("./candidatureProcess");
 
 //--ajouter une nouvelle candidature
 function newCandidature(req, res) {
-  CandidatureProcess.newCandidature(req,res);
+  CandidatureProcess.newCandidature(req);
 }
 
 //--afficher toutes les candidatures
@@ -37,7 +36,7 @@ function editCandidature(req, res) {
 
 // -- READ
 function readCandidature(req, res) {
-  CandidatureProcess.readCandidature(req,res);
+  CandidatureProcess.readCandidature(req,res)
 }
 
 //--Suppression d'une candidature
