@@ -141,12 +141,12 @@ class SpaceAdmin extends React.Component {
       }
     })
       .then(function(response) {
-        this.fetchData();
         return response.json();
       })
       .then(function(body) {
         console.log(body);
       });
+    this.fetchData();
   }
   // Fonction pour refuser une candidature
   refuseCandidature(item) {
@@ -163,12 +163,12 @@ class SpaceAdmin extends React.Component {
       }
     })
       .then(function(response) {
-        this.fetchData();
         return response.json();
       })
       .then(function(body) {
         console.log(body);
       });
+    this.fetchData();
   }
   enAttenteCandidature(item) {
     fetch(`/candidatures/edit/${item._id}`, {
@@ -184,12 +184,12 @@ class SpaceAdmin extends React.Component {
       }
     })
       .then(function(response) {
-        this.fetchData();
         return response.json();
       })
       .then(function(body) {
         console.log(body);
       });
+    this.fetchData();
   }
   // Fonction pour afficher les candidatures non traitées
   renderCandidaturesNonTraitees() {
