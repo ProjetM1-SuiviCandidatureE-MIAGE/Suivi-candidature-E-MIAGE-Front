@@ -1,9 +1,8 @@
 let router = require("express").Router();
-const account = require("../Account/lib");
 const candidatAction = require("./candidatAction");
 
 //--inscription
-router.post("/signup", account.signupCandidat);
+router.post("/signup", candidatAction.signupCandidat);
 
 //--Connexion
 router.post("/login", candidatAction.checkAuth);
