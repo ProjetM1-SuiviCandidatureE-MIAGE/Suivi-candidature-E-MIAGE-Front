@@ -3,7 +3,7 @@ const CandidatureProcess = require("./candidatureProcess");
 
 //--ajouter une nouvelle candidature
 function newCandidature(req, res) {
-  CandidatureProcess.newCandidature(req);
+  CandidatureProcess.newCandidature(req, res);
 }
 
 //--afficher toutes les candidatures
