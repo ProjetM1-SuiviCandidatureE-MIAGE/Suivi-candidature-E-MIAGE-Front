@@ -1,25 +1,23 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const jwt = require("jwt-simple");
-const config = require("../config/config");
 
 
 const candidatSchema = new mongoose.Schema({
   nom: {
     type: String,
-    require: [true, "Le champs prenom ne peut pas être vide"]
+    required: true,
   },
   prenom: {
     type: String,
-    require: [true, "Le champs prenom ne peut pas être vide"]
+    required: true, 
   },
   mail: {
     type: String,
-    require: [true, "Le champs mail ne peut pas être vide"]
+    required: true,
   },
   mdp: {
     type: String,
-    require: [true, "Le champs mdp ne peut pas être vide"]
+    required: true,
   },
   token: String
 });
