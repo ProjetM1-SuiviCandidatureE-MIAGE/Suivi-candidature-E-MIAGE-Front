@@ -14,7 +14,7 @@ router.get('/DisplayNewCandidature',candidatureAction.DisplayNewCandidature);
 router.post('/newCandidature',candidatureAction.newCandidature);
 
 // -- UPDATE
-router.put('/edit/:id', candidatureAction.editCandidature);
+router.put('/edit', candidatureAction.editCandidature);
 
 // -- READ
 router.get('/read/:id', candidatureAction.readCandidature);
