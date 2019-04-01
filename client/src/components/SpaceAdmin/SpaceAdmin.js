@@ -398,10 +398,9 @@ class SpaceAdmin extends React.Component {
           <Button
             onClick={this.toggleMesInformations}
             color="info"
-            size="lg"
             className="btnPerso"
           >
-            Mes Informations
+            Voir mes informations
           </Button>
         </div>
         <Collapse isOpen={this.state.boolMesInformations}>
@@ -411,19 +410,19 @@ class SpaceAdmin extends React.Component {
           />
         </Collapse>
         <div className="text-center">
-          <Button onClick={this.toggleNonTraite}>
+          <Button onClick={this.toggleNonTraite} className="btnSA">
             Afficher les candidatures non traitées
             <MDBBadge color="primary" className="ml-3">
               {this.state.NonTraitéesNumber}
             </MDBBadge>
           </Button>
-          <Button onClick={this.toggleAttente}>
+          <Button onClick={this.toggleAttente} className="btnSA">
             Afficher les candidatures en attentes
             <MDBBadge color="primary" className="ml-3">
               {this.state.EnAttentesNumber}
             </MDBBadge>
           </Button>
-          <Button onClick={this.toggleTraite}>
+          <Button onClick={this.toggleTraite} className="btnSA">
             Afficher les candidatures traitées
             <MDBBadge color="primary" className="ml-3">
               {this.state.TraitéesNumber}

@@ -67,7 +67,7 @@ class ModalHome extends Component {
       prenom: this.state.prenomInscription,
       mail: this.state.mailInscription,
       mdp: this.state.passwordInscription,
-      mdpConfirmation : this.state.passwordConfirm
+      mdpConfirmation: this.state.passwordConfirm
     };
 
     console.log(JSON.stringify(newCandidat));
@@ -131,7 +131,9 @@ class ModalHome extends Component {
             mail: Candidat.mail,
             token: body.token
           };
+          // On change les informations de l'utilisateur
           props.props.change(User);
+          // On connecte le candidat et on le redirige vers l'espace candidat
           Auth.loginCandidat();
           props.history.push("/SpaceCandidat");
         } else {
