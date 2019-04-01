@@ -84,7 +84,7 @@ class App extends Component {
               reset={this.resetUser}
             />
           </Switch>
-          <Mentions />
+          {/* <Mentions /> */}
         </div>
       </Router>
     );
