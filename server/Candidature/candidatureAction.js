@@ -28,7 +28,7 @@ function editCandidature(req, res) {
   
   setTimeout(function() {
     console.log("idParam : "+idParam);
-    CandidatureProcess.editCandidature(idParam);
+    CandidatureProcess.editCandidature(newCandidature,idParam,res);
   }, 3000);
   
   

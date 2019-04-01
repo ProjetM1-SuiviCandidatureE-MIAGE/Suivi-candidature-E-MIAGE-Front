@@ -40,10 +40,10 @@ function getAllCandidatures(req, res) {
 }
 
 // -- UPDATE
-function editCandidature(req, res) {
+function editCandidature(req,res, id) {
     console.log("Req : "+req);
     Candidature.updateOne(
-      { _id: req },
+      { _id: id },
       { $set: req.body },
       (err, updatedCandidature) => {
         if (err) {
