@@ -40,7 +40,7 @@ function getAllCandidatures(req, res) {
 }
 
 // -- UPDATE
-function editCandidature(req, res) {
+function editCandidature(req, res) { //TODO
     console.log("Req : "+req);
     Candidature.updateOne(
       { _id: req },
