@@ -1,0 +1,9 @@
+.CandidatureForm {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+/* Pour empêcher les animations de toggle */
+.Candidat .collapsing {
+  transition: none;
+}

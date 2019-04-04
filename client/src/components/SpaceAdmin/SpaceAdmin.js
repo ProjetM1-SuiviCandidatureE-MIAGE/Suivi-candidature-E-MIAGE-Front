@@ -22,9 +22,9 @@ class SpaceAdmin extends React.Component {
       candidaturesEnAttentes: [],
       candidaturesTraitees: [],
 
-      NonTraitéesNumber: "0",
-      EnAttentesNumber: "0",
-      TraitéesNumber: "0"
+      NonTraitéesNumber: 0,
+      EnAttentesNumber: 0,
+      TraitéesNumber: 0
     };
     this.toggleNonTraite = this.toggleNonTraite.bind(this);
     this.toggleAttente = this.toggleAttente.bind(this);
@@ -52,6 +52,7 @@ class SpaceAdmin extends React.Component {
   }
   // Fonction pour récupérer les candidatures et les filtrer
   fetchData() {
+    console.log("Fetch Data !");
     fetch("/candidatures/getAllCandidatures")
       .then(res => res.json())
       .then(data =>
@@ -77,16 +78,16 @@ class SpaceAdmin extends React.Component {
     console.log("Sorting array !");
     this.setState({
       NonTraitéesNumber:
-        this.state.candidaturesNonTraitees === "0"
-          ? "0"
+        this.state.candidaturesNonTraitees === 0
+          ? 0
           : this.state.candidaturesNonTraitees.length,
       EnAttentesNumber:
-        this.state.candidaturesEnAttentes === "0"
-          ? "0"
+        this.state.candidaturesEnAttentes === 0
+          ? 0
           : this.state.candidaturesEnAttentes.length,
       TraitéesNumber:
-        this.state.candidaturesTraitees === "0"
-          ? "0"
+        this.state.candidaturesTraitees === 0
+          ? 0
           : this.state.candidaturesTraitees.length
     });
   }
@@ -200,11 +201,7 @@ class SpaceAdmin extends React.Component {
             Liste des candidatures non traitées :
           </h1>
           {this.state.candidaturesNonTraitees.map((item, index) => (
-            <div
-              key={index}
-              className="card"
-              style={{ backgroundColor: "silver" }}
-            >
+            <div key={index} className="card">
               <div
                 className="card-header"
                 id={"heading" + index}
@@ -230,6 +227,10 @@ class SpaceAdmin extends React.Component {
                 <div className="card-body">
                   <h2>Etat candidature : {item.etat}</h2>
                   <p>email candidat : {item.candidat.mail} </p>
+                  <p>
+                    candidature créée le :{" "}
+                    <Moment format=" DD/MM/YYYY">{item.date}</Moment>{" "}
+                  </p>
                 </div>
                 <form
                   action={`/candidatures/edit/${item}?_method=PUT`}
@@ -240,6 +241,7 @@ class SpaceAdmin extends React.Component {
                     color="danger"
                     data-toggle="collapse"
                     data-target={"#collapse" + index}
+                    className="btnCandidature"
                   >
                     REFUSER
                   </Button>
@@ -248,6 +250,7 @@ class SpaceAdmin extends React.Component {
                     color="warning"
                     data-toggle="collapse"
                     data-target={"#collapse" + index}
+                    className="btnCandidature"
                   >
                     METTRE EN ATTENTE
                   </Button>
@@ -256,6 +259,7 @@ class SpaceAdmin extends React.Component {
                     color="success"
                     data-toggle="collapse"
                     data-target={"#collapse" + index}
+                    className="btnCandidature"
                   >
                     ACCEPTER
                   </Button>
@@ -276,11 +280,7 @@ class SpaceAdmin extends React.Component {
             Liste des candidatures en attentes :
           </h1>
           {this.state.candidaturesEnAttentes.map((item, index) => (
-            <div
-              key={index}
-              className="card"
-              style={{ backgroundColor: "silver" }}
-            >
+            <div key={index} className="card">
               <div
                 className="card-header"
                 id={"headingAttentes" + index}
@@ -308,6 +308,10 @@ class SpaceAdmin extends React.Component {
                 <div className="card-body">
                   <h2>Etat candidature : {item.etat}</h2>
                   <p>email candidat : {item.candidat.mail} </p>
+                  <p>
+                    candidature créée le :{" "}
+                    <Moment format=" DD/MM/YYYY">{item.date}</Moment>{" "}
+                  </p>
                 </div>
                 <form
                   action={`/candidatures/edit/${item}?_method=PUT`}
@@ -318,6 +322,7 @@ class SpaceAdmin extends React.Component {
                     color="danger"
                     data-toggle="collapse"
                     data-target={"#collapseAttentes" + index}
+                    className="btnCandidature"
                   >
                     REFUSER
                   </Button>
@@ -326,6 +331,7 @@ class SpaceAdmin extends React.Component {
                     color="success"
                     data-toggle="collapse"
                     data-target={"#collapseAttentes" + index}
+                    className="btnCandidature"
                   >
                     ACCEPTER
                   </Button>
@@ -344,11 +350,7 @@ class SpaceAdmin extends React.Component {
         <div id="accordionTraitees">
           <h1 style={{ color: "black" }}>Liste des candidatures traitées :</h1>
           {this.state.candidaturesTraitees.map((item, index) => (
-            <div
-              key={index}
-              className="card"
-              style={{ backgroundColor: "silver" }}
-            >
+            <div key={index} className="card">
               <div
                 className="card-header"
                 id={"headingTraitees" + index}
@@ -375,6 +377,10 @@ class SpaceAdmin extends React.Component {
                 <div className="card-body">
                   <h2>Etat candidature : {item.etat}</h2>
                   <p>email candidat : {item.candidat.mail} </p>
+                  <p>
+                    candidature créée le :{" "}
+                    <Moment format=" DD/MM/YYYY">{item.date}</Moment>{" "}
+                  </p>
                 </div>
               </div>
             </div>
@@ -392,10 +398,9 @@ class SpaceAdmin extends React.Component {
           <Button
             onClick={this.toggleMesInformations}
             color="info"
-            size="lg"
             className="btnPerso"
           >
-            Mes Informations
+            Voir mes informations
           </Button>
         </div>
         <Collapse isOpen={this.state.boolMesInformations}>
@@ -405,19 +410,19 @@ class SpaceAdmin extends React.Component {
           />
         </Collapse>
         <div className="text-center">
-          <Button onClick={this.toggleNonTraite}>
+          <Button onClick={this.toggleNonTraite} className="btnSA">
             Afficher les candidatures non traitées
             <MDBBadge color="primary" className="ml-3">
               {this.state.NonTraitéesNumber}
             </MDBBadge>
           </Button>
-          <Button onClick={this.toggleAttente}>
+          <Button onClick={this.toggleAttente} className="btnSA">
             Afficher les candidatures en attentes
             <MDBBadge color="primary" className="ml-3">
               {this.state.EnAttentesNumber}
             </MDBBadge>
           </Button>
-          <Button onClick={this.toggleTraite}>
+          <Button onClick={this.toggleTraite} className="btnSA">
             Afficher les candidatures traitées
             <MDBBadge color="primary" className="ml-3">
               {this.state.TraitéesNumber}

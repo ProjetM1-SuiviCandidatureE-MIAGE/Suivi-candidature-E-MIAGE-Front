@@ -6,11 +6,18 @@
   padding: 0 10%;
 }
 
+/* CSS Utiliser par tous les boutons de l'appli acctuellement à changer !!!! */
 .btnPerso {
   border: none;
   margin-right: 2em;
   border-radius: 0.6em;
   padding: 1em 1em;
+}
+
+.btnCandidature {
+  border: none;
+  margin-right: 2em;
+  border-radius: 30px;
 }
 
 .btnPerso:focus {
@@ -33,7 +40,6 @@
   width: 100%;
   height: 100%;
   text-align: center;
-  color: white;
   padding: 0 10%;
 }
 
@@ -62,4 +68,8 @@
   font-size: 12px !important;
   font-weight: 900 !important;
   padding: 8px 8px;
+}
+
+.btnSA {
+  padding: 0.8em 0.8em !important;
 }

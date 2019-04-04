@@ -108,7 +108,6 @@ export default class InformationForm extends Component {
             <MDBBtn
               outline
               color="primary"
-              size="lg"
               className="CloseButton"
               onClick={() => this.props.toggle()}
             >
@@ -116,7 +115,6 @@ export default class InformationForm extends Component {
             </MDBBtn>
             <MDBBtn
               color="primary"
-              size="lg"
               className="SaveButton"
               onClick={() => this.props.toggle()}
             >

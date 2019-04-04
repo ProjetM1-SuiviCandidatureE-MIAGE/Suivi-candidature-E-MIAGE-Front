@@ -41,6 +41,7 @@ function getAllCandidatures(req, res) {
 
 // -- UPDATE
 function editCandidature(req,res, id) {
+
     console.log("Req : "+req);
     Candidature.updateOne(
       { _id: id },

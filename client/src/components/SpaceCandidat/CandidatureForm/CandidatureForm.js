@@ -32,8 +32,6 @@ class CandidatureForm extends Component {
       }
     };
     // On bind toutes les fonctions qui vont utiliser le this.state
-    this.handleFirstnameChange = this.handleFirstnameChange.bind(this);
-    this.handleNameChange = this.handleNameChange.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleResetForm = this.handleResetForm.bind(this);
@@ -47,30 +45,6 @@ class CandidatureForm extends Component {
           firstName: propsUSer.prenom,
           name: propsUSer.nom,
           email: propsUSer.mail
-        }
-      };
-    });
-  }
-  // Méthode pour changer le prénom dans l'MDBInput
-  handleFirstnameChange(e) {
-    const value = e.target.value;
-    this.setState(state => {
-      return {
-        candidat: {
-          ...state.candidat,
-          firstName: value
-        }
-      };
-    });
-  }
-  // Méthode pour changer le nom dans l'MDBInput
-  handleNameChange(e) {
-    const value = e.target.value;
-    this.setState(state => {
-      return {
-        candidat: {
-          ...state.candidat,
-          name: value
         }
       };
     });
@@ -112,12 +86,15 @@ class CandidatureForm extends Component {
         console.log(body);
       });
 
-         fetch("/mail/send", {
+    fetch("/mail/send", {
       method: "POST",
       body: JSON.stringify({
         mail: this.state.candidat.email,
-        sujet : "Confirmation de la creation de votre candidature",
-        texte : "Bonjour "+this.state.candidat.firstName+",<br /> Votre candidature a bien été créée.<br />Cordialement"
+        sujet: "Confirmation de la creation de votre candidature",
+        texte:
+          "Bonjour " +
+          this.state.candidat.firstName +
+          ",<br /> Votre candidature a bien été créée.<br />Cordialement"
       }),
       headers: { "Content-Type": "application/json" }
     })
@@ -126,26 +103,25 @@ class CandidatureForm extends Component {
       })
       .then(function(body) {
         console.log(body);
-      }); 
+      });
 
     this.handleResetForm(e);
-    this.props.toggle();
   }
-  // Méthode pour reset le formulaire avec aucunes valeurs
+  // Méthode pour reset le formulaire avec les valeurs de bases
   handleResetForm(e) {
     e.preventDefault();
-    this.setState({
-      statut: "",
-      date: "",
-
-      Candidat: {
-        firstName: "",
-        name: "",
-        email: ""
-      }
+    this.setState(state => {
+      return {
+        statut: "",
+        date: new Date(),
+        candidat: {
+          ...state.candidat,
+          email: propsUSer.mail
+        }
+      };
     });
-    this.props.toggle();
   }
+  // Fonction pour supprimer un fichier quand l'utilisateur clique sur la croix
   deleteFile(file) {
     console.log("deleteFile() + ");
     console.log(file);
@@ -180,28 +156,6 @@ class CandidatureForm extends Component {
             <MDBInput
               className="MDBInputText"
               type="text"
-              name="firstName"
-              label="Prénom"
-              icon="user"
-              value={this.state.candidat.firstName}
-              onChange={this.handleFirstnameChange}
-              required
-              autoComplete="new-password"
-            />
-            <MDBInput
-              className="MDBInputText"
-              type="text"
-              name="name"
-              label="Nom"
-              icon="user"
-              value={this.state.candidat.name}
-              onChange={this.handleNameChange}
-              required
-              autoComplete="new-password"
-            />
-            <MDBInput
-              className="MDBInputText"
-              type="text"
               name="email"
               label="Mail professionnel"
               icon="envelope"
@@ -210,9 +164,11 @@ class CandidatureForm extends Component {
               required
               autoComplete="new-password"
             />
-            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> CV, lettre
-            de motivation et autres fichiers (max {maxFiles} fichiers){" "}
-            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" />
+            <div className="text-center">
+              <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> CV,
+              lettre de motivation et autres fichiers (max {maxFiles} fichiers){" "}
+              <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" />
+            </div>
             <FilePond
               ref={ref => (this.pond = ref)}
               files={this.state.files}
@@ -246,7 +202,6 @@ class CandidatureForm extends Component {
               type="submit"
               outline
               color="primary"
-              size="lg"
               className="CloseButton"
               onClick={this.handleResetForm}
             >
@@ -255,7 +210,6 @@ class CandidatureForm extends Component {
             <MDBBtn
               type="submit"
               color="primary"
-              size="lg"
               className="SaveButton"
               onClick={this.handleSubmit}
             >
