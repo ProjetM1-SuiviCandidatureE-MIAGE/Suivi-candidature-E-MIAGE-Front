@@ -35,7 +35,7 @@
   "scripts": {
     "start": "react-scripts start",
     "client": "cd client && react-scripts start",
-    "server": "cd server && nodemon app.js",
+    "server": "nodemon ../Suivi-candidature-E-MIAGE-Back/server/app.js",
     "startall": "concurrently \"npm run client\" \"npm run server\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
