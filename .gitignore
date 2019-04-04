@@ -35,7 +35,6 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
-package-lock.json
 
 # TypeScript v1 declaration files
 typings/
@@ -51,6 +50,10 @@ typings/
 
 # Output of 'npm pack'
 *.tgz
+*.json
+
+# add an exception (using !) to the preceding rule to track a specific file
+!package.json
 
 # Yarn Integrity file
 .yarn-integrity
