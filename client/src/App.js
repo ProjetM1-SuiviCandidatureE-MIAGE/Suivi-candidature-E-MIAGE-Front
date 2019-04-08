@@ -22,7 +22,8 @@ class App extends Component {
         prenom: "",
         nom: "",
         mail: "",
-        token: ""
+        token: "",
+        id: ""
       }
     };
     this.setUser = this.setUser.bind(this);
@@ -37,7 +38,8 @@ class App extends Component {
           prenom: userConnected.prenom,
           nom: userConnected.nom,
           mail: userConnected.mail,
-          token: userConnected.token
+          token: userConnected.token,
+          id: userConnected.id
         }
       };
     });
@@ -51,7 +53,8 @@ class App extends Component {
           prenom: "",
           nom: "",
           mail: "",
-          token: ""
+          token: "",
+          id: ""
         }
       };
     });

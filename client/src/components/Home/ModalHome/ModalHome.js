@@ -87,7 +87,8 @@ class ModalHome extends Component {
             prenom: newCandidat.prenom,
             nom: newCandidat.nom,
             mail: newCandidat.mail,
-            token: body.token
+            token: body.token,
+            id: body.id
           };
           props.props.change(User);
           Auth.loginCandidat();
@@ -129,7 +130,8 @@ class ModalHome extends Component {
             prenom: body.prenom,
             nom: body.nom,
             mail: Candidat.mail,
-            token: body.token
+            token: body.token,
+            id: body.id
           };
           // On change les informations de l'utilisateur
           props.props.change(User);
@@ -171,7 +173,8 @@ class ModalHome extends Component {
             prenom: body.prenom,
             nom: body.nom,
             mail: Admin.mail,
-            token: body.token
+            token: body.token,
+            id: body.id
           };
           props.props.change(User);
           Auth.loginAdmin();
