@@ -13,17 +13,14 @@ import { FilePond, registerPlugin } from "react-filepond";
 import "filepond/dist/filepond.min.css";
 
 const maxFiles = 3;
-var propsUser = "";
-var candidaturesCandidat = "";
+let propsUser = "";
+let candidaturesCandidat = "";
+let brouillonCandidat = "";
 
 // Le formulaire de création d'une candidature
 class CandidatureForm extends Component {
   constructor(props) {
     super(props);
-    propsUser = this.props.props.user;
-    candidaturesCandidat = this.props.props.candidatures;
-    console.log(propsUser);
-    console.log(candidaturesCandidat);
 
     this.state = {
       formValid: false,
@@ -38,7 +35,8 @@ class CandidatureForm extends Component {
         name: "",
         email: ""
       },
-      candidatures: ""
+      candidatures: "",
+      brouillon: ""
     };
     // On bind toutes les fonctions qui vont utiliser le this.state
     this.handleEmailChange = this.handleEmailChange.bind(this);
@@ -48,6 +46,12 @@ class CandidatureForm extends Component {
   }
   // Fonction qui s'éxecute à la création du composant mais après le constructor et le render
   componentDidMount() {
+    propsUser = this.props.props.user;
+    candidaturesCandidat = this.props.candidatures;
+    brouillonCandidat = this.props.brouillon;
+
+    console.log(propsUser);
+
     this.setState(state => {
       return {
         candidat: {
@@ -55,8 +59,13 @@ class CandidatureForm extends Component {
           id: propsUser.id,
           firstName: propsUser.prenom,
           name: propsUser.nom,
-          mail: propsUser.mail
-        }
+          mail:
+            brouillonCandidat === "vide"
+              ? propsUser.mail
+              : brouillonCandidat.candidat.mail
+        },
+        candidatures: candidaturesCandidat,
+        brouillon: brouillonCandidat
       };
     });
   }
@@ -83,53 +92,57 @@ class CandidatureForm extends Component {
   }
   // Méthode pour créer une candidature
   handleSubmit(e) {
-    e.preventDefault();
-    fetch("/candidatures/newCandidature", {
-      method: "POST",
-      body: JSON.stringify({
-        etat: "non traitée",
-        commentaire: "",
-        date: new Date(),
-        CV: this.state.CV,
-        LM: this.state.LM,
-        files: this.state.files,
-        candidat: {
-          id: this.state.candidat.id,
-          nom: this.state.candidat.name,
-          prenom: this.state.candidat.firstName,
+    if (this.state.formValid === true) {
+      e.preventDefault();
+      fetch("/candidatures/newCandidature", {
+        method: "POST",
+        body: JSON.stringify({
+          etat: "non traitée",
+          commentaire: "",
+          date: new Date(),
+          CV: this.state.CV,
+          LM: this.state.LM,
+          files: this.state.files,
+          candidat: {
+            id: this.state.candidat.id,
+            nom: this.state.candidat.name,
+            prenom: this.state.candidat.firstName,
+            mail: this.state.candidat.mail,
+            mdp: ""
+          }
+        }),
+        headers: { "Content-Type": "application/json" }
+      })
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(body) {
+          console.log(body);
+        });
+
+      fetch("/mail/send", {
+        method: "POST",
+        body: JSON.stringify({
           mail: this.state.candidat.mail,
-          mdp: ""
-        }
-      }),
-      headers: { "Content-Type": "application/json" }
-    })
-      .then(function(response) {
-        return response.json();
+          sujet: "Confirmation de la creation de votre candidature",
+          texte:
+            "Bonjour " +
+            this.state.candidat.firstName +
+            ",<br /> Votre candidature a bien été créée.<br />Cordialement"
+        }),
+        headers: { "Content-Type": "application/json" }
       })
-      .then(function(body) {
-        console.log(body);
-      });
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(body) {
+          console.log(body);
+        });
 
-    fetch("/mail/send", {
-      method: "POST",
-      body: JSON.stringify({
-        mail: this.state.candidat.mail,
-        sujet: "Confirmation de la creation de votre candidature",
-        texte:
-          "Bonjour " +
-          this.state.candidat.firstName +
-          ",<br /> Votre candidature a bien été créée.<br />Cordialement"
-      }),
-      headers: { "Content-Type": "application/json" }
-    })
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(body) {
-        console.log(body);
-      });
-
-    this.handleResetForm(e);
+      this.handleResetForm(e);
+    } else {
+      console.log("formulaire non valide petit malin :D !");
+    }
   }
   // Fonction pour sauvegarder la candidature en brouillon
   handleSave(e) {
@@ -140,6 +153,8 @@ class CandidatureForm extends Component {
         etat: "brouillon",
         commentaire: "",
         date: new Date(),
+        CV: this.state.CV,
+        LM: this.state.LM,
         files: this.state.files,
         candidat: {
           id: this.state.candidat.id,

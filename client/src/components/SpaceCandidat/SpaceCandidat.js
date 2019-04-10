@@ -11,7 +11,6 @@ let propsUser = "";
 class SpaceCandidat extends React.Component {
   constructor(props) {
     super(props);
-    propsUser = this.props.user;
 
     this.state = {
       candidat: {
@@ -21,39 +20,77 @@ class SpaceCandidat extends React.Component {
         mail: ""
       },
       candidatures: "",
+      brouillon: "",
+      fetchEnd: false,
 
       toggleInformations: false
     };
     // Fonctions pour toggle les différents éléments de la page
     this.toggleInformationForm = this.toggleInformationForm.bind(this);
+    this.renderCandidatureForm = this.renderCandidatureForm.bind(this);
   }
   // Fonction pour récupérer les candidatures du candidat quand il se connecte
   componentDidMount() {
+    propsUser = this.props.user;
     console.log("récupération des candidatures du candidat");
     fetch(`/candidatures/getCandidatures/${propsUser.id}`)
       .then(res => res.json())
       .then(data =>
         this.setState(state => {
           return {
-            candidatures: data,
+            candidatures: data === undefined ? "vide" : data,
+            brouillon:
+              data === undefined
+                ? "vide"
+                : data.etat.includes("brouillon")
+                ? data
+                : "vide",
             candidat: {
               ...state.candidat,
               id: propsUser.id,
               prenom: propsUser.prenom,
               nom: propsUser.nom,
               mail: propsUser.mail
-            }
+            },
+            fetchEnd: true
           };
         })
       )
-      .catch(error => console.log(error));
+      .catch(error =>
+        this.setState(state => {
+          return {
+            candidatures: "vide",
+            brouillon: "vide",
+            candidat: {
+              ...state.candidat,
+              id: propsUser.id,
+              prenom: propsUser.prenom,
+              nom: propsUser.nom,
+              mail: propsUser.mail
+            },
+            fetchEnd: true
+          };
+        })
+      );
   }
   // Fonction pour afficher/masquer le div contenant les informations du candidat
   toggleInformationForm() {
     this.setState({
       toggleInformations: !this.state.toggleInformations
     });
-    console.log(this.state.candidatures);
+  }
+  renderCandidatureForm(boolean) {
+    if (boolean === true) {
+      return (
+        <CandidatureForm
+          props={this.props}
+          candidatures={this.state.candidatures}
+          brouillon={this.state.brouillon}
+        />
+      );
+    } else {
+      console.log("En Attente du fetch");
+    }
   }
   // Fonction qui retourne le html du composant
   render() {
@@ -76,10 +113,7 @@ class SpaceCandidat extends React.Component {
           />
         </MDBCollapse>
         <div className="CandidatureForm">
-          <CandidatureForm
-            props={this.props}
-            candidatures={this.state.candidatures}
-          />
+          {this.renderCandidatureForm(this.state.fetchEnd)}
         </div>
       </div>
     );
