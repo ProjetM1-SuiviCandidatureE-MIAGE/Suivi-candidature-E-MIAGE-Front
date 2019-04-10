@@ -12,29 +12,39 @@ import {
 import { FilePond, registerPlugin } from "react-filepond";
 import "filepond/dist/filepond.min.css";
 
-const maxFiles = 5;
-var propsUSer = "";
+const maxFiles = 3;
+var propsUser = "";
+var candidaturesCandidat = "";
 
 // Le formulaire de création d'une candidature
 class CandidatureForm extends Component {
   constructor(props) {
     super(props);
-    propsUSer = this.props.props.user;
+    propsUser = this.props.props.user;
+    candidaturesCandidat = this.props.props.candidatures;
+    console.log(propsUser);
+    console.log(candidaturesCandidat);
 
     this.state = {
+      formValid: false,
       statut: "",
       date: "",
+      CV: "",
+      LM: "",
       files: "",
       candidat: {
+        id: "",
         firstName: "",
         name: "",
         email: ""
-      }
+      },
+      candidatures: ""
     };
     // On bind toutes les fonctions qui vont utiliser le this.state
     this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleResetForm = this.handleResetForm.bind(this);
+    this.handleSave = this.handleSave.bind(this);
   }
   // Fonction qui s'éxecute à la création du composant mais après le constructor et le render
   componentDidMount() {
@@ -42,9 +52,10 @@ class CandidatureForm extends Component {
       return {
         candidat: {
           ...state.candidat,
-          firstName: propsUSer.prenom,
-          name: propsUSer.nom,
-          email: propsUSer.mail
+          id: propsUser.id,
+          firstName: propsUser.prenom,
+          name: propsUser.nom,
+          mail: propsUser.mail
         }
       };
     });
@@ -52,11 +63,20 @@ class CandidatureForm extends Component {
   // Méthode pour changer le mail dans l'MDBInput
   handleEmailChange(e) {
     const value = e.target.value;
+    if (value.length === 0) {
+      this.setState({
+        formValid: false
+      });
+    } else {
+      this.setState({
+        formValid: true
+      });
+    }
     this.setState(state => {
       return {
         candidat: {
           ...state.candidat,
-          email: value
+          mail: value
         }
       };
     });
@@ -70,10 +90,14 @@ class CandidatureForm extends Component {
         etat: "non traitée",
         commentaire: "",
         date: new Date(),
+        CV: this.state.CV,
+        LM: this.state.LM,
+        files: this.state.files,
         candidat: {
+          id: this.state.candidat.id,
           nom: this.state.candidat.name,
           prenom: this.state.candidat.firstName,
-          mail: this.state.candidat.email,
+          mail: this.state.candidat.mail,
           mdp: ""
         }
       }),
@@ -89,7 +113,7 @@ class CandidatureForm extends Component {
     fetch("/mail/send", {
       method: "POST",
       body: JSON.stringify({
-        mail: this.state.candidat.email,
+        mail: this.state.candidat.mail,
         sujet: "Confirmation de la creation de votre candidature",
         texte:
           "Bonjour " +
@@ -107,16 +131,47 @@ class CandidatureForm extends Component {
 
     this.handleResetForm(e);
   }
+  // Fonction pour sauvegarder la candidature en brouillon
+  handleSave(e) {
+    e.preventDefault();
+    fetch("/candidatures/saveCandidature", {
+      method: "POST",
+      body: JSON.stringify({
+        etat: "brouillon",
+        commentaire: "",
+        date: new Date(),
+        files: this.state.files,
+        candidat: {
+          id: this.state.candidat.id,
+          nom: this.state.candidat.name,
+          prenom: this.state.candidat.firstName,
+          mail: this.state.candidat.mail,
+          mdp: ""
+        }
+      }),
+      headers: { "Content-Type": "application/json" }
+    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(body) {
+        console.log(body);
+      });
+
+    this.handleResetForm(e);
+  }
   // Méthode pour reset le formulaire avec les valeurs de bases
   handleResetForm(e) {
     e.preventDefault();
     this.setState(state => {
       return {
+        formValid: false,
         statut: "",
         date: new Date(),
+        files: "",
         candidat: {
           ...state.candidat,
-          email: propsUSer.mail
+          mail: propsUser.mail
         }
       };
     });
@@ -156,18 +211,77 @@ class CandidatureForm extends Component {
             <MDBInput
               className="MDBInputText"
               type="text"
-              name="email"
+              name="mail"
               label="Mail professionnel"
               icon="envelope"
-              value={this.state.candidat.email}
+              value={this.state.candidat.mail}
               onChange={this.handleEmailChange}
               required
               autoComplete="new-password"
             />
             <div className="text-center">
-              <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> CV,
-              lettre de motivation et autres fichiers (max {maxFiles} fichiers){" "}
-              <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" />
+              <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> CV
+              (Curriculum Vitae)
+            </div>
+            <FilePond
+              ref={refCV => (this.pond = refCV)}
+              files={this.state.CV}
+              allowMultiple={false}
+              labelIdle={"Glissez et déposez votre CV ici"}
+              server={{
+                process: "/upload/uploadFile",
+                revert: null,
+                load: null,
+                restore: null,
+                fetch: null
+              }}
+              onremovefile={file => {
+                this.deleteFile(file.file);
+              }}
+              onupdatefiles={fileItems => {
+                this.setState(
+                  {
+                    CV: fileItems.map(fileItem => fileItem.file)
+                  },
+                  console.log("variable files updated !"),
+                  console.log(this.state.CV)
+                );
+              }}
+              labelTapToCancel={"Cliquez pour annuler "}
+            />
+            <div className="text-center">
+              <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Lettre
+              de motivation
+            </div>
+            <FilePond
+              ref={refLM => (this.pond = refLM)}
+              files={this.state.LM}
+              allowMultiple={false}
+              labelIdle={"Glissez et déposez votre lettre de motivation ici"}
+              server={{
+                process: "/upload/uploadFile",
+                revert: null,
+                load: null,
+                restore: null,
+                fetch: null
+              }}
+              onremovefile={file => {
+                this.deleteFile(file.file);
+              }}
+              onupdatefiles={fileItems => {
+                this.setState(
+                  {
+                    LM: fileItems.map(fileItem => fileItem.file)
+                  },
+                  console.log("variable files updated !"),
+                  console.log(this.state.LM)
+                );
+              }}
+              labelTapToCancel={"Cliquez pour annuler "}
+            />
+            <div className="text-center">
+              <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Autres
+              fichiers (max {maxFiles} fichiers){" "}
             </div>
             <FilePond
               ref={ref => (this.pond = ref)}
@@ -211,7 +325,16 @@ class CandidatureForm extends Component {
               type="submit"
               color="primary"
               className="SaveButton"
+              onClick={this.handleSave}
+            >
+              Sauvegarder
+            </MDBBtn>
+            <MDBBtn
+              type="submit"
+              color="primary"
+              className="SaveButton"
               onClick={this.handleSubmit}
+              disabled={!this.state.formValid}
             >
               Envoyer
             </MDBBtn>
