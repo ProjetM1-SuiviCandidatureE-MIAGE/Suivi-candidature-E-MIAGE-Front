@@ -21,7 +21,7 @@ class SpaceCandidat extends React.Component {
         mail: ""
       },
       candidatures: "",
-      // Booléens pour le toggle des boutons
+
       toggleInformations: false
     };
     // Fonctions pour toggle les différents éléments de la page
@@ -30,25 +30,30 @@ class SpaceCandidat extends React.Component {
   // Fonction pour récupérer les candidatures du candidat quand il se connecte
   componentDidMount() {
     console.log("récupération des candidatures du candidat");
-    // Faire le fetch avant le setState pour récupérer les candidatures avant avec l'id
-    // Faire le setState quoi qu'il arrive
-    this.setState(state => {
-      return {
-        candidat: {
-          ...state.candidat,
-          id: propsUser.id,
-          prenom: propsUser.prenom,
-          nom: propsUser.nom,
-          mail: propsUser.mail
-        }
-      };
-    });
+    fetch(`/candidatures/getCandidatures/${propsUser.id}`)
+      .then(res => res.json())
+      .then(data =>
+        this.setState(state => {
+          return {
+            candidatures: data,
+            candidat: {
+              ...state.candidat,
+              id: propsUser.id,
+              prenom: propsUser.prenom,
+              nom: propsUser.nom,
+              mail: propsUser.mail
+            }
+          };
+        })
+      )
+      .catch(error => console.log(error));
   }
   // Fonction pour afficher/masquer le div contenant les informations du candidat
   toggleInformationForm() {
     this.setState({
       toggleInformations: !this.state.toggleInformations
     });
+    console.log(this.state.candidatures);
   }
   // Fonction qui retourne le html du composant
   render() {

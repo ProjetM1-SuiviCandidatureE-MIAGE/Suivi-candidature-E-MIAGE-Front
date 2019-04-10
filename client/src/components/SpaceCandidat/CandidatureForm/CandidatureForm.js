@@ -37,7 +37,8 @@ class CandidatureForm extends Component {
         firstName: "",
         name: "",
         email: ""
-      }
+      },
+      candidatures: ""
     };
     // On bind toutes les fonctions qui vont utiliser le this.state
     this.handleEmailChange = this.handleEmailChange.bind(this);
@@ -62,6 +63,15 @@ class CandidatureForm extends Component {
   // Méthode pour changer le mail dans l'MDBInput
   handleEmailChange(e) {
     const value = e.target.value;
+    if (value.length === 0) {
+      this.setState({
+        formValid: false
+      });
+    } else {
+      this.setState({
+        formValid: true
+      });
+    }
     this.setState(state => {
       return {
         candidat: {
