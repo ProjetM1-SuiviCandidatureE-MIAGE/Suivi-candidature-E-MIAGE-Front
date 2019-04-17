@@ -28,6 +28,8 @@ class SpaceCandidat extends React.Component {
     // Fonctions pour toggle les différents éléments de la page
     this.toggleInformationForm = this.toggleInformationForm.bind(this);
     this.renderCandidatureForm = this.renderCandidatureForm.bind(this);
+    this.getCandidat = this.getCandidat.bind(this);
+    this.setCandidat = this.setCandidat.bind(this);
   }
   // Fonction pour récupérer les candidatures du candidat quand il se connecte
   componentDidMount() {
@@ -73,6 +75,28 @@ class SpaceCandidat extends React.Component {
         })
       );
   }
+  // Fonction pour récupérer les données du candidat pour les autres composants fils
+  getCandidat() {
+    console.log("Get candidat");
+    console.log(this.state.candidat);
+    return this.state.candidat;
+  }
+  // Fonction pour modifier les informations du candidat
+  setCandidat(CandidatModif) {
+    this.setState(state => {
+      return {
+        candidat: {
+          ...state.candidat,
+          id: CandidatModif.id,
+          prenom: CandidatModif.prenom,
+          nom: CandidatModif.nom,
+          mail: CandidatModif.mail
+        }
+      };
+    });
+    console.log("Set candidat");
+    console.log(this.state.candidat);
+  }
   // Fonction pour afficher/masquer le div contenant les informations du candidat
   toggleInformationForm() {
     this.setState({
@@ -83,9 +107,10 @@ class SpaceCandidat extends React.Component {
     if (boolean === true) {
       return (
         <CandidatureForm
-          props={this.props}
           candidatures={this.state.candidatures}
           brouillon={this.state.brouillon}
+          get={() => this.getCandidat()}
+          set={item => this.setCandidat(item)}
         />
       );
     } else {
@@ -110,6 +135,8 @@ class SpaceCandidat extends React.Component {
           <InformationForm
             toggle={this.toggleInformationForm}
             props={this.props}
+            get={() => this.getCandidat()}
+            set={item => this.setCandidat(item)}
           />
         </MDBCollapse>
         <div className="CandidatureForm">

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-/* import "./CandidatureForm.css"; */
+import "./CandidatureForm.css";
 import {
   MDBInput,
   MDBCard,
@@ -9,11 +9,20 @@ import {
   MDBBtn,
   MDBIcon
 } from "mdbreact";
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 import { FilePond, registerPlugin } from "react-filepond";
+import FilePondPluginFileRename from "filepond-plugin-file-rename";
 import "filepond/dist/filepond.min.css";
 
+registerPlugin(
+  FilePondPluginFileValidateType,
+  FilePondPluginFileValidateSize,
+  FilePondPluginFileRename
+);
 const maxFiles = 3;
-let propsUser = "";
+let getCandidat = "";
+let setCandidat = "";
 let candidaturesCandidat = "";
 let brouillonCandidat = "";
 
@@ -29,12 +38,7 @@ class CandidatureForm extends Component {
       CV: "",
       LM: "",
       files: "",
-      candidat: {
-        id: "",
-        firstName: "",
-        name: "",
-        email: ""
-      },
+      mail: "",
       candidatures: "",
       brouillon: ""
     };
@@ -46,54 +50,33 @@ class CandidatureForm extends Component {
   }
   // Fonction qui s'éxecute à la création du composant mais après le constructor et le render
   componentDidMount() {
-    propsUser = this.props.props.user;
+    getCandidat = this.props.get;
+    setCandidat = this.props.set;
     candidaturesCandidat = this.props.candidatures;
     brouillonCandidat = this.props.brouillon;
 
-    console.log(propsUser);
+    console.log(brouillonCandidat);
+    console.log(candidaturesCandidat);
 
-    this.setState(state => {
-      return {
-        candidat: {
-          ...state.candidat,
-          id: propsUser.id,
-          firstName: propsUser.prenom,
-          name: propsUser.nom,
-          mail:
-            brouillonCandidat === "vide"
-              ? propsUser.mail
-              : brouillonCandidat.candidat.mail
-        },
-        candidatures: candidaturesCandidat,
-        brouillon: brouillonCandidat
-      };
+    this.setState({
+      mail:
+        brouillonCandidat === "vide" ? "vide" : brouillonCandidat.candidat.mail,
+      candidatures: candidaturesCandidat,
+      brouillon: brouillonCandidat
     });
   }
   // Méthode pour changer le mail dans l'MDBInput
   handleEmailChange(e) {
     const value = e.target.value;
-    if (value.length === 0) {
-      this.setState({
-        formValid: false
-      });
-    } else {
-      this.setState({
-        formValid: true
-      });
-    }
-    this.setState(state => {
-      return {
-        candidat: {
-          ...state.candidat,
-          mail: value
-        }
-      };
+    this.setState({
+      mail: value
     });
   }
   // Méthode pour créer une candidature
   handleSubmit(e) {
+    e.preventDefault();
+    console.log("submit !");
     if (this.state.formValid === true) {
-      e.preventDefault();
       fetch("/candidatures/newCandidature", {
         method: "POST",
         body: JSON.stringify({
@@ -103,13 +86,7 @@ class CandidatureForm extends Component {
           CV: this.state.CV,
           LM: this.state.LM,
           files: this.state.files,
-          candidat: {
-            id: this.state.candidat.id,
-            nom: this.state.candidat.name,
-            prenom: this.state.candidat.firstName,
-            mail: this.state.candidat.mail,
-            mdp: ""
-          }
+          candidat: getCandidat()
         }),
         headers: { "Content-Type": "application/json" }
       })
@@ -156,13 +133,7 @@ class CandidatureForm extends Component {
         CV: this.state.CV,
         LM: this.state.LM,
         files: this.state.files,
-        candidat: {
-          id: this.state.candidat.id,
-          nom: this.state.candidat.name,
-          prenom: this.state.candidat.firstName,
-          mail: this.state.candidat.mail,
-          mdp: ""
-        }
+        candidat: getCandidat()
       }),
       headers: { "Content-Type": "application/json" }
     })
@@ -178,17 +149,12 @@ class CandidatureForm extends Component {
   // Méthode pour reset le formulaire avec les valeurs de bases
   handleResetForm(e) {
     e.preventDefault();
-    this.setState(state => {
-      return {
-        formValid: false,
-        statut: "",
-        date: new Date(),
-        files: "",
-        candidat: {
-          ...state.candidat,
-          mail: propsUser.mail
-        }
-      };
+    this.setState({
+      formValid: false,
+      statut: "",
+      date: new Date(),
+      files: ""
+      /*       mail: propsUser.mail */
     });
   }
   // Fonction pour supprimer un fichier quand l'utilisateur clique sur la croix
@@ -216,145 +182,176 @@ class CandidatureForm extends Component {
         <MDBCardTitle className="font-weight-bold mb-3 mx-auto CardTitle">
           Créer votre candidature
         </MDBCardTitle>
-        <form
-          method="POST"
-          action="/candidatures/newCandidature"
-          className="candidatureForm"
-          autoComplete="new-password"
-        >
-          <MDBCardBody className="CardBody">
-            <MDBInput
-              className="MDBInputText"
-              type="text"
-              name="mail"
-              label="Mail professionnel"
-              icon="envelope"
-              value={this.state.candidat.mail}
-              onChange={this.handleEmailChange}
-              required
-              autoComplete="new-password"
-            />
-            <div className="text-center">
-              <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> CV
-              (Curriculum Vitae)
-            </div>
-            <FilePond
-              ref={refCV => (this.pond = refCV)}
-              files={this.state.CV}
-              allowMultiple={false}
-              labelIdle={"Glissez et déposez votre CV ici"}
-              server={{
-                process: "/upload/uploadFile",
-                revert: null,
-                load: null,
-                restore: null,
-                fetch: null
-              }}
-              onremovefile={file => {
-                this.deleteFile(file.file);
-              }}
-              onupdatefiles={fileItems => {
-                this.setState(
-                  {
-                    CV: fileItems.map(fileItem => fileItem.file)
-                  },
-                  console.log("variable files updated !"),
-                  console.log(this.state.CV)
-                );
-              }}
-              labelTapToCancel={"Cliquez pour annuler "}
-            />
-            <div className="text-center">
-              <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Lettre
-              de motivation
-            </div>
-            <FilePond
-              ref={refLM => (this.pond = refLM)}
-              files={this.state.LM}
-              allowMultiple={false}
-              labelIdle={"Glissez et déposez votre lettre de motivation ici"}
-              server={{
-                process: "/upload/uploadFile",
-                revert: null,
-                load: null,
-                restore: null,
-                fetch: null
-              }}
-              onremovefile={file => {
-                this.deleteFile(file.file);
-              }}
-              onupdatefiles={fileItems => {
-                this.setState(
-                  {
-                    LM: fileItems.map(fileItem => fileItem.file)
-                  },
-                  console.log("variable files updated !"),
-                  console.log(this.state.LM)
-                );
-              }}
-              labelTapToCancel={"Cliquez pour annuler "}
-            />
-            <div className="text-center">
-              <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Autres
-              fichiers (max {maxFiles} fichiers){" "}
-            </div>
-            <FilePond
-              ref={ref => (this.pond = ref)}
-              files={this.state.files}
-              allowMultiple={true}
-              maxFiles={maxFiles}
-              labelIdle={"Glissez et déposez vos fichiers ici"}
-              server={{
-                process: "/upload/uploadFile",
-                revert: null,
-                load: null,
-                restore: null,
-                fetch: null
-              }}
-              onremovefile={file => {
-                this.deleteFile(file.file);
-              }}
-              onupdatefiles={fileItems => {
-                this.setState(
-                  {
-                    files: fileItems.map(fileItem => fileItem.file)
-                  },
-                  console.log("variable files updated !"),
-                  console.log(this.state.files)
-                );
-              }}
-              labelTapToCancel={"Cliquez pour annuler "}
-            />
-          </MDBCardBody>
-          <MDBCardText className="CardText">
-            <MDBBtn
-              type="submit"
-              outline
-              color="primary"
-              className="CloseButton"
-              onClick={this.handleResetForm}
-            >
-              Annuler
-            </MDBBtn>
-            <MDBBtn
-              type="submit"
-              color="primary"
-              className="SaveButton"
-              onClick={this.handleSave}
-            >
-              Sauvegarder
-            </MDBBtn>
-            <MDBBtn
-              type="submit"
-              color="primary"
-              className="SaveButton"
-              onClick={this.handleSubmit}
-              disabled={!this.state.formValid}
-            >
-              Envoyer
-            </MDBBtn>
-          </MDBCardText>
-        </form>
+        <MDBCardBody className="CardBody">
+          <MDBInput
+            className="MDBInputText"
+            type="text"
+            name="mail"
+            label="Mail professionnel"
+            icon="envelope"
+            value={this.state.mail}
+            onChange={this.handleEmailChange}
+            required
+            autoComplete="new-password"
+          />
+          <div className="text-center">
+            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> CV
+            (Curriculum Vitae)
+          </div>
+          <FilePond
+            ref={refCV => (this.pond = refCV)}
+            files={this.state.CV}
+            allowMultiple={false}
+            allowFileSizeValidation={true}
+            maxFileSize={5000000} // 5MB
+            allowFileTypeValidation={true}
+            acceptedFileTypes={[
+              "application/msword",
+              "application/pdf",
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ]}
+            labelFileTypeNotAllowed={"Type du fichier invalide !"}
+            fileValidateTypeLabelExpectedTypes={
+              "Type accepté : doc, docx et pdf"
+            }
+            labelIdle={"Glissez et déposez votre CV ici"}
+            server={{
+              process: "/upload/uploadFile",
+              revert: null,
+              load: null,
+              restore: null,
+              fetch: null
+            }}
+            onremovefile={file => {
+              this.deleteFile(file.file);
+            }}
+            onupdatefiles={fileItems => {
+              this.setState(
+                {
+                  CV: fileItems.map(fileItem => fileItem.file)
+                },
+                console.log("variable CV updated !"),
+                console.log(this.state.CV)
+              );
+            }}
+            labelTapToCancel={"Cliquez pour annuler "}
+          />
+          <div className="text-center">
+            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Lettre de
+            motivation
+          </div>
+          <FilePond
+            ref={refLM => (this.pond = refLM)}
+            files={this.state.LM}
+            allowMultiple={false}
+            allowFileSizeValidation={true}
+            maxFileSize={5000000} // 5MB
+            allowFileTypeValidation={true}
+            acceptedFileTypes={[
+              "application/msword",
+              "application/pdf",
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ]}
+            labelFileTypeNotAllowed={"Type du fichier invalide !"}
+            fileValidateTypeLabelExpectedTypes={
+              "Type accepté : doc, docx et pdf"
+            }
+            labelIdle={"Glissez et déposez votre lettre de motivation ici"}
+            server={{
+              process: "/upload/uploadFile",
+              revert: null,
+              load: null,
+              restore: null,
+              fetch: null
+            }}
+            onremovefile={file => {
+              this.deleteFile(file.file);
+            }}
+            onupdatefiles={fileItems => {
+              this.setState(
+                {
+                  LM: fileItems.map(fileItem => fileItem.file)
+                },
+                console.log("variable LM updated !"),
+                console.log(this.state.LM)
+              );
+            }}
+            labelTapToCancel={"Cliquez pour annuler "}
+          />
+          <div className="text-center">
+            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Autres
+            fichiers (max {maxFiles} fichiers){" "}
+          </div>
+          <FilePond
+            ref={ref => (this.pond = ref)}
+            files={this.state.files}
+            registerPlugin={registerPlugin}
+            allowMultiple={true}
+            maxFiles={maxFiles}
+            allowFileSizeValidation={true}
+            maxTotalFileSize={10000000} // 10MB
+            allowFileTypeValidation={true}
+            acceptedFileTypes={[
+              "application/msword",
+              "application/pdf",
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ]}
+            labelFileTypeNotAllowed={"Type du fichier invalide !"}
+            fileValidateTypeLabelExpectedTypes={
+              "Type accepté : doc, docx et pdf"
+            }
+            labelIdle={"Glissez et déposez vos fichiers ici"}
+            server={{
+              process: "/upload/uploadFile",
+              revert: null,
+              load: null,
+              restore: null,
+              fetch: null
+            }}
+            onremovefile={file => {
+              this.deleteFile(file.file);
+            }}
+            onupdatefiles={fileItems => {
+              this.setState(
+                {
+                  files: fileItems.map(fileItem => fileItem.file)
+                },
+                console.log("variable files updated !"),
+                console.log(this.state.files)
+              );
+            }}
+            labelTapToCancel={"Cliquez pour annuler "}
+          />
+        </MDBCardBody>
+        <MDBCardText className="CardText">
+          <MDBBtn
+            type="submit"
+            outline
+            color="primary"
+            className="CloseButton"
+            onClick={this.handleResetForm}
+          >
+            Annuler
+          </MDBBtn>
+          <MDBBtn
+            type="submit"
+            color="primary"
+            className="SaveButton"
+            onClick={this.handleSave}
+          >
+            Sauvegarder
+          </MDBBtn>
+          <MDBBtn
+            type="submit"
+            color="primary"
+            className="SubmitButton"
+            onClick={this.handleSubmit}
+            // true pour que ce soit disabled
+            disabled={!this.state.formValid}
+          >
+            Envoyer
+          </MDBBtn>
+        </MDBCardText>
       </MDBCard>
     );
   }

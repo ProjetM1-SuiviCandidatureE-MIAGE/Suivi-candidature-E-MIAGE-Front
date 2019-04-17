@@ -13,7 +13,8 @@
 }
 
 .CloseButton,
-.SaveButton {
+.SaveButton,
+.SubmitButton {
   border-radius: 30px;
   margin-top: 1.5em !important;
 }

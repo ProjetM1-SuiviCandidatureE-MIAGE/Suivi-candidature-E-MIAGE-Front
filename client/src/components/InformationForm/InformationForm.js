@@ -9,7 +9,9 @@ import {
 } from "mdbreact";
 import "./InformationForm.css";
 
-var propsUSer = "";
+let propsUSer = "";
+let getCandidat = "";
+let setCandidat = "";
 
 // Le composant qui créé le formulaire avec les informations de la personne connectée
 export default class InformationForm extends Component {
