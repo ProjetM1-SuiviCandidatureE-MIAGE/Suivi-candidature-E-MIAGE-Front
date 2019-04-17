@@ -148,6 +148,7 @@ class ModalHome extends Component {
         alert("error !");
       });
   };
+  ////////////////////////////////////////
   // Fonction de connexion pour l'admin
   LoginAdmin = event => {
     event.preventDefault();
