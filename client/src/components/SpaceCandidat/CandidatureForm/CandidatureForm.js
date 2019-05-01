@@ -33,7 +33,7 @@ class CandidatureForm extends Component {
 
     this.state = {
       formValid: false,
-      statut: "",
+      statut: "brouillon",
       date: "",
       CV: "",
       LM: "",
@@ -60,7 +60,9 @@ class CandidatureForm extends Component {
 
     this.setState({
       mail:
-        brouillonCandidat === "vide" ? "vide" : brouillonCandidat.candidat.mail,
+        brouillonCandidat === "vide"
+          ? getCandidat().mail
+          : brouillonCandidat.candidat.mail,
       candidatures: candidaturesCandidat,
       brouillon: brouillonCandidat
     });
@@ -76,6 +78,7 @@ class CandidatureForm extends Component {
   handleSubmit(e) {
     e.preventDefault();
     console.log("submit !");
+    const Candidat = getCandidat();
     if (this.state.formValid === true) {
       fetch("/candidatures/newCandidature", {
         method: "POST",
@@ -86,7 +89,7 @@ class CandidatureForm extends Component {
           CV: this.state.CV,
           LM: this.state.LM,
           files: this.state.files,
-          candidat: getCandidat()
+          candidat: Candidat
         }),
         headers: { "Content-Type": "application/json" }
       })
@@ -100,11 +103,13 @@ class CandidatureForm extends Component {
       fetch("/mail/send", {
         method: "POST",
         body: JSON.stringify({
-          mail: this.state.candidat.mail,
+          mail: Candidat.mail,
           sujet: "Confirmation de la creation de votre candidature",
           texte:
             "Bonjour " +
-            this.state.candidat.firstName +
+            Candidat.prenom +
+            " " +
+            Candidat.nom +
             ",<br /> Votre candidature a bien été créée.<br />Cordialement"
         }),
         headers: { "Content-Type": "application/json" }
@@ -143,7 +148,6 @@ class CandidatureForm extends Component {
       .then(function(body) {
         console.log(body);
       });
-
     this.handleResetForm(e);
   }
   // Méthode pour reset le formulaire avec les valeurs de bases
@@ -151,10 +155,10 @@ class CandidatureForm extends Component {
     e.preventDefault();
     this.setState({
       formValid: false,
-      statut: "",
+      statut: "brouillon",
       date: new Date(),
-      files: ""
-      /*       mail: propsUser.mail */
+      files: "",
+      mail: getCandidat().mail
     });
   }
   // Fonction pour supprimer un fichier quand l'utilisateur clique sur la croix

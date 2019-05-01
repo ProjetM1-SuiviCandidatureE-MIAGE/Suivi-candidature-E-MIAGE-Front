@@ -75,7 +75,7 @@ export default class ModalPassword extends Component {
             name="newPasswordConfirm"
             onChange={this.handleInputChange}
             value={this.state.newPasswordConfirm}
-            autoComplete="off"
+            autoComplete="new-password"
           />
         </MDBModalBody>
         <MDBModalFooter className="ModalFooter">

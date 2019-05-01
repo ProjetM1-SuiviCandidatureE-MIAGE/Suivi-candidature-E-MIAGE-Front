@@ -77,7 +77,7 @@ class SpaceCandidat extends React.Component {
   }
   // Fonction pour récupérer les données du candidat pour les autres composants fils
   getCandidat() {
-    console.log("Get candidat");
+    console.log("Get candidat dans SpaceCandidat :");
     console.log(this.state.candidat);
     return this.state.candidat;
   }
@@ -94,7 +94,7 @@ class SpaceCandidat extends React.Component {
         }
       };
     });
-    console.log("Set candidat");
+    console.log("Set candidat dans SpaceCandidat :");
     console.log(this.state.candidat);
   }
   // Fonction pour afficher/masquer le div contenant les informations du candidat
