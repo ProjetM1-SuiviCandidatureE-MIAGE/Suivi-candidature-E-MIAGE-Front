@@ -14,6 +14,7 @@ import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 import { FilePond, registerPlugin } from "react-filepond";
 import FilePondPluginFileRename from "filepond-plugin-file-rename";
 import "filepond/dist/filepond.min.css";
+var dateFormat = require("dateformat");
 
 registerPlugin(
   FilePondPluginFileValidateType,
@@ -22,7 +23,6 @@ registerPlugin(
 );
 const maxFiles = 3;
 let getCandidat = "";
-let setCandidat = "";
 let candidaturesCandidat = "";
 let brouillonCandidat = "";
 
@@ -51,7 +51,6 @@ class CandidatureForm extends Component {
   // Fonction qui s'éxecute à la création du composant mais après le constructor et le render
   componentDidMount() {
     getCandidat = this.props.get;
-    setCandidat = this.props.set;
     candidaturesCandidat = this.props.candidatures;
     brouillonCandidat = this.props.brouillon;
 
@@ -207,8 +206,16 @@ class CandidatureForm extends Component {
             files={this.state.CV}
             allowMultiple={false}
             allowFileSizeValidation={true}
-            maxFileSize={5000000} // 5MB
+            maxFileSize={2000000} // 2MB
             allowFileTypeValidation={true}
+            allowFileRename={true}
+            fileRenameFunction={file => {
+              console.log(file);
+              var date = dateFormat(new Date(), 'dd"d"mm"m"HH-MM');
+              return `CV_${date}_${
+                getCandidat().nom
+              }_${getCandidat().id.substring(18)}${file.extension}`;
+            }}
             acceptedFileTypes={[
               "application/msword",
               "application/pdf",
@@ -249,8 +256,16 @@ class CandidatureForm extends Component {
             files={this.state.LM}
             allowMultiple={false}
             allowFileSizeValidation={true}
-            maxFileSize={5000000} // 5MB
+            maxFileSize={2000000} // 2MB
             allowFileTypeValidation={true}
+            allowFileRename={true}
+            fileRenameFunction={file => {
+              console.log(file);
+              var date = dateFormat(new Date(), 'dd"d"mm"m"HH-MM');
+              return `LM_${date}_${
+                getCandidat().nom
+              }_${getCandidat().id.substring(18)}${file.extension}`;
+            }}
             acceptedFileTypes={[
               "application/msword",
               "application/pdf",
@@ -295,6 +310,12 @@ class CandidatureForm extends Component {
             allowFileSizeValidation={true}
             maxTotalFileSize={10000000} // 10MB
             allowFileTypeValidation={true}
+            allowFileRename={true}
+            fileRenameFunction={file => {
+              return `AF_${getCandidat().nom}_${getCandidat().id.substring(
+                18
+              )}${file.extension}`;
+            }}
             acceptedFileTypes={[
               "application/msword",
               "application/pdf",

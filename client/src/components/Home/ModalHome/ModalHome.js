@@ -69,8 +69,6 @@ class ModalHome extends Component {
       mdp: this.state.passwordInscription,
       mdpConfirmation: this.state.passwordConfirm
     };
-
-    console.log(JSON.stringify(newCandidat));
     fetch("/candidats/signup", {
       method: "POST",
       body: JSON.stringify(newCandidat),
@@ -112,8 +110,6 @@ class ModalHome extends Component {
       mail: this.state.mailConnexion,
       mdp: this.state.passwordConnexion
     };
-    console.log(JSON.stringify(Candidat));
-
     fetch("/candidats/login", {
       method: "POST",
       body: JSON.stringify(Candidat),
@@ -156,8 +152,6 @@ class ModalHome extends Component {
       mail: this.state.mailConnexionAdmin,
       mdp: this.state.passwordConnexionAdmin
     };
-    console.log(JSON.stringify(Admin));
-
     fetch("/admins/login", {
       method: "POST",
       body: JSON.stringify(Admin),

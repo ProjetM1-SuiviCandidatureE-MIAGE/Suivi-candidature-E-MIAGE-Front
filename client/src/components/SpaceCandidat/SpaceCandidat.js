@@ -110,7 +110,6 @@ class SpaceCandidat extends React.Component {
           candidatures={this.state.candidatures}
           brouillon={this.state.brouillon}
           get={() => this.getCandidat()}
-          set={item => this.setCandidat(item)}
         />
       );
     } else {
