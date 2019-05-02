@@ -10,7 +10,6 @@ import {
   MDBBtn
 } from "mdbreact";
 
-let toggle = "";
 // La classe du modal pour modifier le mot de passe dans son espace
 export default class ModalPassword extends Component {
   constructor(props) {
@@ -22,10 +21,8 @@ export default class ModalPassword extends Component {
       newPasswordConfirm: ""
     };
     this.handleInputChange = this.handleInputChange.bind(this);
-  }
-  // Fonction qui se lance à la création du composant pour récupèrer les props et les stocker
-  componentDidMount() {
-    toggle = this.props.toggle;
+    this.handleReset = this.handleReset.bind(this);
+    this.passwordChange = this.passwordChange.bind(this);
   }
   // Fonction pour modifier les valeurs des inputs
   handleInputChange = event => {
@@ -34,6 +31,20 @@ export default class ModalPassword extends Component {
       [name]: value
     });
   };
+  // Fonction pour modifier le mot de passe
+  passwordChange() {
+    this.handleReset();
+  }
+  // Fonction pour reset les champs à vide
+  handleReset() {
+    this.setState({
+      password: "",
+      newPassword: "",
+      newPasswordConfirm: ""
+    });
+    this.props.toggle();
+  }
+  // Fonction qui affiche le code HTML du composant
   render() {
     return (
       <MDBModal
@@ -83,7 +94,7 @@ export default class ModalPassword extends Component {
             outline
             color="primary"
             className="CloseButton"
-            onClick={() => this.props.toggle()}
+            onClick={this.handleReset}
           >
             Fermer
           </MDBBtn>

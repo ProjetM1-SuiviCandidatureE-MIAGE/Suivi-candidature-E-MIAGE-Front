@@ -6,12 +6,20 @@ import "./SpaceAdmin.css";
 import Moment from "react-moment";
 import InformationForm from "../InformationForm/InformationForm";
 
+let propsUser = "";
+
 // Le composant qui affiche la page de l'espace administrateur
 class SpaceAdmin extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      admin: {
+        id: "",
+        nom: "",
+        prenom: "",
+        mail: ""
+      },
       // Les booléens pour les fonctions toggle des boutons
       boolMesInformations: false,
       boolCandNonTraitees: false,
@@ -24,7 +32,9 @@ class SpaceAdmin extends React.Component {
 
       NonTraitéesNumber: 0,
       EnAttentesNumber: 0,
-      TraitéesNumber: 0
+      TraitéesNumber: 0,
+
+      fetchEnd: false
     };
     this.toggleNonTraite = this.toggleNonTraite.bind(this);
     this.toggleAttente = this.toggleAttente.bind(this);
@@ -40,14 +50,28 @@ class SpaceAdmin extends React.Component {
     this.renderCandidaturesTraitees = this.renderCandidaturesTraitees.bind(
       this
     );
-
     this.acceptCandidature = this.acceptCandidature.bind(this);
     this.refuseCandidature = this.refuseCandidature.bind(this);
     this.enAttenteCandidature = this.enAttenteCandidature.bind(this);
     this.fetchData = this.fetchData.bind(this);
+    this.getAdmin = this.getAdmin.bind(this);
+    this.setAdmin = this.setAdmin.bind(this);
   }
   // s'exécute au lancement du composant
   componentDidMount() {
+    propsUser = this.props.user;
+    console.log(propsUser);
+    this.setState(state => {
+      return {
+        admin: {
+          ...state.admin,
+          id: propsUser.id,
+          prenom: propsUser.prenom,
+          nom: propsUser.nom,
+          mail: propsUser.mail
+        }
+      };
+    });
     this.fetchData();
   }
   // Fonction pour récupérer les candidatures et les filtrer
@@ -73,6 +97,28 @@ class SpaceAdmin extends React.Component {
       .then(() => this.sortingArray())
       .catch(error => console.log(error));
   }
+  // Fonction pour récupérer les informations de l'Admin
+  getAdmin() {
+    console.log("Get Admin dans SpaceAdmin :");
+    console.log(this.state.admin);
+    return this.state.admin;
+  }
+  // Fonction pour modifier les informations de l'admin
+  setAdmin(AdminModif) {
+    this.setState(state => {
+      return {
+        candidat: {
+          ...state.admin,
+          id: AdminModif.id,
+          prenom: AdminModif.prenom,
+          nom: AdminModif.nom,
+          mail: AdminModif.mail
+        }
+      };
+    });
+    console.log("Set Admin dans SpaceAdmin :");
+    console.log(this.state.admin);
+  }
   // Fonction pour trier les candidatures
   sortingArray() {
     console.log("Sorting array !");
@@ -88,7 +134,8 @@ class SpaceAdmin extends React.Component {
       TraitéesNumber:
         this.state.candidaturesTraitees === 0
           ? 0
-          : this.state.candidaturesTraitees.length
+          : this.state.candidaturesTraitees.length,
+      fetchEnd: true
     });
   }
   // Fonction pour afficher le div qui contient les candidatures non traitées
@@ -389,6 +436,19 @@ class SpaceAdmin extends React.Component {
       );
     }
   }
+  // Fonction pour afficher le composant InformationForm
+  renderInformationForm(boolean) {
+    if (boolean === true) {
+      return (
+        <InformationForm
+          toggle={this.toggleMesInformations}
+          props={this.props}
+          get={() => this.getAdmin()}
+          set={item => this.setAdmin(item)}
+        />
+      );
+    }
+  }
   // Fonction qui affiche le code html du composant
   render() {
     return (
@@ -404,10 +464,7 @@ class SpaceAdmin extends React.Component {
           </Button>
         </div>
         <Collapse isOpen={this.state.boolMesInformations}>
-          <InformationForm
-            toggle={this.toggleMesInformations}
-            props={this.props}
-          />
+          {this.renderInformationForm(this.state.fetchEnd)}
         </Collapse>
         <div className="text-center">
           <Button onClick={this.toggleNonTraite} className="btnSA">

@@ -30,6 +30,7 @@ class SpaceCandidat extends React.Component {
     this.renderCandidatureForm = this.renderCandidatureForm.bind(this);
     this.getCandidat = this.getCandidat.bind(this);
     this.setCandidat = this.setCandidat.bind(this);
+    this.renderInformationForm = this.renderInformationForm.bind(this);
   }
   // Fonction pour récupérer les candidatures du candidat quand il se connecte
   componentDidMount() {
@@ -103,6 +104,7 @@ class SpaceCandidat extends React.Component {
       toggleInformations: !this.state.toggleInformations
     });
   }
+  // Fonction pour charger le composant CandidatureForm quand le fetch est fini
   renderCandidatureForm(boolean) {
     if (boolean === true) {
       return (
@@ -112,8 +114,19 @@ class SpaceCandidat extends React.Component {
           get={() => this.getCandidat()}
         />
       );
-    } else {
-      console.log("En Attente du fetch");
+    }
+  }
+  // Fonction pour afficher le composant InformationForm
+  renderInformationForm(boolean) {
+    if (boolean === true) {
+      return (
+        <InformationForm
+          toggle={this.toggleInformationForm}
+          props={this.props}
+          get={() => this.getCandidat()}
+          set={item => this.setCandidat(item)}
+        />
+      );
     }
   }
   // Fonction qui retourne le html du composant
@@ -131,12 +144,7 @@ class SpaceCandidat extends React.Component {
           </MDBBtn>
         </div>
         <MDBCollapse isOpen={this.state.toggleInformations}>
-          <InformationForm
-            toggle={this.toggleInformationForm}
-            props={this.props}
-            get={() => this.getCandidat()}
-            set={item => this.setCandidat(item)}
-          />
+          {this.renderInformationForm(this.state.fetchEnd)}
         </MDBCollapse>
         <div className="CandidatureForm">
           {this.renderCandidatureForm(this.state.fetchEnd)}

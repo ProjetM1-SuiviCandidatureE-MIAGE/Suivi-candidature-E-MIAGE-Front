@@ -211,7 +211,7 @@ class CandidatureForm extends Component {
             allowFileRename={true}
             fileRenameFunction={file => {
               console.log(file);
-              var date = dateFormat(new Date(), 'dd"d"mm"m"HH-MM');
+              var date = dateFormat(new Date(), "dd-mm");
               return `CV_${date}_${
                 getCandidat().nom
               }_${getCandidat().id.substring(18)}${file.extension}`;
@@ -223,7 +223,7 @@ class CandidatureForm extends Component {
             ]}
             labelFileTypeNotAllowed={"Type du fichier invalide !"}
             fileValidateTypeLabelExpectedTypes={
-              "Type accepté : doc, docx et pdf"
+              "Format accepté : doc, docx et pdf"
             }
             labelIdle={"Glissez et déposez votre CV ici"}
             server={{
@@ -261,7 +261,7 @@ class CandidatureForm extends Component {
             allowFileRename={true}
             fileRenameFunction={file => {
               console.log(file);
-              var date = dateFormat(new Date(), 'dd"d"mm"m"HH-MM');
+              var date = dateFormat(new Date(), "dd-mm");
               return `LM_${date}_${
                 getCandidat().nom
               }_${getCandidat().id.substring(18)}${file.extension}`;
@@ -273,7 +273,7 @@ class CandidatureForm extends Component {
             ]}
             labelFileTypeNotAllowed={"Type du fichier invalide !"}
             fileValidateTypeLabelExpectedTypes={
-              "Type accepté : doc, docx et pdf"
+              "Format accepté : doc, docx et pdf"
             }
             labelIdle={"Glissez et déposez votre lettre de motivation ici"}
             server={{
@@ -312,9 +312,11 @@ class CandidatureForm extends Component {
             allowFileTypeValidation={true}
             allowFileRename={true}
             fileRenameFunction={file => {
-              return `AF_${getCandidat().nom}_${getCandidat().id.substring(
-                18
-              )}${file.extension}`;
+              console.log(file);
+              var date = dateFormat(new Date(), "dd-hh-MM");
+              return `AF_${date}_${
+                getCandidat().nom
+              }_${getCandidat().id.substring(18)}${file.extension}`;
             }}
             acceptedFileTypes={[
               "application/msword",
@@ -323,7 +325,7 @@ class CandidatureForm extends Component {
             ]}
             labelFileTypeNotAllowed={"Type du fichier invalide !"}
             fileValidateTypeLabelExpectedTypes={
-              "Type accepté : doc, docx et pdf"
+              "Format accepté : doc, docx et pdf"
             }
             labelIdle={"Glissez et déposez vos fichiers ici"}
             server={{

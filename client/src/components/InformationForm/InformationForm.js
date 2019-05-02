@@ -11,15 +11,13 @@ import {
 import "./InformationForm.css";
 import ModalPassword from "./ModalPassword/ModalPassword";
 
-let propsUSer = "";
-let getCandidat = "";
-let setCandidat = "";
+let getUser = "";
+let setUser = "";
 
 // Le composant qui créé le formulaire avec les informations de la personne connectée
 export default class InformationForm extends Component {
   constructor(props) {
     super(props);
-    propsUSer = this.props.props.user;
 
     this.state = {
       prenom: "",
@@ -36,17 +34,20 @@ export default class InformationForm extends Component {
   }
   // Fonction qui s'éxecute à la création du composant
   componentDidMount() {
-    getCandidat = this.props.get;
-    setCandidat = this.props.set;
+    getUser = this.props.get;
+    setUser = this.props.set;
+
+    const User = getUser();
+    console.log(User);
 
     this.setState({
-      prenom: propsUSer.prenom,
-      nom: propsUSer.nom,
-      mail: propsUSer.mail,
+      prenom: User.prenom,
+      nom: User.nom,
+      mail: User.mail,
 
-      newPrenom: propsUSer.prenom,
-      newNom: propsUSer.nom,
-      newMail: propsUSer.mail
+      newPrenom: User.prenom,
+      newNom: User.nom,
+      newMail: User.mail
     });
   }
   // Fonction pour modifier les valeurs des inputs
