@@ -5,6 +5,7 @@ import { MDBBadge } from "mdbreact";
 import "./SpaceAdmin.css";
 import Moment from "react-moment";
 import InformationForm from "../InformationForm/InformationForm";
+import DataTable from "./DataTable/DataTable";
 
 let propsUser = "";
 
@@ -454,6 +455,7 @@ class SpaceAdmin extends React.Component {
     return (
       <div className="Admin">
         <SpaceNavbar props={this.props} />
+        <DataTable props={this.candidaturesTraitees} />
         <div className="text-center">
           <Button
             onClick={this.toggleMesInformations}
