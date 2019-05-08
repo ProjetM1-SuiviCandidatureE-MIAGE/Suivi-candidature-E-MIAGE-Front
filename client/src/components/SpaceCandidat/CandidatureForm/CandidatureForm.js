@@ -14,7 +14,6 @@ import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 import { FilePond, registerPlugin } from "react-filepond";
 import FilePondPluginFileRename from "filepond-plugin-file-rename";
 import "filepond/dist/filepond.min.css";
-var dateFormat = require("dateformat");
 
 registerPlugin(
   FilePondPluginFileValidateType,
@@ -35,10 +34,13 @@ class CandidatureForm extends Component {
       formValid: false,
       statut: "brouillon",
       date: "",
+      mail: "",
       CV: "",
       LM: "",
+      BU: "",
+      RN: "",
       files: "",
-      mail: "",
+
       candidatures: "",
       brouillon: ""
     };
@@ -54,7 +56,9 @@ class CandidatureForm extends Component {
     candidaturesCandidat = this.props.candidatures;
     brouillonCandidat = this.props.brouillon;
 
+    console.log("Brouillons : ");
     console.log(brouillonCandidat);
+    console.log("Candidatures : ");
     console.log(candidaturesCandidat);
 
     this.setState({
@@ -103,7 +107,7 @@ class CandidatureForm extends Component {
         method: "POST",
         body: JSON.stringify({
           mail: Candidat.mail,
-          sujet: "Confirmation de la creation de votre candidature",
+          sujet: "Confirmation de la création de votre candidature",
           texte:
             "Bonjour " +
             Candidat.prenom +
@@ -157,13 +161,15 @@ class CandidatureForm extends Component {
       statut: "brouillon",
       date: new Date(),
       files: "",
+      CV: "",
+      LM: "",
+      BU: "",
+      RN: "",
       mail: getCandidat().mail
     });
   }
   // Fonction pour supprimer un fichier quand l'utilisateur clique sur la croix
   deleteFile(file) {
-    console.log("deleteFile() + ");
-    console.log(file);
     fetch("/upload/deleteFile", {
       method: "DELETE",
       body: JSON.stringify({
@@ -211,10 +217,9 @@ class CandidatureForm extends Component {
             allowFileRename={true}
             fileRenameFunction={file => {
               console.log(file);
-              var date = dateFormat(new Date(), "dd-mm");
-              return `CV_${date}_${
-                getCandidat().nom
-              }_${getCandidat().id.substring(18)}${file.extension}`;
+              return `CV_${getCandidat().nom}_${getCandidat().id.substring(
+                18
+              )}${file.extension}`;
             }}
             acceptedFileTypes={[
               "application/msword",
@@ -261,10 +266,9 @@ class CandidatureForm extends Component {
             allowFileRename={true}
             fileRenameFunction={file => {
               console.log(file);
-              var date = dateFormat(new Date(), "dd-mm");
-              return `LM_${date}_${
-                getCandidat().nom
-              }_${getCandidat().id.substring(18)}${file.extension}`;
+              return `LM_${getCandidat().nom}_${getCandidat().id.substring(
+                18
+              )}${file.extension}`;
             }}
             acceptedFileTypes={[
               "application/msword",
@@ -298,6 +302,104 @@ class CandidatureForm extends Component {
             labelTapToCancel={"Cliquez pour annuler "}
           />
           <div className="text-center">
+            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Bulletin
+            scolaire
+          </div>
+          <FilePond
+            ref={refBU => (this.pond = refBU)}
+            files={this.state.BU}
+            allowMultiple={false}
+            allowFileSizeValidation={true}
+            maxFileSize={2000000} // 2MB
+            allowFileTypeValidation={true}
+            allowFileRename={true}
+            fileRenameFunction={file => {
+              console.log(file);
+              return `BU_${getCandidat().nom}_${getCandidat().id.substring(
+                18
+              )}${file.extension}`;
+            }}
+            acceptedFileTypes={[
+              "application/msword",
+              "application/pdf",
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ]}
+            labelFileTypeNotAllowed={"Type du fichier invalide !"}
+            fileValidateTypeLabelExpectedTypes={
+              "Format accepté : doc, docx et pdf"
+            }
+            labelIdle={"Glissez et déposez votre bulletin scolaire ici"}
+            server={{
+              process: "/upload/uploadFile",
+              revert: null,
+              load: null,
+              restore: null,
+              fetch: null
+            }}
+            onremovefile={file => {
+              this.deleteFile(file.file);
+            }}
+            onupdatefiles={fileItems => {
+              this.setState(
+                {
+                  BU: fileItems.map(fileItem => fileItem.file)
+                },
+                console.log("variable BU updated !"),
+                console.log(this.state.BU)
+              );
+            }}
+            labelTapToCancel={"Cliquez pour annuler "}
+          />
+          <div className="text-center">
+            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Relevé de
+            notes
+          </div>
+          <FilePond
+            ref={refRN => (this.pond = refRN)}
+            files={this.state.RN}
+            allowMultiple={false}
+            allowFileSizeValidation={true}
+            maxFileSize={2000000} // 2MB
+            allowFileTypeValidation={true}
+            allowFileRename={true}
+            fileRenameFunction={file => {
+              console.log(file);
+              return `RN_${getCandidat().nom}_${getCandidat().id.substring(
+                18
+              )}${file.extension}`;
+            }}
+            acceptedFileTypes={[
+              "application/msword",
+              "application/pdf",
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ]}
+            labelFileTypeNotAllowed={"Type du fichier invalide !"}
+            fileValidateTypeLabelExpectedTypes={
+              "Format accepté : doc, docx et pdf"
+            }
+            labelIdle={"Glissez et déposez votre relevé de notes ici"}
+            server={{
+              process: "/upload/uploadFile",
+              revert: null,
+              load: null,
+              restore: null,
+              fetch: null
+            }}
+            onremovefile={file => {
+              this.deleteFile(file.file);
+            }}
+            onupdatefiles={fileItems => {
+              this.setState(
+                {
+                  RN: fileItems.map(fileItem => fileItem.file)
+                },
+                console.log("variable RN updated !"),
+                console.log(this.state.RN)
+              );
+            }}
+            labelTapToCancel={"Cliquez pour annuler "}
+          />
+          <div className="text-center">
             <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Autres
             fichiers (max {maxFiles} fichiers){" "}
           </div>
@@ -313,8 +415,8 @@ class CandidatureForm extends Component {
             allowFileRename={true}
             fileRenameFunction={file => {
               console.log(file);
-              var date = dateFormat(new Date(), "dd-hh-MM");
-              return `AF_${date}_${
+              let numero = this.state.files.length + 1;
+              return `AF${numero}_${
                 getCandidat().nom
               }_${getCandidat().id.substring(18)}${file.extension}`;
             }}

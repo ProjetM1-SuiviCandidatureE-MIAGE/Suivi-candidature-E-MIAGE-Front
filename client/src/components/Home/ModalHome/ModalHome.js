@@ -80,6 +80,7 @@ class ModalHome extends Component {
         return response.json();
       })
       .then(function(body) {
+        console.log(body);
         if (body.text === "Succès") {
           const User = {
             prenom: newCandidat.prenom,
@@ -88,13 +89,15 @@ class ModalHome extends Component {
             token: body.token,
             id: body.id
           };
-          props.props.change(User);
+          while (props.props.get().mail === "") {
+            // On change les informations de l'utilisateur
+            props.props.change(User);
+          }
           Auth.loginCandidat();
           props.history.push("/SpaceCandidat");
         } else {
           alert(body.text);
         }
-        console.log(body);
       })
       .catch(err => {
         console.error(err);
@@ -121,6 +124,7 @@ class ModalHome extends Component {
         return response.json();
       })
       .then(function(body) {
+        console.log(body);
         if (body.text === "Authentification réussi") {
           const User = {
             prenom: body.prenom,
@@ -129,15 +133,16 @@ class ModalHome extends Component {
             token: body.token,
             id: body.id
           };
-          // On change les informations de l'utilisateur
-          props.props.change(User);
+          while (props.props.get().mail === "") {
+            // On change les informations de l'utilisateur
+            props.props.change(User);
+          }
           // On connecte le candidat et on le redirige vers l'espace candidat
           Auth.loginCandidat();
           props.history.push("/SpaceCandidat");
         } else {
           alert(body.text);
         }
-        console.log(body);
       })
       .catch(err => {
         console.error(err);
@@ -163,6 +168,7 @@ class ModalHome extends Component {
         return response.json();
       })
       .then(function(body) {
+        console.log(body);
         if (body.text === "Authentification réussi") {
           const User = {
             prenom: body.prenom,
@@ -171,13 +177,15 @@ class ModalHome extends Component {
             token: body.token,
             id: body.id
           };
-          props.props.change(User);
+          while (props.props.get().mail === "") {
+            // On change les informations de l'utilisateur
+            props.props.change(User);
+          }
           Auth.loginAdmin();
           props.history.push("/SpaceAdmin");
         } else {
           alert(body.text);
         }
-        console.log(body);
       })
       .catch(err => {
         console.error(err);

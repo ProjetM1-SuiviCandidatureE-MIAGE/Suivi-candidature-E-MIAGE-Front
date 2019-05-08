@@ -28,6 +28,7 @@ class App extends Component {
     };
     this.setUser = this.setUser.bind(this);
     this.resetUser = this.resetUser.bind(this);
+    this.getUser = this.getUser.bind(this);
   }
   // Fonction pour modifier la variable User après la connexion
   setUser(userConnected) {
@@ -43,6 +44,10 @@ class App extends Component {
         }
       };
     });
+  }
+  // Fonction pour récupérer la variable User
+  getUser() {
+    return this.state.User;
   }
   // Fonction pour reset les champs de User
   resetUser() {
@@ -71,6 +76,7 @@ class App extends Component {
               component={Home}
               change={User => this.setUser(User)}
               user={this.state.User}
+              get={this.getUser}
             />
             <PrivateRoute
               exact
