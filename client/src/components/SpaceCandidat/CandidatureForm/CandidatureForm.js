@@ -32,12 +32,15 @@ class CandidatureForm extends Component {
 
     this.state = {
       formValid: false,
-      statut: "brouillon",
-      date: "",
+
+      etat: "brouillon",
+      date: new Date(),
+      commentaire: "",
+      dateTraitement: "",
       mail: "",
       CV: "",
       LM: "",
-      BU: "",
+      DI: "",
       RN: "",
       files: "",
 
@@ -56,27 +59,28 @@ class CandidatureForm extends Component {
     candidaturesCandidat = this.props.candidatures;
     brouillonCandidat = this.props.brouillon;
 
-    console.log("Brouillons : ");
-    console.log(brouillonCandidat);
-    console.log("Candidatures : ");
-    console.log(candidaturesCandidat);
+    console.log("Props Brouillons : " + JSON.stringify(brouillonCandidat));
+    console.log("Props Candidatures : " + JSON.stringify(candidaturesCandidat));
 
-    this.setState({
-      mail:
-        brouillonCandidat === "vide"
-          ? getCandidat().mail
-          : brouillonCandidat.candidat.mail,
-      candidatures: candidaturesCandidat,
-      brouillon: brouillonCandidat
-    });
+    this.setState(
+      {
+        mail: brouillonCandidat.candidat.mail,
+        candidatures: candidaturesCandidat,
+        brouillon: brouillonCandidat
+      },
+      console.log("brouillon : " + this.state.brouillon)
+    );
   }
-  // Méthode pour changer le mail dans l'MDBInput
+  /////////////////////////////////////////////////
+  // Méthode pour changer le mail dans le MDBInput
   handleEmailChange(e) {
+    console.log(this.state.brouillon);
     const value = e.target.value;
     this.setState({
       mail: value
     });
   }
+  ////////////////////////////////////////////////////
   // Méthode pour créer une candidature
   handleSubmit(e) {
     e.preventDefault();
@@ -89,9 +93,12 @@ class CandidatureForm extends Component {
           etat: "non traitée",
           commentaire: "",
           date: new Date(),
-          CV: this.state.CV,
-          LM: this.state.LM,
-          files: this.state.files,
+          dateTraitement: this.state.dateTraitement,
+          cv: this.state.CV,
+          lm: this.state.LM,
+          releveNote: this.state.RN,
+          diplome: this.state.DI,
+          autresFichiers: this.state.files,
           candidat: Candidat
         }),
         headers: { "Content-Type": "application/json" }
@@ -129,19 +136,24 @@ class CandidatureForm extends Component {
       console.log("formulaire non valide petit malin :D !");
     }
   }
+  ////////////////////////////////////////////////////////
   // Fonction pour sauvegarder la candidature en brouillon
   handleSave(e) {
     e.preventDefault();
-    fetch("/candidatures/saveCandidature", {
-      method: "POST",
+    const Candidat = getCandidat();
+    fetch(`/candidatures/edit/${this.state.brouillon._id}`, {
+      method: "PUT",
       body: JSON.stringify({
         etat: "brouillon",
-        commentaire: "",
+        commentaire: this.state.mail,
         date: new Date(),
-        CV: this.state.CV,
-        LM: this.state.LM,
-        files: this.state.files,
-        candidat: getCandidat()
+        dateTraitement: this.state.dateTraitement,
+        cv: this.state.CV,
+        lm: this.state.LM,
+        releveNote: this.state.RN,
+        diplome: this.state.DI,
+        autresFichier: this.state.files,
+        candidat: Candidat
       }),
       headers: { "Content-Type": "application/json" }
     })
@@ -153,17 +165,18 @@ class CandidatureForm extends Component {
       });
     this.handleResetForm(e);
   }
+  //////////////////////////////////////////////////////////////
   // Méthode pour reset le formulaire avec les valeurs de bases
   handleResetForm(e) {
     e.preventDefault();
     this.setState({
       formValid: false,
-      statut: "brouillon",
+      etat: "brouillon",
       date: new Date(),
       files: "",
       CV: "",
       LM: "",
-      BU: "",
+      DI: "",
       RN: "",
       mail: getCandidat().mail
     });
@@ -211,15 +224,16 @@ class CandidatureForm extends Component {
             ref={refCV => (this.pond = refCV)}
             files={this.state.CV}
             allowMultiple={false}
+            required={true}
             allowFileSizeValidation={true}
             maxFileSize={2000000} // 2MB
             allowFileTypeValidation={true}
             allowFileRename={true}
             fileRenameFunction={file => {
               console.log(file);
-              return `CV_${getCandidat().nom}_${getCandidat().id.substring(
-                18
-              )}${file.extension}`;
+              return `CV_${
+                getCandidat().nom
+              }_${this.state.brouillon._id.substring(18)}${file.extension}`;
             }}
             acceptedFileTypes={[
               "application/msword",
@@ -246,7 +260,7 @@ class CandidatureForm extends Component {
                 {
                   CV: fileItems.map(fileItem => fileItem.file)
                 },
-                console.log("variable CV updated !"),
+                console.log("CV : "),
                 console.log(this.state.CV)
               );
             }}
@@ -260,6 +274,7 @@ class CandidatureForm extends Component {
             ref={refLM => (this.pond = refLM)}
             files={this.state.LM}
             allowMultiple={false}
+            required={true}
             allowFileSizeValidation={true}
             maxFileSize={2000000} // 2MB
             allowFileTypeValidation={true}
@@ -302,20 +317,20 @@ class CandidatureForm extends Component {
             labelTapToCancel={"Cliquez pour annuler "}
           />
           <div className="text-center">
-            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Bulletin
-            scolaire
+            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Diplôme
           </div>
           <FilePond
-            ref={refBU => (this.pond = refBU)}
-            files={this.state.BU}
+            ref={refDI => (this.pond = refDI)}
+            files={this.state.DI}
             allowMultiple={false}
+            required={true}
             allowFileSizeValidation={true}
             maxFileSize={2000000} // 2MB
             allowFileTypeValidation={true}
             allowFileRename={true}
             fileRenameFunction={file => {
               console.log(file);
-              return `BU_${getCandidat().nom}_${getCandidat().id.substring(
+              return `DI_${getCandidat().nom}_${getCandidat().id.substring(
                 18
               )}${file.extension}`;
             }}
@@ -328,7 +343,7 @@ class CandidatureForm extends Component {
             fileValidateTypeLabelExpectedTypes={
               "Format accepté : doc, docx et pdf"
             }
-            labelIdle={"Glissez et déposez votre bulletin scolaire ici"}
+            labelIdle={"Glissez et déposez votre diplôme ici"}
             server={{
               process: "/upload/uploadFile",
               revert: null,
@@ -342,10 +357,10 @@ class CandidatureForm extends Component {
             onupdatefiles={fileItems => {
               this.setState(
                 {
-                  BU: fileItems.map(fileItem => fileItem.file)
+                  DI: fileItems.map(fileItem => fileItem.file)
                 },
-                console.log("variable BU updated !"),
-                console.log(this.state.BU)
+                console.log("variable DI updated !"),
+                console.log(this.state.DI)
               );
             }}
             labelTapToCancel={"Cliquez pour annuler "}
@@ -358,6 +373,7 @@ class CandidatureForm extends Component {
             ref={refRN => (this.pond = refRN)}
             files={this.state.RN}
             allowMultiple={false}
+            required={true}
             allowFileSizeValidation={true}
             maxFileSize={2000000} // 2MB
             allowFileTypeValidation={true}
@@ -393,8 +409,7 @@ class CandidatureForm extends Component {
                 {
                   RN: fileItems.map(fileItem => fileItem.file)
                 },
-                console.log("variable RN updated !"),
-                console.log(this.state.RN)
+                console.log("Relevé : " + this.state.RN)
               );
             }}
             labelTapToCancel={"Cliquez pour annuler "}
@@ -409,6 +424,7 @@ class CandidatureForm extends Component {
             registerPlugin={registerPlugin}
             allowMultiple={true}
             maxFiles={maxFiles}
+            maxParallelUploads={1}
             allowFileSizeValidation={true}
             maxTotalFileSize={10000000} // 10MB
             allowFileTypeValidation={true}
@@ -445,8 +461,7 @@ class CandidatureForm extends Component {
                 {
                   files: fileItems.map(fileItem => fileItem.file)
                 },
-                console.log("variable files updated !"),
-                console.log(this.state.files)
+                console.log("Autres fichiers : " + this.state.files)
               );
             }}
             labelTapToCancel={"Cliquez pour annuler "}
@@ -457,7 +472,7 @@ class CandidatureForm extends Component {
             type="submit"
             outline
             color="primary"
-            className="CloseButton"
+            className="CloseDItton"
             onClick={this.handleResetForm}
           >
             Annuler
@@ -465,7 +480,7 @@ class CandidatureForm extends Component {
           <MDBBtn
             type="submit"
             color="primary"
-            className="SaveButton"
+            className="SaveDItton"
             onClick={this.handleSave}
           >
             Sauvegarder
@@ -473,7 +488,7 @@ class CandidatureForm extends Component {
           <MDBBtn
             type="submit"
             color="primary"
-            className="SubmitButton"
+            className="SubmitDItton"
             onClick={this.handleSubmit}
             // true pour que ce soit disabled
             disabled={!this.state.formValid}

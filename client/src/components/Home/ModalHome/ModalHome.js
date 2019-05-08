@@ -59,7 +59,8 @@ class ModalHome extends Component {
       [name]: value
     });
   };
-  // Fonction pour s'inscrire
+  ///////////////////////////////////
+  // Fonction pour s'inscrire (candidat)
   SignUp = event => {
     event.preventDefault();
     const newCandidat = {
@@ -80,7 +81,6 @@ class ModalHome extends Component {
         return response.json();
       })
       .then(function(body) {
-        console.log(body);
         if (body.text === "Succès") {
           const User = {
             prenom: newCandidat.prenom,
@@ -124,7 +124,6 @@ class ModalHome extends Component {
         return response.json();
       })
       .then(function(body) {
-        console.log(body);
         if (body.text === "Authentification réussi") {
           const User = {
             prenom: body.prenom,
@@ -168,7 +167,6 @@ class ModalHome extends Component {
         return response.json();
       })
       .then(function(body) {
-        console.log(body);
         if (body.text === "Authentification réussi") {
           const User = {
             prenom: body.prenom,

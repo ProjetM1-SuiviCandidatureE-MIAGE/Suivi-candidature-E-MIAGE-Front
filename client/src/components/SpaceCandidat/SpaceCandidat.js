@@ -49,6 +49,12 @@ class SpaceCandidat extends React.Component {
           etat: "brouillon",
           commentaire: "",
           date: new Date(),
+          dateTraitement: "",
+          cv: "",
+          lm: "",
+          releveNote: "",
+          diplome: "",
+          autresFichier: "",
           candidat: this.state.candidat
         }),
         headers: { "Content-Type": "application/json" }
@@ -56,9 +62,7 @@ class SpaceCandidat extends React.Component {
         .then(function(response) {
           return response;
         })
-        .then(function(body) {
-          console.log("");
-        });
+        .then(function(body) {});
     }
     if (this.state.fetchEnd === "falsefalse") {
       this.setState({
@@ -105,8 +109,6 @@ class SpaceCandidat extends React.Component {
   }
   // Fonction pour récupérer les données du candidat pour les autres composants fils
   getCandidat() {
-    console.log("Get candidat dans SpaceCandidat :");
-    console.log(this.state.candidat);
     return this.state.candidat;
   }
   // Fonction pour modifier les informations du candidat
