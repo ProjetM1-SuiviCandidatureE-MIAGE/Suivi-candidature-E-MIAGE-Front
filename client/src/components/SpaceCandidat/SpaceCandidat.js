@@ -41,8 +41,9 @@ class SpaceCandidat extends React.Component {
   }
   // Fonction qui vérifie que la variable brouillon n'est pas vide
   // Sinon il créé une candidature brouillon
-  checkBrouillon() {
-    if (this.state.brouillon === "vide") {
+  checkBrouillon(boolean) {
+    const self = this;
+    if (boolean === false) {
       fetch("/candidatures/saveCandidature", {
         method: "POST",
         body: JSON.stringify({
@@ -50,11 +51,11 @@ class SpaceCandidat extends React.Component {
           commentaire: "",
           date: new Date(),
           dateTraitement: "",
-          cv: "",
-          lm: "",
-          releveNote: "",
-          diplome: "",
-          autresFichier: "",
+          cv: { nom: "" },
+          lm: { nom: "" },
+          releveNote: { nom: "" },
+          diplome: { nom: "" },
+          autresFichier: [],
           candidat: this.state.candidat
         }),
         headers: { "Content-Type": "application/json" }
@@ -62,19 +63,18 @@ class SpaceCandidat extends React.Component {
         .then(function(response) {
           return response;
         })
-        .then(function(body) {});
+        .then(function(body) {
+          self.setState(
+            {
+              fetchEnd: boolean
+            },
+            self.fetchCandidatures()
+          );
+        });
     }
-    if (this.state.fetchEnd === "falsefalse") {
-      this.setState({
-        fetchEnd: true
-      });
-    }
-    if (this.state.fetchEnd === false) {
-      this.setState({
-        fetchEnd: "falsefalse"
-      });
-      this.fetchCandidatures();
-    }
+    self.setState({
+      fetchEnd: boolean
+    });
   }
   // Fonction pour récupérer les candidatures et le brouillon
   fetchCandidatures() {
@@ -88,9 +88,14 @@ class SpaceCandidat extends React.Component {
               brouillon:
                 data.text === "vide"
                   ? "vide"
-                  : data.etat.includes("brouillon")
-                  ? data
+                  : data.some(function(item) {
+                      return item.etat.includes("brouillon");
+                    })
+                  ? data.filter(function(item) {
+                      return item.etat.includes("brouillon");
+                    })
                   : "vide",
+              fetchEnd: this.state.fetchEnd,
               candidat: {
                 ...state.candidat,
                 id: propsUser.id,
@@ -100,7 +105,13 @@ class SpaceCandidat extends React.Component {
               }
             };
           },
-          () => this.checkBrouillon()
+          () => {
+            if (this.state.brouillon === "vide") {
+              this.checkBrouillon(false);
+            } else {
+              this.checkBrouillon(true);
+            }
+          }
         )
       )
       .catch(error => {
