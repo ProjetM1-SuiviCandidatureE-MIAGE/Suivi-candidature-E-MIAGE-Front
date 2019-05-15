@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import {
-  MDBInput,
   MDBCard,
   MDBCardBody,
   MDBCardTitle,
@@ -37,11 +36,10 @@ class CandidatureForm extends Component {
       date: new Date(),
       commentaire: "",
       dateTraitement: "",
-      mail: "",
-      CV: "",
-      LM: "",
-      DI: "",
-      RN: "",
+      CV: [],
+      LM: [],
+      DI: [],
+      RN: [],
       files: [],
 
       candidatures: "",
@@ -50,11 +48,11 @@ class CandidatureForm extends Component {
       loadEnd: false
     };
     // On bind toutes les fonctions qui vont utiliser le this.state
-    this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleResetForm = this.handleResetForm.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.renderFilePonds = this.renderFilePonds.bind(this);
+    this.loadFile = this.loadFile.bind(this);
   }
   // Fonction qui s'éxecute à la création du composant mais après le constructor et le render
   componentDidMount() {
@@ -66,7 +64,6 @@ class CandidatureForm extends Component {
     console.log("Props Candidatures : " + JSON.stringify(candidaturesCandidat));
 
     this.setState({
-      mail: brouillonCandidat[0].candidat.mail,
       candidatures: candidaturesCandidat,
       brouillon: brouillonCandidat[0],
 
@@ -79,17 +76,27 @@ class CandidatureForm extends Component {
       loadEnd: true
     });
   }
-  /////////////////////////////////////////////////
-  // Méthode pour changer le mail dans le MDBInput
-  handleEmailChange(e) {
-    console.log(this.state);
-    const value = e.target.value;
-    this.setState({
-      mail: value
-    });
+  ////////////////////////////////////////////////////////////
+  // Fonction pour charger les fichiers upload
+  loadFile(path) {
+    if (this.state.CV.length !== 0) {
+      fetch("/upload/getFile")
+        .then(res => res.json())
+        .then(data =>
+          this.setState(
+            {
+              exemple: data
+            },
+            console.log(this.state)
+          )
+        )
+        .catch(error => {
+          console.log(error);
+        });
+    }
   }
   ////////////////////////////////////////////////////
-  // Méthode pour créer une candidature
+  // Méthode pour envoyer une candidature quand elle est complète
   handleSubmit(e) {
     e.preventDefault();
     console.log("submit !");
@@ -153,7 +160,7 @@ class CandidatureForm extends Component {
       method: "PUT",
       body: JSON.stringify({
         etat: "brouillon",
-        commentaire: this.state.mail,
+        commentaire: "",
         date: new Date(),
         dateTraitement: this.state.dateTraitement,
         cv: this.state.CV,
@@ -180,12 +187,13 @@ class CandidatureForm extends Component {
       formValid: false,
       etat: "brouillon",
       date: new Date(),
-      files: "",
-      CV: "",
-      LM: "",
-      DI: "",
-      RN: "",
-      mail: getCandidat().mail
+      commentaire: "",
+      dateTraitement: "",
+      CV: [],
+      LM: [],
+      DI: [],
+      RN: [],
+      files: []
     });
   }
   ///////////////////////////////////////////////////////////////
@@ -209,6 +217,7 @@ class CandidatureForm extends Component {
   // Fonction pour afficher les FilePond
   renderFilePonds(boolean) {
     if (boolean === true) {
+      console.log(this.state.CV);
       return (
         <div>
           <div className="text-center">
@@ -225,19 +234,17 @@ class CandidatureForm extends Component {
             allowFileTypeValidation={true}
             allowFileRename={true}
             fileRenameFunction={file => {
-              return `CV_${
-                getCandidat().nom
-              }_${this.state.brouillon._id.substring(18)}${file.extension}`;
+              return (
+                "CV_" +
+                getCandidat().nom +
+                "_" +
+                this.state.brouillon._id.substring(18) +
+                file.extension
+              );
             }}
-            acceptedFileTypes={[
-              "application/msword",
-              "application/pdf",
-              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            ]}
+            acceptedFileTypes={["application/pdf"]}
             labelFileTypeNotAllowed={"Type du fichier invalide !"}
-            fileValidateTypeLabelExpectedTypes={
-              "Format accepté : doc, docx et pdf"
-            }
+            fileValidateTypeLabelExpectedTypes={"Format accepté : PDF"}
             labelIdle={"Glissez et déposez votre CV ici"}
             server={{
               process: "/upload/uploadFile",
@@ -252,27 +259,24 @@ class CandidatureForm extends Component {
             onupdatefiles={fileItems => {
               console.log(fileItems);
               if (fileItems.length === 0) {
-                console.log("CV vide");
-                this.setState(
-                  {
-                    CV: ""
-                  },
-                  console.log(this.state.CV)
-                );
+                this.setState({
+                  CV: []
+                });
               } else {
                 const fileData = {
                   nom: fileItems[0].filename,
                   date: fileItems[0].source.lastModifiedDate,
-                  fichier: "server/uploads/CV/" + fileItems[0].filename,
+                  fichier: "CV/" + fileItems[0].filename,
                   ancienNom: fileItems[0].source.name
                 };
-                this.setState(
-                  {
-                    CV: fileData
-                  },
-                  console.log(this.state.CV)
-                );
+                this.setState({
+                  CV:
+                    this.state.CV.length === 1
+                      ? this.state.CV
+                      : this.state.CV.concat(fileData)
+                });
               }
+              console.log(this.state.CV);
             }}
             labelTapToCancel={"Cliquez pour annuler "}
           />
@@ -294,15 +298,9 @@ class CandidatureForm extends Component {
                 getCandidat().nom
               }_${this.state.brouillon._id.substring(18)}${file.extension}`;
             }}
-            acceptedFileTypes={[
-              "application/msword",
-              "application/pdf",
-              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            ]}
+            acceptedFileTypes={["application/pdf"]}
             labelFileTypeNotAllowed={"Type du fichier invalide !"}
-            fileValidateTypeLabelExpectedTypes={
-              "Format accepté : doc, docx et pdf"
-            }
+            fileValidateTypeLabelExpectedTypes={"Format accepté : PDF"}
             labelIdle={"Glissez et déposez votre lettre de motivation ici"}
             server={{
               process: "/upload/uploadFile",
@@ -318,15 +316,12 @@ class CandidatureForm extends Component {
               const fileData = {
                 nom: fileItems[0].filename,
                 date: fileItems[0].source.lastModifiedDate,
-                fichier: "server/uploads/LM/" + fileItems[0].filename,
+                fichier: "LM/" + fileItems[0].filename,
                 ancienNom: fileItems[0].source.name
               };
-              this.setState(
-                {
-                  LM: fileData
-                },
-                console.log(this.state.LM)
-              );
+              this.setState({
+                LM: fileData
+              });
             }}
             labelTapToCancel={"Cliquez pour annuler "}
           />
@@ -347,15 +342,9 @@ class CandidatureForm extends Component {
                 getCandidat().nom
               }_${this.state.brouillon._id.substring(18)}${file.extension}`;
             }}
-            acceptedFileTypes={[
-              "application/msword",
-              "application/pdf",
-              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            ]}
+            acceptedFileTypes={["application/pdf"]}
             labelFileTypeNotAllowed={"Type du fichier invalide !"}
-            fileValidateTypeLabelExpectedTypes={
-              "Format accepté : doc, docx et pdf"
-            }
+            fileValidateTypeLabelExpectedTypes={"Format accepté : PDF"}
             labelIdle={"Glissez et déposez votre diplôme ici"}
             server={{
               process: "/upload/uploadFile",
@@ -371,15 +360,13 @@ class CandidatureForm extends Component {
               const fileData = {
                 nom: fileItems[0].filename,
                 date: fileItems[0].source.lastModifiedDate,
-                fichier: "server/uploads/DI/" + fileItems[0].filename,
+                fichier: "DI/" + fileItems[0].filename,
                 ancienNom: fileItems[0].source.name
               };
-              this.setState(
-                {
-                  DI: fileData
-                },
-                console.log(this.state.DI)
-              );
+              this.setState({
+                DI: fileData
+              });
+              console.log(this.state.DI);
             }}
             labelTapToCancel={"Cliquez pour annuler "}
           />
@@ -401,22 +388,12 @@ class CandidatureForm extends Component {
                 getCandidat().nom
               }_${this.state.brouillon._id.substring(18)}${file.extension}`;
             }}
-            acceptedFileTypes={[
-              "application/msword",
-              "application/pdf",
-              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            ]}
+            acceptedFileTypes={["application/pdf"]}
             labelFileTypeNotAllowed={"Type du fichier invalide !"}
-            fileValidateTypeLabelExpectedTypes={
-              "Format accepté : doc, docx et pdf"
-            }
+            fileValidateTypeLabelExpectedTypes={"Format accepté : PDF"}
             labelIdle={"Glissez et déposez votre relevé de notes ici"}
             server={{
-              process: "/upload/uploadFile",
-              revert: null,
-              load: null,
-              restore: null,
-              fetch: null
+              process: "/upload/uploadFile"
             }}
             onremovefile={file => {
               this.deleteFile(file.file);
@@ -425,7 +402,7 @@ class CandidatureForm extends Component {
               const fileData = {
                 nom: fileItems[0].filename,
                 date: fileItems[0].source.lastModifiedDate,
-                fichier: "server/uploads/RN/" + fileItems[0].filename,
+                fichier: "RN/" + fileItems[0].filename,
                 ancienNom: fileItems[0].source.name
               };
               this.setState(
@@ -458,15 +435,9 @@ class CandidatureForm extends Component {
                 getCandidat().nom
               }_${this.state.brouillon._id.substring(18)}${file.extension}`;
             }}
-            acceptedFileTypes={[
-              "application/msword",
-              "application/pdf",
-              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            ]}
+            acceptedFileTypes={["application/pdf"]}
             labelFileTypeNotAllowed={"Type du fichier invalide !"}
-            fileValidateTypeLabelExpectedTypes={
-              "Format accepté : doc, docx et pdf"
-            }
+            fileValidateTypeLabelExpectedTypes={"Format accepté : PDF"}
             labelIdle={"Glissez et déposez vos fichiers ici"}
             server={{
               process: "/upload/uploadFile",
@@ -479,18 +450,22 @@ class CandidatureForm extends Component {
               this.deleteFile(file.file);
             }}
             onupdatefiles={fileItems => {
-              const fileData = {
-                nom: fileItems[0].filename,
-                date: fileItems[0].source.lastModifiedDate,
-                fichier: "server/uploads/AF/" + fileItems[0].filename,
-                ancienNom: fileItems[0].source.name
-              };
-              this.setState(
-                {
-                  files: this.state.files + fileData
-                },
-                console.log(this.state.files)
-              );
+              if (fileItems.length === 0) {
+                this.setState({
+                  files: []
+                });
+              } else {
+                const fileData = {
+                  nom: fileItems[0].filename,
+                  date: fileItems[0].source.lastModifiedDate,
+                  fichier: "AF/" + fileItems[0].filename,
+                  ancienNom: fileItems[0].source.name
+                };
+                this.setState({
+                  files: this.state.files.push(fileData)
+                });
+              }
+              console.log(this.state.files);
             }}
             labelTapToCancel={"Cliquez pour annuler "}
           />
@@ -498,7 +473,6 @@ class CandidatureForm extends Component {
       );
     }
   }
-  // La fonction qui permet d'afficher le code html du composant CandidatureForm donc le formulaire
   render() {
     return (
       <MDBCard className="shadow-box-example z-depth-4 CardPerso mx-auto">
@@ -506,17 +480,9 @@ class CandidatureForm extends Component {
           Créer votre candidature
         </MDBCardTitle>
         <MDBCardBody className="CardBody">
-          <MDBInput
-            className="MDBInputText"
-            type="text"
-            name="mail"
-            label="Mail professionnel"
-            icon="envelope"
-            value={this.state.mail}
-            onChange={this.handleEmailChange}
-            required
-            autoComplete="new-password"
-          />
+          <div>
+            <p>Tous les fichiers doivent être au format PDF !</p>
+          </div>
           {this.renderFilePonds(this.state.loadEnd)}
         </MDBCardBody>
         <MDBCardText className="CardText">

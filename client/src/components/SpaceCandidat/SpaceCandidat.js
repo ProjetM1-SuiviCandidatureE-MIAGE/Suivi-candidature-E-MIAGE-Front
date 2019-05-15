@@ -51,10 +51,10 @@ class SpaceCandidat extends React.Component {
           commentaire: "",
           date: new Date(),
           dateTraitement: "",
-          cv: { nom: "" },
-          lm: { nom: "" },
-          releveNote: { nom: "" },
-          diplome: { nom: "" },
+          cv: [],
+          lm: [],
+          releveNote: [],
+          diplome: [],
           autresFichier: [],
           candidat: this.state.candidat
         }),
@@ -124,6 +124,8 @@ class SpaceCandidat extends React.Component {
   }
   // Fonction pour modifier les informations du candidat
   setCandidat(CandidatModif) {
+    // d'abord on fetch le put de mofif du candidat et ensuite dans un .then()
+    // on fait le setState avec le candidat modifié
     this.setState(state => {
       return {
         candidat: {
