@@ -31,59 +31,101 @@ class SpaceCandidat extends React.Component {
     this.getCandidat = this.getCandidat.bind(this);
     this.setCandidat = this.setCandidat.bind(this);
     this.renderInformationForm = this.renderInformationForm.bind(this);
+    this.checkBrouillon = this.checkBrouillon.bind(this);
+    this.fetchCandidatures = this.fetchCandidatures.bind(this);
   }
   // Fonction pour récupérer les candidatures du candidat quand il se connecte
   componentDidMount() {
     propsUser = this.props.user;
-    console.log("récupération des candidatures du candidat");
+    this.fetchCandidatures();
+  }
+  // Fonction qui vérifie que la variable brouillon n'est pas vide
+  // Sinon il créé une candidature brouillon
+  checkBrouillon(boolean) {
+    const self = this;
+    if (boolean === false) {
+      fetch("/candidatures/saveCandidature", {
+        method: "POST",
+        body: JSON.stringify({
+          etat: "brouillon",
+          commentaire: "",
+          date: new Date(),
+          dateTraitement: "",
+          cv: [],
+          lm: [],
+          releveNote: [],
+          diplome: [],
+          autresFichier: [],
+          candidat: this.state.candidat
+        }),
+        headers: { "Content-Type": "application/json" }
+      })
+        .then(function(response) {
+          return response;
+        })
+        .then(function(body) {
+          self.setState(
+            {
+              fetchEnd: boolean
+            },
+            self.fetchCandidatures()
+          );
+        });
+    }
+    self.setState({
+      fetchEnd: boolean
+    });
+  }
+  // Fonction pour récupérer les candidatures et le brouillon
+  fetchCandidatures() {
     fetch(`/candidatures/getCandidatures/${propsUser.id}`)
       .then(res => res.json())
       .then(data =>
-        this.setState(state => {
-          return {
-            candidatures: data === undefined ? "vide" : data,
-            brouillon:
-              data === undefined
-                ? "vide"
-                : data.etat.includes("brouillon")
-                ? data
-                : "vide",
-            candidat: {
-              ...state.candidat,
-              id: propsUser.id,
-              prenom: propsUser.prenom,
-              nom: propsUser.nom,
-              mail: propsUser.mail
-            },
-            fetchEnd: true
-          };
-        })
+        this.setState(
+          state => {
+            return {
+              candidatures: data.text === "vide" ? "vide" : data,
+              brouillon:
+                data.text === "vide"
+                  ? "vide"
+                  : data.some(function(item) {
+                      return item.etat.includes("brouillon");
+                    })
+                  ? data.filter(function(item) {
+                      return item.etat.includes("brouillon");
+                    })
+                  : "vide",
+              fetchEnd: this.state.fetchEnd,
+              candidat: {
+                ...state.candidat,
+                id: propsUser.id,
+                prenom: propsUser.prenom,
+                nom: propsUser.nom,
+                mail: propsUser.mail
+              }
+            };
+          },
+          () => {
+            if (this.state.brouillon === "vide") {
+              this.checkBrouillon(false);
+            } else {
+              this.checkBrouillon(true);
+            }
+          }
+        )
       )
-      .catch(error =>
-        this.setState(state => {
-          return {
-            candidatures: "vide",
-            brouillon: "vide",
-            candidat: {
-              ...state.candidat,
-              id: propsUser.id,
-              prenom: propsUser.prenom,
-              nom: propsUser.nom,
-              mail: propsUser.mail
-            },
-            fetchEnd: true
-          };
-        })
-      );
+      .catch(error => {
+        console.log(error);
+      });
   }
   // Fonction pour récupérer les données du candidat pour les autres composants fils
   getCandidat() {
-    console.log("Get candidat dans SpaceCandidat :");
-    console.log(this.state.candidat);
     return this.state.candidat;
   }
   // Fonction pour modifier les informations du candidat
   setCandidat(CandidatModif) {
+    // d'abord on fetch le put de mofif du candidat et ensuite dans un .then()
+    // on fait le setState avec le candidat modifié
     this.setState(state => {
       return {
         candidat: {
@@ -112,6 +154,7 @@ class SpaceCandidat extends React.Component {
           candidatures={this.state.candidatures}
           brouillon={this.state.brouillon}
           get={() => this.getCandidat()}
+          fetch={() => this.fetchCandidatures()}
         />
       );
     }

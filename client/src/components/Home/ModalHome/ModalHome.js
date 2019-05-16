@@ -59,7 +59,8 @@ class ModalHome extends Component {
       [name]: value
     });
   };
-  // Fonction pour s'inscrire
+  ///////////////////////////////////
+  // Fonction pour s'inscrire (candidat)
   SignUp = event => {
     event.preventDefault();
     const newCandidat = {
@@ -88,13 +89,15 @@ class ModalHome extends Component {
             token: body.token,
             id: body.id
           };
-          props.props.change(User);
+          while (props.props.get().mail === "") {
+            // On change les informations de l'utilisateur
+            props.props.change(User);
+          }
           Auth.loginCandidat();
           props.history.push("/SpaceCandidat");
         } else {
           alert(body.text);
         }
-        console.log(body);
       })
       .catch(err => {
         console.error(err);
@@ -129,15 +132,16 @@ class ModalHome extends Component {
             token: body.token,
             id: body.id
           };
-          // On change les informations de l'utilisateur
-          props.props.change(User);
+          while (props.props.get().mail === "") {
+            // On change les informations de l'utilisateur
+            props.props.change(User);
+          }
           // On connecte le candidat et on le redirige vers l'espace candidat
           Auth.loginCandidat();
           props.history.push("/SpaceCandidat");
         } else {
           alert(body.text);
         }
-        console.log(body);
       })
       .catch(err => {
         console.error(err);
@@ -171,13 +175,15 @@ class ModalHome extends Component {
             token: body.token,
             id: body.id
           };
-          props.props.change(User);
+          while (props.props.get().mail === "") {
+            // On change les informations de l'utilisateur
+            props.props.change(User);
+          }
           Auth.loginAdmin();
           props.history.push("/SpaceAdmin");
         } else {
           alert(body.text);
         }
-        console.log(body);
       })
       .catch(err => {
         console.error(err);
