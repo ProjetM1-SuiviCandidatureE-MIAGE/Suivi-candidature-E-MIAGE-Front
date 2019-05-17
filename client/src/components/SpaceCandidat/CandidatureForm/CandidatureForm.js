@@ -51,7 +51,7 @@ class CandidatureForm extends Component {
 
       candidatures: "",
       brouillon: "",
-
+      temp: "",
       loadEnd: false
     };
     // On bind toutes les fonctions qui vont utiliser le this.state
@@ -108,16 +108,6 @@ class CandidatureForm extends Component {
   // Fonction pour charger les fichiers upload
   loadFile(file) {
     const path = file[0].fichier;
-    /* marche pas
-    fetch("/upload/getFile/" + path)
-      .then(response => response.blob())
-      .then(blob => URL.createObjectURL(blob))
-      .then(url => window.open(url))
-
-      .catch(error => {
-        console.log(error);
-      });
-    */
     const url = "http://localhost:3010/upload/getFile/" + path;
     window.open(url);
   }
@@ -125,13 +115,6 @@ class CandidatureForm extends Component {
   // Fonction pour télécharger un fichier déjà upload
   downloadFile(file) {
     const path = file[0].fichier;
-    /* marche pas
-    fetch("/upload/downloadFile/" + path)
-      .then(response => console.log(response))
-      .catch(error => {
-        console.log(error);
-      });
-    */
     const url = "http://localhost:3010/upload/downloadFile/" + path;
     window.open(url);
   }
@@ -174,7 +157,7 @@ class CandidatureForm extends Component {
             Candidat.prenom +
             " " +
             Candidat.nom +
-            ",<br /> Votre candidature a bien été créée.<br />Cordialement"
+            ",<br /> votre candidature a bien été créée.<br /><br />Cordialement"
         }),
         headers: { "Content-Type": "application/json" }
       })
@@ -186,8 +169,6 @@ class CandidatureForm extends Component {
         });
 
       this.handleResetForm(e);
-    } else {
-      console.log("formulaire non valide petit malin :D !");
     }
   }
   ////////////////////////////////////////////////////////
@@ -247,12 +228,15 @@ class CandidatureForm extends Component {
   }
   ///////////////////////////////////////////////////////////////
   // Fonction pour supprimer un fichier quand l'utilisateur clique sur la croix
-  deleteFile(file) {
+  deleteFile(file, name) {
     const self = this;
+    this.setState({
+      temp: file.name
+    });
     fetch("/upload/deleteFile", {
       method: "DELETE",
       body: JSON.stringify({
-        fichier: file.name,
+        fichier: name,
         id: this.state.brouillon._id
       }),
       headers: { "Content-Type": "application/json" }
@@ -273,7 +257,7 @@ class CandidatureForm extends Component {
         <div>
           <div className="text-center">
             <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> CV
-            (Curriculum Vitae)
+            (Curriculum Vitae)*
           </div>
           <FilePond
             ref={refCV => (this.pond = refCV)}
@@ -283,49 +267,84 @@ class CandidatureForm extends Component {
             allowFileSizeValidation={true}
             maxFileSize={2000000} // 2MB
             allowFileTypeValidation={true}
-            allowFileRename={true}
-            fileRenameFunction={file => {
-              return (
-                "CV_" +
-                getCandidat().nom +
-                "_" +
-                this.state.brouillon._id.substring(18) +
-                file.extension
-              );
-            }}
             acceptedFileTypes={["application/pdf"]}
             labelFileTypeNotAllowed={"Type du fichier invalide !"}
             fileValidateTypeLabelExpectedTypes={"Format accepté : PDF"}
             labelIdle={"Glissez et déposez votre CV ici"}
             server={{
-              process: "/upload/uploadFile",
+              process: (
+                fieldName,
+                file,
+                metadata,
+                load,
+                error,
+                progress,
+                abort
+              ) => {
+                const fileName = this.state.CV[0].nom;
+                const formData = new FormData();
+                formData.append(fieldName, file, fileName);
+
+                const request = new XMLHttpRequest();
+                request.open("POST", "/upload/uploadFile");
+
+                request.upload.onprogress = e => {
+                  progress(e.lengthComputable, e.loaded, e.total);
+                };
+                request.onload = function() {
+                  if (request.status >= 200 && request.status < 300) {
+                    load(request.responseText);
+                  } else {
+                    error("oh no");
+                  }
+                };
+                request.send(formData);
+                return {
+                  abort: () => {
+                    request.abort();
+                    abort();
+                  }
+                };
+              },
               revert: null,
               load: null,
               restore: null,
               fetch: null
             }}
             onremovefile={file => {
-              this.deleteFile(file.file);
+              this.deleteFile(file.file, this.state.CV[0].nom);
             }}
             onupdatefiles={fileItems => {
+              console.log(fileItems);
               if (fileItems.length === 0) {
                 this.setState({
-                  CV: [],
+                  CV:
+                    this.state.temp === this.state.CV[0].ancienNom
+                      ? []
+                      : this.state.CV,
                   fileCV: ""
                 });
               } else {
-                const fileData = [
-                  {
-                    nom: fileItems[0].filename,
-                    date: fileItems[0].source.lastModifiedDate,
-                    fichier: fileItems[0].filename,
-                    ancienNom: fileItems[0].source.name
-                  }
-                ];
-                this.setState({
-                  CV: fileData,
-                  fileCV: fileItems
-                });
+                if (fileItems[0].fileExtension === "pdf") {
+                  const rename =
+                    "CV_" +
+                    getCandidat().nom +
+                    "_" +
+                    this.state.brouillon._id.substring(18) +
+                    ".pdf";
+                  const fileData = [
+                    {
+                      nom: rename,
+                      date: fileItems[0].source.lastModifiedDate,
+                      fichier: rename,
+                      ancienNom: fileItems[0].source.name
+                    }
+                  ];
+                  this.setState({
+                    CV: fileData,
+                    fileCV: fileItems
+                  });
+                }
               }
             }}
             labelTapToCancel={"Cliquez pour annuler "}
@@ -333,7 +352,7 @@ class CandidatureForm extends Component {
           {this.renderButtonViewFile(this.state.CV)}
           <div className="text-center">
             <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Lettre de
-            motivation
+            motivation*
           </div>
           <FilePond
             ref={refLM => (this.pond = refLM)}
@@ -358,7 +377,40 @@ class CandidatureForm extends Component {
             fileValidateTypeLabelExpectedTypes={"Format accepté : PDF"}
             labelIdle={"Glissez et déposez votre lettre de motivation ici"}
             server={{
-              process: "/upload/uploadFile",
+              process: (
+                fieldName,
+                file,
+                metadata,
+                load,
+                error,
+                progress,
+                abort
+              ) => {
+                const fileName = this.state.LM[0].nom;
+                const formData = new FormData();
+                formData.append(fieldName, file, fileName);
+
+                const request = new XMLHttpRequest();
+                request.open("POST", "/upload/uploadFile");
+
+                request.upload.onprogress = e => {
+                  progress(e.lengthComputable, e.loaded, e.total);
+                };
+                request.onload = function() {
+                  if (request.status >= 200 && request.status < 300) {
+                    load(request.responseText);
+                  } else {
+                    error("oh no");
+                  }
+                };
+                request.send(formData);
+                return {
+                  abort: () => {
+                    request.abort();
+                    abort();
+                  }
+                };
+              },
               revert: null,
               load: null,
               restore: null,
@@ -392,7 +444,7 @@ class CandidatureForm extends Component {
           />
           {this.renderButtonViewFile(this.state.LM)}
           <div className="text-center">
-            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Diplôme
+            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Diplôme*
           </div>
           <FilePond
             ref={refDI => (this.pond = refDI)}
@@ -417,7 +469,40 @@ class CandidatureForm extends Component {
             fileValidateTypeLabelExpectedTypes={"Format accepté : PDF"}
             labelIdle={"Glissez et déposez votre diplôme ici"}
             server={{
-              process: "/upload/uploadFile",
+              process: (
+                fieldName,
+                file,
+                metadata,
+                load,
+                error,
+                progress,
+                abort
+              ) => {
+                const fileName = this.state.DI[0].nom;
+                const formData = new FormData();
+                formData.append(fieldName, file, fileName);
+
+                const request = new XMLHttpRequest();
+                request.open("POST", "/upload/uploadFile");
+
+                request.upload.onprogress = e => {
+                  progress(e.lengthComputable, e.loaded, e.total);
+                };
+                request.onload = function() {
+                  if (request.status >= 200 && request.status < 300) {
+                    load(request.responseText);
+                  } else {
+                    error("oh no");
+                  }
+                };
+                request.send(formData);
+                return {
+                  abort: () => {
+                    request.abort();
+                    abort();
+                  }
+                };
+              },
               revert: null,
               load: null,
               restore: null,
@@ -452,7 +537,7 @@ class CandidatureForm extends Component {
           {this.renderButtonViewFile(this.state.DI)}
           <div className="text-center">
             <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Relevé de
-            notes
+            notes*
           </div>
           <FilePond
             ref={refRN => (this.pond = refRN)}
@@ -477,7 +562,44 @@ class CandidatureForm extends Component {
             fileValidateTypeLabelExpectedTypes={"Format accepté : PDF"}
             labelIdle={"Glissez et déposez votre relevé de notes ici"}
             server={{
-              process: "/upload/uploadFile"
+              process: (
+                fieldName,
+                file,
+                metadata,
+                load,
+                error,
+                progress,
+                abort
+              ) => {
+                const fileName = this.state.RN[0].nom;
+                const formData = new FormData();
+                formData.append(fieldName, file, fileName);
+
+                const request = new XMLHttpRequest();
+                request.open("POST", "/upload/uploadFile");
+
+                request.upload.onprogress = e => {
+                  progress(e.lengthComputable, e.loaded, e.total);
+                };
+                request.onload = function() {
+                  if (request.status >= 200 && request.status < 300) {
+                    load(request.responseText);
+                  } else {
+                    error("oh no");
+                  }
+                };
+                request.send(formData);
+                return {
+                  abort: () => {
+                    request.abort();
+                    abort();
+                  }
+                };
+              },
+              revert: null,
+              load: null,
+              restore: null,
+              fetch: null
             }}
             onremovefile={file => {
               this.deleteFile(file.file);
@@ -538,7 +660,40 @@ class CandidatureForm extends Component {
             fileValidateTypeLabelExpectedTypes={"Format accepté : PDF"}
             labelIdle={"Glissez et déposez vos fichiers ici"}
             server={{
-              process: "/upload/uploadFile",
+              process: (
+                fieldName,
+                file,
+                metadata,
+                load,
+                error,
+                progress,
+                abort
+              ) => {
+                const fileName = this.state.AF[0].nom;
+                const formData = new FormData();
+                formData.append(fieldName, file, fileName);
+
+                const request = new XMLHttpRequest();
+                request.open("POST", "/upload/uploadFile");
+
+                request.upload.onprogress = e => {
+                  progress(e.lengthComputable, e.loaded, e.total);
+                };
+                request.onload = function() {
+                  if (request.status >= 200 && request.status < 300) {
+                    load(request.responseText);
+                  } else {
+                    error("oh no");
+                  }
+                };
+                request.send(formData);
+                return {
+                  abort: () => {
+                    request.abort();
+                    abort();
+                  }
+                };
+              },
               revert: null,
               load: null,
               restore: null,
@@ -548,6 +703,7 @@ class CandidatureForm extends Component {
               this.deleteFile(file.file);
             }}
             onupdatefiles={fileItems => {
+              console.log(fileItems);
               if (fileItems.length === 0) {
                 this.setState({
                   AF: []
@@ -576,7 +732,12 @@ class CandidatureForm extends Component {
   /////////////////////////////////////////////////////////////////
   /// Fonction qui créé un bouton pour visionner le fichier upload
   renderButtonViewFile(file) {
+    console.log(file);
     if (file.length !== 0) {
+      const ext = file[0].nom.split(".").pop();
+      if (ext !== "pdf") {
+        return <div />;
+      }
       const temp = file;
       return (
         <div>
@@ -586,14 +747,14 @@ class CandidatureForm extends Component {
             className=""
             onClick={item => this.loadFile(temp)}
           >
-            <MDBIcon icon="eye" /> Voir {file[0].ancienNom}
+            <MDBIcon icon="eye" /> Voir
           </MDBBtn>
           <MDBBtn
             color="default"
             className=""
             onClick={item => this.downloadFile(temp)}
           >
-            <MDBIcon icon="file-download" /> Télécharger {file[0].ancienNom}
+            <MDBIcon icon="file-download" /> Télécharger
           </MDBBtn>
         </div>
       );

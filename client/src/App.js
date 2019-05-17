@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./App.css";
-import Mentions from "./components/MentionsLegales";
 import Home from "./components/Home/Home";
 import {
   BrowserRouter as Router,
@@ -93,7 +92,6 @@ class App extends Component {
               reset={this.resetUser}
             />
           </Switch>
-          {/* <Mentions /> */}
         </div>
       </Router>
     );
