@@ -1,9 +1,16 @@
 #link {
-  color: black !important;
+  color: white !important;
   font-weight: 650;
-  font-size: 19px;
+  font-size: 22px;
 }
 
-.navbar-toggler {
-  background-color: black;
+.navbar-toggler-home {
+  background-color: #005793;
+}
+
+.navbar-home {
+  background-color: #005793 !important;
+  padding: 0 !important;
+  padding-left: 1em !important;
+  padding-right: 1em !important;
 }

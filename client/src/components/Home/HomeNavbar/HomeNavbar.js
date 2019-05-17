@@ -10,6 +10,7 @@ import {
 import "./HomeNavbar.css";
 import { withRouter } from "react-router-dom";
 import ModalHome from "../ModalHome/ModalHome";
+import { MDBNavbarBrand } from "mdbreact";
 
 // La barre de navigation de la page d'accueil
 class CustomNavbar extends Component {
@@ -49,13 +50,21 @@ class CustomNavbar extends Component {
 
   render() {
     return (
-      <Navbar dark expand="md" fixed="top">
+      <Navbar
+        dark
+        expand="md"
+        className="navbar-home navbar-toggler-home"
+        fixed="top"
+      >
+        <MDBNavbarBrand href="#">
+          <img src="pictures/logo.jpg" height="100" width="250" alt="" />
+        </MDBNavbarBrand>
         <NavbarToggler onClick={this.toggleNavbar} />
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="ml-auto" navbar>
             <NavItem>
               <NavLink id="link" onClick={this.openAdminModal}>
-                Espace admin
+                Espace enseignant
               </NavLink>
             </NavItem>
             <NavItem>
