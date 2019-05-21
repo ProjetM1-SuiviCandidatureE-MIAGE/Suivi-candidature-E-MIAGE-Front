@@ -13,6 +13,7 @@ import ModalPassword from "./ModalPassword/ModalPassword";
 
 let getUser = "";
 let setUser = "";
+let type = "";
 
 // Le composant qui créé le formulaire avec les informations de la personne connectée
 export default class InformationForm extends Component {
@@ -20,6 +21,11 @@ export default class InformationForm extends Component {
     super(props);
 
     this.state = {
+      validForm: false,
+      validMail: false,
+      validPrenom: false,
+      validNom: false,
+
       prenom: "",
       nom: "",
       mail: "",
@@ -31,16 +37,30 @@ export default class InformationForm extends Component {
       isOpen: false
     };
     this.openModal = this.openModal.bind(this);
+    this.handleEmailChange = this.handleEmailChange.bind(this);
+    this.handleFirstNameChange = this.handleFirstNameChange.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
+    this.validateEmail = this.validateEmail.bind(this);
+    this.validateName = this.validateName.bind(this);
+    this.changeInfos = this.changeInfos.bind(this);
+    this.checkValid = this.checkValid.bind(this);
   }
   // Fonction qui s'éxecute à la création du composant
   componentDidMount() {
     getUser = this.props.get;
     setUser = this.props.set;
+    type = this.props.type;
 
     const User = getUser();
     console.log(User);
+    console.log(type);
 
     this.setState({
+      validForm: true,
+      validMail: true,
+      validPrenom: true,
+      validNom: true,
+
       prenom: User.prenom,
       nom: User.nom,
       mail: User.mail,
@@ -50,18 +70,188 @@ export default class InformationForm extends Component {
       newMail: User.mail
     });
   }
-  // Fonction pour modifier les valeurs des inputs
-  handleInputChange = event => {
-    const { value, name } = event.target;
-    this.setState({
-      [name]: value
-    });
+  checkValid() {
+    if (this.state.validMail && this.state.validPrenom && this.state.validNom) {
+      if (this.state.validForm === false) {
+        this.setState({
+          validForm: true
+        });
+      }
+    }
+  }
+  /////////////////////////////////////////////
+  // fonction pour vérifier le format de l'email
+  validateEmail(email) {
+    const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return regex.test(String(email).toLowerCase());
+  }
+  /////////////////////////////////////////////
+  // fonction pour vérifier le format du nom et prénom
+  validateName(name) {
+    const regex = /^[a-zA-Zéèàêùîô]{2,}$/;
+    return regex.test(String(name).toLowerCase());
+  }
+  ////////////////////////////////////////////////
+  // Fonction pour modifier le mail
+  handleEmailChange = event => {
+    const { value } = event.target;
+    if (this.validateEmail(value) === true) {
+      this.setState(
+        {
+          newMail: value,
+          validMail: true
+        },
+        this.checkValid
+      );
+    } else {
+      this.setState(
+        {
+          newMail: value,
+          validMail: false,
+          validForm: false
+        },
+        this.checkValid
+      );
+    }
+    this.checkValid();
   };
+  ////////////////////////////////////////////////
+  // Fonction pour modifier le prénom
+  handleFirstNameChange = event => {
+    const { value } = event.target;
+    this.checkValid();
+    if (this.validateName(value) === true) {
+      this.setState(
+        {
+          newPrenom: value,
+          validPrenom: true
+        },
+        this.checkValid
+      );
+    } else {
+      this.setState(
+        {
+          newPrenom: value,
+          validPrenom: false,
+          validForm: false
+        },
+        this.checkValid
+      );
+    }
+    this.checkValid();
+  };
+  ////////////////////////////////////////////////
+  // Fonction pour modifier le nom
+  handleNameChange = event => {
+    const { value } = event.target;
+    this.checkValid();
+    if (this.validateName(value) === true) {
+      this.setState(
+        {
+          newNom: value,
+          validNom: true
+        },
+        this.checkValid
+      );
+    } else {
+      this.setState(
+        {
+          newNom: value,
+          validNom: false,
+          validForm: false
+        },
+        this.checkValid
+      );
+    }
+    this.checkValid();
+  };
+  //////////////////////////////////////////////////////////////
   // Fonction pour ouvrir le modal de modification du mot de passe
   openModal() {
     this.setState({
       isOpen: !this.state.isOpen
     });
+  }
+  ////////////////////////////////////////////////////////////
+  //// Fonction pour envoyer les modifications en base de données
+  changeInfos() {
+    const User = getUser();
+    const self = this;
+    if (this.state.validMail === true) {
+      if (type === "candidat") {
+        fetch("/candidats/editCandidat/" + User.id, {
+          method: "PUT",
+          body: JSON.stringify({
+            mail: this.state.newMail,
+            prenom: this.state.newPrenom,
+            nom: this.state.newNom
+          }),
+          headers: { "Content-Type": "application/json" }
+        })
+          .then(function(response) {
+            return response;
+          })
+          .then(function(body) {
+            const replaceUser = {
+              id: User.id,
+              mail: self.state.newMail,
+              prenom: self.state.newPrenom,
+              nom: self.state.newNom
+            };
+            setUser(replaceUser);
+
+            self.setState({
+              validMail: true,
+
+              prenom: replaceUser.prenom,
+              nom: replaceUser.nom,
+              mail: replaceUser.mail,
+
+              newPrenom: replaceUser.prenom,
+              newNom: replaceUser.nom,
+              newMail: replaceUser.mail
+            });
+          });
+      }
+
+      if (type === "admin") {
+        fetch("/admins/editAdmin/" + User.id, {
+          method: "PUT",
+          body: JSON.stringify({
+            mail: this.state.newMail,
+            prenom: this.state.newPrenom,
+            nom: this.state.newNom
+          }),
+          headers: { "Content-Type": "application/json" }
+        })
+          .then(function(response) {
+            return response;
+          })
+          .then(function(body) {
+            const replaceUser = {
+              id: User.id,
+              mail: self.state.newMail,
+              prenom: self.state.newPrenom,
+              nom: self.state.newNom
+            };
+            setUser(replaceUser);
+
+            self.setState({
+              validMail: true,
+
+              prenom: replaceUser.prenom,
+              nom: replaceUser.nom,
+              mail: replaceUser.mail,
+
+              newPrenom: replaceUser.prenom,
+              newNom: replaceUser.nom,
+              newMail: replaceUser.mail
+            });
+          });
+      }
+    } else {
+      alert("email non valide.");
+    }
   }
   // Fonction qui retourne le html du composant
   render() {
@@ -76,7 +266,7 @@ export default class InformationForm extends Component {
             icon="user"
             type="text"
             name="newPrenom"
-            onChange={this.handleInputChange}
+            onChange={this.handleFirstNameChange}
             value={this.state.newPrenom}
             autoComplete="off"
           />
@@ -85,7 +275,7 @@ export default class InformationForm extends Component {
             icon="user"
             type="text"
             name="newNom"
-            onChange={this.handleInputChange}
+            onChange={this.handleNameChange}
             value={this.state.newNom}
             autoComplete="off"
           />
@@ -94,7 +284,7 @@ export default class InformationForm extends Component {
             icon="envelope"
             type="email"
             name="newMail"
-            onChange={this.handleInputChange}
+            onChange={this.handleEmailChange}
             value={this.state.newMail}
             autoComplete="new-password"
           />
@@ -119,7 +309,8 @@ export default class InformationForm extends Component {
           <MDBBtn
             color="primary"
             className="SaveButton"
-            onClick={() => this.props.toggle()}
+            onClick={this.changeInfos}
+            disabled={!this.state.validForm}
           >
             Sauvegarder
           </MDBBtn>

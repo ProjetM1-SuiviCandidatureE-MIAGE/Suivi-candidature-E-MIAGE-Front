@@ -124,7 +124,6 @@ class SpaceCandidat extends React.Component {
   }
   // Fonction pour modifier les informations du candidat
   setCandidat(CandidatModif) {
-    // d'abord on fetch le put de mofif du candidat et ensuite dans un .then()
     // on fait le setState avec le candidat modifié
     this.setState(state => {
       return {
@@ -168,6 +167,7 @@ class SpaceCandidat extends React.Component {
           props={this.props}
           get={() => this.getCandidat()}
           set={item => this.setCandidat(item)}
+          type={"candidat"}
         />
       );
     }

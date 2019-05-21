@@ -117,8 +117,6 @@ class SpaceAdmin extends React.Component {
         }
       };
     });
-    console.log("Set Admin dans SpaceAdmin :");
-    console.log(this.state.admin);
   }
   // Fonction pour trier les candidatures
   sortingArray() {
@@ -446,6 +444,7 @@ class SpaceAdmin extends React.Component {
           props={this.props}
           get={() => this.getAdmin()}
           set={item => this.setAdmin(item)}
+          type={"admin"}
         />
       );
     }
