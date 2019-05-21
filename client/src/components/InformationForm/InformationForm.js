@@ -34,7 +34,8 @@ export default class InformationForm extends Component {
       newNom: "",
       newMail: "",
 
-      isOpen: false
+      isOpen: false,
+      loadEnd: false
     };
     this.openModal = this.openModal.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
@@ -53,10 +54,9 @@ export default class InformationForm extends Component {
 
     const User = getUser();
     console.log(User);
-    console.log(type);
 
     this.setState({
-      validForm: true,
+      validForm: false,
       validMail: true,
       validPrenom: true,
       validNom: true,
@@ -67,9 +67,12 @@ export default class InformationForm extends Component {
 
       newPrenom: User.prenom,
       newNom: User.nom,
-      newMail: User.mail
+      newMail: User.mail,
+
+      loadEnd: true
     });
   }
+  // Fonction qui vérifie que tout le formulaire est valide
   checkValid() {
     if (this.state.validMail && this.state.validPrenom && this.state.validNom) {
       if (this.state.validForm === false) {
@@ -253,6 +256,20 @@ export default class InformationForm extends Component {
       alert("email non valide.");
     }
   }
+  renderPasswordModal(bool) {
+    if (bool === true) {
+      return (
+        <ModalPassword
+          isOpen={this.state.isOpen}
+          toggle={this.openModal}
+          type={type}
+          get={getUser}
+        />
+      );
+    } else {
+      return <div />;
+    }
+  }
   // Fonction qui retourne le html du composant
   render() {
     return (
@@ -295,7 +312,7 @@ export default class InformationForm extends Component {
               </a>
             </p>
           </div>
-          <ModalPassword isOpen={this.state.isOpen} toggle={this.openModal} />
+          {this.renderPasswordModal(this.state.loadEnd)}
         </MDBCardBody>
         <MDBCardText className="CardText">
           <MDBBtn
