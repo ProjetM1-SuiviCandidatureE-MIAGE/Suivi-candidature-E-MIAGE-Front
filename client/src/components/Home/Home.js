@@ -271,7 +271,9 @@ class Home extends Component {
                       <h3>Responsable pédagogique e-miage :</h3>
                       <p className="pIntro">
                         Judith Benzakki&nbsp; /{" "}
-                        <a href="#">judith.benzakki@univ-evry.fr</a>
+                        <button className="blue-text buttonLinkable">
+                          judith.benzakki@univ-evry.fr
+                        </button>
                       </p>
                     </div>
                   </div>
@@ -287,12 +289,12 @@ class Home extends Component {
                       <h3>Assistante pédagogique :</h3>
                       <p className="pIntro">
                         Carole Girard /{" "}
-                        <a href="#">
+                        <button className="blue-text buttonLinkable">
                           carole.girard<span>ping</span>
                           <span>@</span>univ-evry
                           <span>pong</span>
                           <span>.</span>fr
-                        </a>{" "}
+                        </button>{" "}
                         / tél : 01 64 85 35 92
                       </p>
                     </div>
@@ -308,7 +310,10 @@ class Home extends Component {
                     <div className="more-features-box-text-description">
                       <h3>Service Commun de la Formation Continue : </h3>
                       <p className="pIntro">
-                        <a href="#">fc@univ-evry.fr</a> / tél : 01 69 47 71 01
+                        <button className="blue-text buttonLinkable">
+                          fc@univ-evry.fr
+                        </button>{" "}
+                        / tél : 01 69 47 71 01
                       </p>
                     </div>
                   </div>

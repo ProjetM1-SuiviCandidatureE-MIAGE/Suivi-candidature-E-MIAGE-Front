@@ -166,7 +166,7 @@ class CandidatureForm extends Component {
         })
         .then(function(body) {
           console.log(body);
-          alert("Vous allez recevoir un mail de confirmation.")
+          alert("Vous allez recevoir un mail de confirmation.");
         });
 
       this.handleResetForm(e);
@@ -779,11 +779,9 @@ class CandidatureForm extends Component {
           {this.renderFilePonds(this.state.loadEnd)}
         </MDBCardBody>
         <MDBCardText className="CardText">
-          <MDBBtn type="submit" outline color="primary" className="CloseButton">
-            Annuler
-          </MDBBtn>
           <MDBBtn
             type="submit"
+            outline
             color="primary"
             className="SaveButton"
             onClick={this.handleSave}
@@ -795,7 +793,6 @@ class CandidatureForm extends Component {
             color="primary"
             className="SubmitButton"
             onClick={this.handleSubmit}
-            // true pour que ce soit disabled
             disabled={!this.state.formValid}
           >
             Envoyer

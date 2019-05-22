@@ -1,8 +1,18 @@
-.header-image {
-  width: 100%;
-  padding: 8% 8%;
+.buttonLinkable {
+  background: none !important;
+  color: #007bff !important;
+  border: none;
+  padding: 0 !important;
+  font: inherit;
+  cursor: pointer;
 }
 
+.buttonLinkable:hover {
+  text-decoration: none;
+  color: #0056b3 !important;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
 /*
     Theme Name: Medilab
     Theme URL: https://bootstrapmade.com/medilab-free-medical-bootstrap-theme/

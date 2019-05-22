@@ -85,7 +85,7 @@ export default class InformationForm extends Component {
   /////////////////////////////////////////////
   // fonction pour vérifier le format de l'email
   validateEmail(email) {
-    const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return regex.test(String(email).toLowerCase());
   }
   /////////////////////////////////////////////
@@ -348,9 +348,12 @@ export default class InformationForm extends Component {
           />
           <div className="options text-center mt-1">
             <p>
-              <a className="blue-text" onClick={this.openModal}>
+              <button
+                className="blue-text buttonLinkable"
+                onClick={this.openModal}
+              >
                 <MDBIcon icon="lock" /> Modifier mon mot de passe
-              </a>
+              </button>
             </p>
           </div>
           {this.renderPasswordModal(this.state.loadEnd)}

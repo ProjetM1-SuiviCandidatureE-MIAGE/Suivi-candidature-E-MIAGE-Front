@@ -77,7 +77,8 @@ export default class ModalPassword extends Component {
       this.setState(
         {
           password: value,
-          validPassword: false
+          validPassword: false,
+          validForm: false
         },
         this.checkValid
       );
@@ -99,7 +100,8 @@ export default class ModalPassword extends Component {
       this.setState(
         {
           newPassword: value,
-          validNewPassword: false
+          validNewPassword: false,
+          validForm: false
         },
         this.checkValid
       );
@@ -121,7 +123,8 @@ export default class ModalPassword extends Component {
       this.setState(
         {
           newPasswordConfirm: value,
-          validNewPasswordConfirm: false
+          validNewPasswordConfirm: false,
+          validForm: false
         },
         this.checkValid
       );

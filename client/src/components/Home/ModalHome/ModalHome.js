@@ -35,11 +35,11 @@ class ModalHome extends Component {
 
       activeTab: "1",
 
-      validPrenom: false,
-      validNom: false,
-      validMail: false,
-      validPassword: false,
-      validConfirm: false,
+      prenomInscriptionValid: false,
+      nomInscriptionValid: false,
+      mailInscriptionValid: false,
+      passwordInscriptionValid: false,
+      passwordConfirmValid: false,
 
       isOpen: false,
       loadEnd: false,
@@ -51,7 +51,12 @@ class ModalHome extends Component {
     this.SignUp = this.SignUp.bind(this);
     this.LoginCandidat = this.LoginCandidat.bind(this);
     this.LoginAdmin = this.LoginAdmin.bind(this);
+    this.checkValid = this.checkValid.bind(this);
+    this.handleMailChange = this.handleMailChange.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
+    this.handlePasswordChange = this.handlePasswordChange.bind(this);
   }
+  /////////////////////////////////////////////////////////////////////////////////////////////
   // Fonction qui se lance à la création du composant pour récupèrer les props et les stocker
   componentDidMount() {
     props = this.props;
@@ -66,6 +71,7 @@ class ModalHome extends Component {
       isOpen: !this.state.isOpen
     });
   }
+  //////////////////////////////////////////////////////
   // Fonction pour afficher l'autre contenu du Tabs
   toggleTab(tab) {
     if (this.state.activeTab !== tab) {
@@ -74,59 +80,170 @@ class ModalHome extends Component {
       });
     }
   }
-  // Fonction pour modifier les valeurs des inputs
+  ///////////////////////////////////////////////////////////////////
+  // Fonction regex pour valider un mot de passe de plus de 8 caractères
+  validatePassword(mdp) {
+    const regex = /^.{8,}$/;
+    return regex.test(mdp);
+  }
+  /////////////////////////////////////////////
+  // fonction pour vérifier le format de l'email
+  validateEmail(email) {
+    const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return regex.test(String(email).toLowerCase());
+  }
+  /////////////////////////////////////////////
+  // fonction pour vérifier le format du nom et prénom
+  validateName(name) {
+    const regex = /^[a-zA-Zéèàêùîô]{2,}$/;
+    return regex.test(String(name).toLowerCase());
+  }
+  //////////////////////////////////////////////////////
+  // Fonction pour modifier les valeurs des inputs de connexion
   handleInputChange = event => {
-    const { value, name } = event.target;
+    let { value, name } = event.target;
     this.setState({
       [name]: value
     });
+  };
+  ////////////////////////////////////////////////////////////////
+  // Fonction qui vérifie que tout le formulaire est valide
+  checkValid() {
+    if (
+      this.state.prenomInscriptionValid &&
+      this.state.nomInscriptionValid &&
+      this.state.mailInscriptionValid &&
+      this.state.passwordConfirmValid &&
+      this.state.passwordInscriptionValid
+    ) {
+      if (this.state.passwordConfirm === this.state.passwordInscription) {
+        this.setState({
+          validForm: true
+        });
+      } else {
+        this.setState({
+          validForm: false
+        });
+      }
+    }
+  }
+  //////////////////////////////////////////////////////
+  // Fonction pour modifier les valeurs des inputs de l'inscription et leur vérification
+  handleNameChange = event => {
+    let { value, name } = event.target;
+    if (this.validateName(value) === true) {
+      this.setState(
+        {
+          [name]: value,
+          [name + "Valid"]: true
+        },
+        this.checkValid
+      );
+    } else {
+      this.setState(
+        {
+          [name]: value,
+          [name + "Valid"]: false,
+          validForm: false
+        },
+        this.checkValid
+      );
+    }
+    this.checkValid();
+  };
+  handleMailChange = event => {
+    let { value, name } = event.target;
+    if (this.validateEmail(value) === true) {
+      this.setState(
+        {
+          [name]: value,
+          [name + "Valid"]: true
+        },
+        this.checkValid
+      );
+    } else {
+      this.setState(
+        {
+          [name]: value,
+          [name + "Valid"]: false,
+          validForm: false
+        },
+        this.checkValid
+      );
+    }
+    this.checkValid();
+  };
+  handlePasswordChange = event => {
+    let { value, name } = event.target;
+    if (this.validatePassword(value) === true) {
+      this.setState(
+        {
+          [name]: value,
+          [name + "Valid"]: true,
+          validForm: false
+        },
+        this.checkValid
+      );
+    } else {
+      this.setState(
+        {
+          [name]: value,
+          [name + "Valid"]: false
+        },
+        this.checkValid
+      );
+    }
+    this.checkValid();
   };
   ///////////////////////////////////
   // Fonction pour s'inscrire (candidat)
   SignUp = event => {
     event.preventDefault();
-    const newCandidat = {
-      nom: this.state.nomInscription,
-      prenom: this.state.prenomInscription,
-      mail: this.state.mailInscription,
-      mdp: this.state.passwordInscription,
-      mdpConfirmation: this.state.passwordConfirm
-    };
-    fetch("/candidats/signup", {
-      method: "POST",
-      body: JSON.stringify(newCandidat),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(body) {
-        if (body.text === "Succès") {
-          const User = {
-            prenom: newCandidat.prenom,
-            nom: newCandidat.nom,
-            mail: newCandidat.mail,
-            token: body.token,
-            id: body.id
-          };
-          while (props.props.get().mail === "") {
-            // On change les informations de l'utilisateur
-            props.props.change(User);
-          }
-          Auth.loginCandidat();
-          props.history.push("/SpaceCandidat");
-        } else {
-          alert(body.text);
+    if (this.state.validForm === true) {
+      const newCandidat = {
+        nom: this.state.nomInscription,
+        prenom: this.state.prenomInscription,
+        mail: this.state.mailInscription,
+        mdp: this.state.passwordInscription,
+        mdpConfirmation: this.state.passwordConfirm
+      };
+      fetch("/candidats/signup", {
+        method: "POST",
+        body: JSON.stringify(newCandidat),
+        headers: {
+          "Content-Type": "application/json"
         }
       })
-      .catch(err => {
-        console.error(err);
-        alert("error !");
-      });
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(body) {
+          if (body.text === "Succès") {
+            const User = {
+              prenom: newCandidat.prenom,
+              nom: newCandidat.nom,
+              mail: newCandidat.mail,
+              token: body.token,
+              id: body.id
+            };
+            while (props.props.get().mail === "") {
+              // On change les informations de l'utilisateur
+              props.props.change(User);
+            }
+            Auth.loginCandidat();
+            props.history.push("/SpaceCandidat");
+          } else {
+            alert(body.text);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("error !");
+        });
+    } else {
+      alert("Formulaire invalide.");
+    }
   };
-
   //////////////////////////////////////////////
   // Fonction de connexion pour le candidat
   LoginCandidat = event => {
@@ -274,8 +391,8 @@ class ModalHome extends Component {
           <TabContent activeTab={this.state.activeTab}>
             {/* Panel avec le formulaire de connexion */}
             <TabPane tabId="1">
-              <form method="POST" action="/candidats/login" autoComplete="on">
-                <MDBModalBody>
+              <MDBModalBody>
+                <form autoComplete="on">
                   <MDBInput
                     type="email"
                     name="mailConnexion"
@@ -287,7 +404,6 @@ class ModalHome extends Component {
                     group
                     required
                   />
-
                   <MDBInput
                     type="password"
                     name="passwordConnexion"
@@ -298,117 +414,117 @@ class ModalHome extends Component {
                     group
                     autoComplete="current-password"
                     required
-                  />
-                  <div className="options text-center text-md-right mt-1">
-                    <p>
-                      <a className="blue-text" onClick={this.openModal}>
-                        Mot de passe oublié ?
-                      </a>
-                    </p>
-                  </div>
-                  {this.renderPasswordModal(this.state.loadEnd)}
-                </MDBModalBody>
-                <MDBModalFooter className="ModalFooter">
-                  <button
-                    type="button"
-                    className="shadow-effect btnModal btnInfo"
-                    onClick={() => this.props.toggleAutre()}
-                  >
-                    Je ne suis pas un candidat
-                  </button>
-                  <button
-                    type="submit"
-                    className="shadow-effect btnModal blue-gradient"
-                    onClick={this.LoginCandidat}
-                  >
-                    Se connecter
-                  </button>
-                </MDBModalFooter>
-              </form>
+                  />{" "}
+                </form>
+                <div className="options text-center text-md-right mt-1">
+                  <p>
+                    <button
+                      className="blue-text buttonLinkable"
+                      onClick={this.openModal}
+                    >
+                      Mot de passe oublié ?
+                    </button>
+                  </p>
+                </div>
+                {this.renderPasswordModal(this.state.loadEnd, "candidat")}
+              </MDBModalBody>
+              <MDBModalFooter className="ModalFooter">
+                <button
+                  type="button"
+                  className="shadow-effect btnModal btnInfo"
+                  onClick={() => this.props.toggleAutre()}
+                >
+                  Je ne suis pas un candidat
+                </button>
+                <button
+                  type="submit"
+                  className="shadow-effect btnModal blue-gradient"
+                  onClick={this.LoginCandidat}
+                >
+                  Se connecter
+                </button>
+              </MDBModalFooter>
             </TabPane>
 
             {/* Panel avec le formulaire d'inscription */}
             <TabPane tabId="2">
-              <form method="POST" action="/candidats/signup" autoComplete="on">
-                <MDBModalBody>
+              <MDBModalBody>
+                <form autoComplete="on">
                   <MDBInput
                     type="text"
                     name="prenomInscription"
                     icon="user"
                     label="Prénom"
-                    onChange={this.handleInputChange}
+                    onChange={this.handleNameChange}
                     value={this.state.prenomInscription}
                     autoComplete="given-name"
                     group
                     required
                   />
-
                   <MDBInput
                     type="text"
                     name="nomInscription"
                     icon="user"
                     label="Nom"
-                    onChange={this.handleInputChange}
+                    onChange={this.handleNameChange}
                     value={this.state.nomInscription}
                     autoComplete="family-name"
                     group
                     required
                   />
-
                   <MDBInput
                     type="email"
                     name="mailInscription"
                     label="E-mail"
                     icon="envelope"
-                    onChange={this.handleInputChange}
+                    onChange={this.handleMailChange}
                     value={this.state.mailInscription}
                     autoComplete="email"
                     group
                     required
                   />
-
                   <MDBInput
                     type="password"
                     name="passwordInscription"
                     icon="lock"
                     label="Mot de passe"
                     group
-                    onChange={this.handleInputChange}
+                    onChange={this.handlePasswordChange}
                     value={this.state.passwordInscription}
                     autoComplete="new-password"
                     required
                   />
-
                   <MDBInput
                     type="password"
                     name="passwordConfirm"
                     label="Confirmation"
                     icon="lock"
-                    onChange={this.handleInputChange}
+                    onChange={this.handlePasswordChange}
                     value={this.state.passwordConfirm}
                     autoComplete="new-password"
                     group
                     required
                   />
-                </MDBModalBody>
-                {/* Footer du modal des candidats */}
-                <MDBModalFooter className="ModalFooter">
-                  <button
-                    type="button"
-                    className="shadow-effect btnModal btnInfo"
-                    onClick={() => this.props.toggleAutre()}
-                  >
-                    Je ne suis pas un candidat
-                  </button>
-                  <button
-                    type="submit"
-                    className="shadow-effect btnModal blue-gradient"
-                    onClick={this.SignUp}
-                  >
-                    S'inscrire
-                  </button>
-                </MDBModalFooter>
-              </form>
+                </form>
+              </MDBModalBody>
+              {/* Footer du modal des candidats */}
+              <MDBModalFooter className="ModalFooter">
+                <button
+                  type="button"
+                  className="shadow-effect btnModal btnInfo"
+                  onClick={() => this.props.toggleAutre()}
+                >
+                  Je ne suis pas un candidat
+                </button>
+                <button
+                  type="submit"
+                  className="shadow-effect btnModal blue-gradient"
+                  onClick={this.SignUp}
+                  disabled={!this.state.validForm}
+                >
+                  S'inscrire
+                </button>
+              </MDBModalFooter>
             </TabPane>
           </TabContent>
         </MDBModal>
@@ -448,8 +564,8 @@ class ModalHome extends Component {
           <TabContent activeTab={this.state.activeTab}>
             {/* Panel avec le formulaire de connexion */}
             <TabPane tabId="1">
-              <form method="POST" action="/candidats/login" autoComplete="on">
-                <MDBModalBody>
+              <MDBModalBody>
+                <form autoComplete="on">
                   <MDBInput
                     type="email"
                     name="mailConnexionAdmin"
@@ -461,7 +577,6 @@ class ModalHome extends Component {
                     group
                     required
                   />
-
                   <MDBInput
                     type="password"
                     name="passwordConnexionAdmin"
@@ -473,32 +588,35 @@ class ModalHome extends Component {
                     autoComplete="current-password"
                     required
                   />
-                  <div className="options text-center text-md-right mt-1">
-                    <p>
-                      <a className="blue-text" onClick={this.openModal}>
-                        Mot de passe oublié ?
-                      </a>
-                    </p>
-                  </div>
-                  {this.renderPasswordModal(this.state.loadEnd)}
-                </MDBModalBody>
-                <MDBModalFooter className="ModalFooter">
-                  <button
-                    type="button"
-                    className="shadow-effect btnModal btnInfo"
-                    onClick={() => this.props.toggleAutre()}
-                  >
-                    Je ne suis pas un enseignant
-                  </button>
-                  <button
-                    type="submit"
-                    className="shadow-effect btnModal blue-gradient"
-                    onClick={this.LoginAdmin}
-                  >
-                    Se connecter
-                  </button>
-                </MDBModalFooter>
-              </form>
+                </form>
+                <div className="options text-center text-md-right mt-1">
+                  <p>
+                    <button
+                      className="blue-text buttonLinkable"
+                      onClick={this.openModal}
+                    >
+                      Mot de passe oublié ?
+                    </button>
+                  </p>
+                </div>
+                {this.renderPasswordModal(this.state.loadEnd, "admin")}
+              </MDBModalBody>
+              <MDBModalFooter className="ModalFooter">
+                <button
+                  type="button"
+                  className="shadow-effect btnModal btnInfo"
+                  onClick={() => this.props.toggleAutre()}
+                >
+                  Je ne suis pas un enseignant
+                </button>
+                <button
+                  type="submit"
+                  className="shadow-effect btnModal blue-gradient"
+                  onClick={this.LoginAdmin}
+                >
+                  Se connecter
+                </button>
+              </MDBModalFooter>
             </TabPane>
           </TabContent>
         </MDBModal>
