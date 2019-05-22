@@ -195,25 +195,45 @@ export default class InformationForm extends Component {
             return response;
           })
           .then(function(body) {
-            const replaceUser = {
-              id: User.id,
-              mail: self.state.newMail,
-              prenom: self.state.newPrenom,
-              nom: self.state.newNom
-            };
-            setUser(replaceUser);
+            fetch("/mail/send", {
+              method: "POST",
+              body: JSON.stringify({
+                mail: User.mail,
+                sujet: "Confirmation de la modification de vos données",
+                texte:
+                  "Bonjour " +
+                  User.prenom +
+                  " " +
+                  User.nom +
+                  ",<br /> vos données personnelles ont bien été modifié.<br /><br />Cordialement"
+              }),
+              headers: { "Content-Type": "application/json" }
+            })
+              .then(function(response) {
+                return response;
+              })
+              .then(function(body) {
+                alert("Vous allez recevoir un mail de confirmation.");
+                const replaceUser = {
+                  id: User.id,
+                  mail: self.state.newMail,
+                  prenom: self.state.newPrenom,
+                  nom: self.state.newNom
+                };
+                setUser(replaceUser);
 
-            self.setState({
-              validMail: true,
+                self.setState({
+                  validMail: true,
 
-              prenom: replaceUser.prenom,
-              nom: replaceUser.nom,
-              mail: replaceUser.mail,
+                  prenom: replaceUser.prenom,
+                  nom: replaceUser.nom,
+                  mail: replaceUser.mail,
 
-              newPrenom: replaceUser.prenom,
-              newNom: replaceUser.nom,
-              newMail: replaceUser.mail
-            });
+                  newPrenom: replaceUser.prenom,
+                  newNom: replaceUser.nom,
+                  newMail: replaceUser.mail
+                });
+              });
           });
       }
 
@@ -231,31 +251,52 @@ export default class InformationForm extends Component {
             return response;
           })
           .then(function(body) {
-            const replaceUser = {
-              id: User.id,
-              mail: self.state.newMail,
-              prenom: self.state.newPrenom,
-              nom: self.state.newNom
-            };
-            setUser(replaceUser);
+            fetch("/mail/send", {
+              method: "POST",
+              body: JSON.stringify({
+                mail: User.mail,
+                sujet: "Confirmation de la modification de vos données",
+                texte:
+                  "Bonjour " +
+                  User.prenom +
+                  " " +
+                  User.nom +
+                  ",<br /> vos données personnelles ont bien été modifié.<br /><br />Cordialement"
+              }),
+              headers: { "Content-Type": "application/json" }
+            })
+              .then(function(response) {
+                return response;
+              })
+              .then(function(body) {
+                alert("Vous allez recevoir un mail de confirmation.");
+                const replaceUser = {
+                  id: User.id,
+                  mail: self.state.newMail,
+                  prenom: self.state.newPrenom,
+                  nom: self.state.newNom
+                };
+                setUser(replaceUser);
 
-            self.setState({
-              validMail: true,
+                self.setState({
+                  validMail: true,
 
-              prenom: replaceUser.prenom,
-              nom: replaceUser.nom,
-              mail: replaceUser.mail,
+                  prenom: replaceUser.prenom,
+                  nom: replaceUser.nom,
+                  mail: replaceUser.mail,
 
-              newPrenom: replaceUser.prenom,
-              newNom: replaceUser.nom,
-              newMail: replaceUser.mail
-            });
+                  newPrenom: replaceUser.prenom,
+                  newNom: replaceUser.nom,
+                  newMail: replaceUser.mail
+                });
+              });
           });
       }
     } else {
       alert("email non valide.");
     }
   }
+  //// Fonction pour chargé le composant fils quand celui-ci a fini de chargé
   renderPasswordModal(bool) {
     if (bool === true) {
       return (

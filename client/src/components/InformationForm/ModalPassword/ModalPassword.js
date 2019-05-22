@@ -65,13 +65,23 @@ export default class ModalPassword extends Component {
   // Fonction pour modifier les valeurs du password
   handlePasswordChange = event => {
     const { value } = event.target;
-    this.setState(
-      {
-        password: value,
-        validPassword: true
-      },
-      this.checkValid
-    );
+    if (this.checkPassword(value) === true) {
+      this.setState(
+        {
+          password: value,
+          validPassword: true
+        },
+        this.checkValid
+      );
+    } else {
+      this.setState(
+        {
+          password: value,
+          validPassword: false
+        },
+        this.checkValid
+      );
+    }
     this.checkValid();
   };
   // Fonction pour modifier les valeurs du nouveau password
@@ -140,7 +150,31 @@ export default class ModalPassword extends Component {
             return response;
           })
           .then(function(body) {
-            console.log(body);
+            console.log(body.status);
+            if (body.status === 200) {
+              fetch("/mail/send", {
+                method: "POST",
+                body: JSON.stringify({
+                  mail: User.mail,
+                  sujet: "Confirmation modification de votre mot de passe",
+                  texte:
+                    "Bonjour " +
+                    User.prenom +
+                    " " +
+                    User.nom +
+                    ",<br /> votre mot de passe a bien été modifié depuis votre profil.<br /><br />Cordialement"
+                }),
+                headers: { "Content-Type": "application/json" }
+              })
+                .then(function(response) {
+                  return response;
+                })
+                .then(function(body) {
+                  alert("Vous allez recevoir un mail de confirmation.");
+                });
+            } else {
+              alert("erreur.");
+            }
           });
       }
       if (type === "admin") {
@@ -156,7 +190,30 @@ export default class ModalPassword extends Component {
             return response;
           })
           .then(function(body) {
-            console.log(body);
+            if (body.status === 200) {
+              fetch("/mail/send", {
+                method: "POST",
+                body: JSON.stringify({
+                  mail: User.mail,
+                  sujet: "Confirmation modification de votre mot de passe",
+                  texte:
+                    "Bonjour " +
+                    User.prenom +
+                    " " +
+                    User.nom +
+                    ",<br /> votre mot de passe a bien été modifié depuis votre profil.<br /><br />Cordialement"
+                }),
+                headers: { "Content-Type": "application/json" }
+              })
+                .then(function(response) {
+                  return response;
+                })
+                .then(function(body) {
+                  alert("Vous allez recevoir un mail de confirmation.");
+                });
+            } else {
+              alert("erreur.");
+            }
           });
       }
       this.handleReset();

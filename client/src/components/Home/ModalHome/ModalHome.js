@@ -12,6 +12,7 @@ import classnames from "classnames";
 import { withRouter } from "react-router-dom";
 import "./ModalHome.css";
 import Auth from "../../../Auth";
+import ModalForgetPassword from "./ModalForgetPassword/ModalForgetPassword";
 
 let props = {};
 
@@ -32,8 +33,19 @@ class ModalHome extends Component {
       passwordInscription: "",
       passwordConfirm: "",
 
-      activeTab: "1"
+      activeTab: "1",
+
+      validPrenom: false,
+      validNom: false,
+      validMail: false,
+      validPassword: false,
+      validConfirm: false,
+
+      isOpen: false,
+      loadEnd: false,
+      validForm: false
     };
+    this.openModal = this.openModal.bind(this);
     this.toggleTab = this.toggleTab.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.SignUp = this.SignUp.bind(this);
@@ -43,6 +55,16 @@ class ModalHome extends Component {
   // Fonction qui se lance à la création du composant pour récupèrer les props et les stocker
   componentDidMount() {
     props = this.props;
+    this.setState({
+      loadEnd: true
+    });
+  }
+  //////////////////////////////////////////////////////////////
+  // Fonction pour ouvrir le modal d'oubli de mot de passe
+  openModal() {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
   }
   // Fonction pour afficher l'autre contenu du Tabs
   toggleTab(tab) {
@@ -190,6 +212,20 @@ class ModalHome extends Component {
         alert("error !");
       });
   };
+  //// Fonction pour chargé le composant fils quand celui-ci a fini de chargé
+  renderPasswordModal(bool, fonction) {
+    if (bool === true) {
+      return (
+        <ModalForgetPassword
+          isOpen={this.state.isOpen}
+          toggle={this.openModal}
+          type={fonction}
+        />
+      );
+    } else {
+      return <div />;
+    }
+  }
   // Fonction qui retourne le code html du composant
   // Le render est appelé à chaque fois que l'état du composant change
   render() {
@@ -265,11 +301,12 @@ class ModalHome extends Component {
                   />
                   <div className="options text-center text-md-right mt-1">
                     <p>
-                      <a href="/" className="blue-text">
+                      <a className="blue-text" onClick={this.openModal}>
                         Mot de passe oublié ?
                       </a>
                     </p>
                   </div>
+                  {this.renderPasswordModal(this.state.loadEnd)}
                 </MDBModalBody>
                 <MDBModalFooter className="ModalFooter">
                   <button
@@ -438,11 +475,12 @@ class ModalHome extends Component {
                   />
                   <div className="options text-center text-md-right mt-1">
                     <p>
-                      <a href="/" className="blue-text">
+                      <a className="blue-text" onClick={this.openModal}>
                         Mot de passe oublié ?
                       </a>
                     </p>
                   </div>
+                  {this.renderPasswordModal(this.state.loadEnd)}
                 </MDBModalBody>
                 <MDBModalFooter className="ModalFooter">
                   <button
@@ -450,7 +488,7 @@ class ModalHome extends Component {
                     className="shadow-effect btnModal btnInfo"
                     onClick={() => this.props.toggleAutre()}
                   >
-                    Je ne suis pas un administrateur
+                    Je ne suis pas un enseignant
                   </button>
                   <button
                     type="submit"

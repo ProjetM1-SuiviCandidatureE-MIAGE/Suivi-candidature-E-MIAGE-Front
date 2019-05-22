@@ -162,10 +162,11 @@ class CandidatureForm extends Component {
         headers: { "Content-Type": "application/json" }
       })
         .then(function(response) {
-          return response.json();
+          return response;
         })
         .then(function(body) {
           console.log(body);
+          alert("Vous allez recevoir un mail de confirmation.")
         });
 
       this.handleResetForm(e);

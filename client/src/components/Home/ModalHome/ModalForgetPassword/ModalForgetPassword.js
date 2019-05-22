@@ -27,13 +27,59 @@ export default class ModalForgetPassword extends Component {
   }
   // Fonction pour modifier les valeurs des inputs
   handleInputChange = event => {
-    const { value, name } = event.target;
+    const { value } = event.target;
     this.setState({
-      [name]: value
+      mail: value
     });
   };
   // Fonction qui affiche le code HTML du composant
   render() {
-    return <div />;
+    return (
+      <MDBModal
+        isOpen={this.props.isOpen}
+        toggle={() => this.props.toggle()}
+        id="modalLRForm"
+        cascading
+      >
+        <MDBModalHeader
+          toggle={() => this.props.toggle()}
+          titleClass="d-inline title"
+          className="text-center light-blue darken-3 white-text"
+        >
+          <MDBIcon icon="lock" /> Mot de passe oublié
+        </MDBModalHeader>
+        <MDBModalBody>
+          <form>
+            <MDBInput
+              label="Adresse mail de votre compte"
+              icon="envelop"
+              type="mail"
+              name="mail"
+              onChange={this.handleMailChange}
+              value={this.state.mail}
+              autoComplete="mail"
+            />
+          </form>
+        </MDBModalBody>
+        <MDBModalFooter className="ModalFooter">
+          <MDBBtn
+            outline
+            color="primary"
+            className="CloseButton"
+            onClick={this.handleReset}
+          >
+            Fermer
+          </MDBBtn>
+          <MDBBtn
+            color="primary"
+            className="SaveButton"
+            onClick={this.forgetPassword}
+            disabled={!this.state.validForm}
+          >
+            Sauvegarder
+          </MDBBtn>
+        </MDBModalFooter>
+      </MDBModal>
+    );
   }
 }
