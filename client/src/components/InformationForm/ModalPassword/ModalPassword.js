@@ -42,7 +42,6 @@ export default class ModalPassword extends Component {
   componentDidMount() {
     type = this.props.type;
     getUser = this.props.get;
-    console.log("type : " + type);
   }
   // Fonction qui vérifie que tout le formulaire est valide
   checkValid() {

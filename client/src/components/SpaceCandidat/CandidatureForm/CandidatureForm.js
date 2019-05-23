@@ -10,16 +10,10 @@ import {
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 import { FilePond, registerPlugin } from "react-filepond";
-import FilePondPluginFileRename from "filepond-plugin-file-rename";
 import "filepond/dist/filepond.min.css";
 import "./CandidatureForm.css";
 
-registerPlugin(
-  FilePondPluginFileValidateType,
-  FilePondPluginFileValidateSize,
-  FilePondPluginFileRename
-);
-const maxFiles = 3;
+registerPlugin(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
 let getCandidat = "";
 let candidaturesCandidat = "";
 let brouillonCandidat = "";
@@ -51,7 +45,6 @@ class CandidatureForm extends Component {
 
       candidatures: "",
       brouillon: "",
-      temp: "",
       loadEnd: false
     };
     // On bind toutes les fonctions qui vont utiliser le this.state
@@ -165,7 +158,6 @@ class CandidatureForm extends Component {
           return response;
         })
         .then(function(body) {
-          console.log(body);
           alert("Vous allez recevoir un mail de confirmation.");
         });
 
@@ -231,9 +223,6 @@ class CandidatureForm extends Component {
   // Fonction pour supprimer un fichier quand l'utilisateur clique sur la croix
   deleteFile(file, name) {
     const self = this;
-    this.setState({
-      temp: file.name
-    });
     fetch("/upload/deleteFile", {
       method: "DELETE",
       body: JSON.stringify({
@@ -258,13 +247,14 @@ class CandidatureForm extends Component {
         <div>
           <div className="text-center">
             <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> CV
-            (Curriculum Vitae)*
+            (Curriculum Vitae)<strong style={{ color: "red" }}>*</strong>
           </div>
           <FilePond
             ref={refCV => (this.pond = refCV)}
             files={this.state.fileCV}
             allowMultiple={false}
             required={true}
+            registerPlugin={registerPlugin}
             allowFileSizeValidation={true}
             maxFileSize={2000000} // 2MB
             allowFileTypeValidation={true}
@@ -313,17 +303,16 @@ class CandidatureForm extends Component {
               fetch: null
             }}
             onremovefile={file => {
-              this.deleteFile(file.file, this.state.CV[0].nom);
+              if (this.state.CV[0] !== undefined) {
+                this.deleteFile(file.file, this.state.CV[0].nom);
+              }
             }}
             onupdatefiles={fileItems => {
-              console.log(fileItems);
               if (fileItems.length === 0) {
                 this.setState({
-                  CV:
-                    this.state.temp === this.state.CV[0].ancienNom
-                      ? []
-                      : this.state.CV,
-                  fileCV: ""
+                  CV: [],
+                  fileCV: "",
+                  formValid: false
                 });
               } else {
                 if (fileItems[0].fileExtension === "pdf") {
@@ -353,26 +342,17 @@ class CandidatureForm extends Component {
           {this.renderButtonViewFile(this.state.CV)}
           <div className="text-center">
             <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Lettre de
-            motivation*
+            motivation<strong style={{ color: "red" }}>*</strong>
           </div>
           <FilePond
             ref={refLM => (this.pond = refLM)}
             files={this.state.fileLM}
             allowMultiple={false}
             required={true}
+            registerPlugin={registerPlugin}
             allowFileSizeValidation={true}
             maxFileSize={2000000} // 2MB
             allowFileTypeValidation={true}
-            allowFileRename={true}
-            fileRenameFunction={file => {
-              return (
-                "LM_" +
-                getCandidat().nom +
-                "_" +
-                this.state.brouillon._id.substring(18) +
-                file.extension
-              );
-            }}
             acceptedFileTypes={["application/pdf"]}
             labelFileTypeNotAllowed={"Type du fichier invalide !"}
             fileValidateTypeLabelExpectedTypes={"Format accepté : PDF"}
@@ -418,53 +398,56 @@ class CandidatureForm extends Component {
               fetch: null
             }}
             onremovefile={file => {
-              this.deleteFile(file.file);
+              if (this.state.LM[0] !== undefined) {
+                this.deleteFile(file.file, this.state.LM[0].nom);
+              }
             }}
             onupdatefiles={fileItems => {
               if (fileItems.length === 0) {
                 this.setState({
                   LM: [],
-                  fileLM: ""
+                  fileLM: "",
+                  formValid: false
                 });
               } else {
-                const fileData = [
-                  {
-                    nom: fileItems[0].filename,
-                    date: fileItems[0].source.lastModifiedDate,
-                    fichier: fileItems[0].filename,
-                    ancienNom: fileItems[0].source.name
-                  }
-                ];
-                this.setState({
-                  LM: fileData,
-                  fileLM: fileItems
-                });
+                if (fileItems[0].fileExtension === "pdf") {
+                  const rename =
+                    "LM_" +
+                    getCandidat().nom +
+                    "_" +
+                    this.state.brouillon._id.substring(18) +
+                    ".pdf";
+                  const fileData = [
+                    {
+                      nom: rename,
+                      date: fileItems[0].source.lastModifiedDate,
+                      fichier: rename,
+                      ancienNom: fileItems[0].source.name
+                    }
+                  ];
+                  this.setState({
+                    LM: fileData,
+                    fileLM: fileItems
+                  });
+                }
               }
             }}
             labelTapToCancel={"Cliquez pour annuler "}
           />
           {this.renderButtonViewFile(this.state.LM)}
           <div className="text-center">
-            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Diplôme*
+            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Diplôme
+            <strong style={{ color: "red" }}>*</strong>
           </div>
           <FilePond
             ref={refDI => (this.pond = refDI)}
             files={this.state.fileDI}
             allowMultiple={false}
+            registerPlugin={registerPlugin}
             required={true}
             allowFileSizeValidation={true}
             maxFileSize={2000000} // 2MB
             allowFileTypeValidation={true}
-            allowFileRename={true}
-            fileRenameFunction={file => {
-              return (
-                "DI_" +
-                getCandidat().nom +
-                "_" +
-                this.state.brouillon._id.substring(18) +
-                file.extension
-              );
-            }}
             acceptedFileTypes={["application/pdf"]}
             labelFileTypeNotAllowed={"Type du fichier invalide !"}
             fileValidateTypeLabelExpectedTypes={"Format accepté : PDF"}
@@ -510,27 +493,38 @@ class CandidatureForm extends Component {
               fetch: null
             }}
             onremovefile={file => {
-              this.deleteFile(file.file);
+              if (this.state.DI[0] !== undefined) {
+                this.deleteFile(file.file, this.state.DI[0].nom);
+              }
             }}
             onupdatefiles={fileItems => {
               if (fileItems.length === 0) {
                 this.setState({
                   DI: [],
-                  fileDI: ""
+                  fileDI: "",
+                  formValid: false
                 });
               } else {
-                const fileData = [
-                  {
-                    nom: fileItems[0].filename,
-                    date: fileItems[0].source.lastModifiedDate,
-                    fichier: fileItems[0].filename,
-                    ancienNom: fileItems[0].source.name
-                  }
-                ];
-                this.setState({
-                  DI: fileData,
-                  fileDI: fileItems
-                });
+                if (fileItems[0].fileExtension === "pdf") {
+                  const rename =
+                    "DI_" +
+                    getCandidat().nom +
+                    "_" +
+                    this.state.brouillon._id.substring(18) +
+                    ".pdf";
+                  const fileData = [
+                    {
+                      nom: rename,
+                      date: fileItems[0].source.lastModifiedDate,
+                      fichier: rename,
+                      ancienNom: fileItems[0].source.name
+                    }
+                  ];
+                  this.setState({
+                    DI: fileData,
+                    fileDI: fileItems
+                  });
+                }
               }
             }}
             labelTapToCancel={"Cliquez pour annuler "}
@@ -538,26 +532,17 @@ class CandidatureForm extends Component {
           {this.renderButtonViewFile(this.state.DI)}
           <div className="text-center">
             <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Relevé de
-            notes*
+            notes<strong style={{ color: "red" }}>*</strong>
           </div>
           <FilePond
             ref={refRN => (this.pond = refRN)}
             files={this.state.fileRN}
             allowMultiple={false}
             required={true}
+            registerPlugin={registerPlugin}
             allowFileSizeValidation={true}
             maxFileSize={2000000} // 2MB
             allowFileTypeValidation={true}
-            allowFileRename={true}
-            fileRenameFunction={file => {
-              return (
-                "RN_" +
-                getCandidat().nom +
-                "_" +
-                this.state.brouillon._id.substring(18) +
-                file.extension
-              );
-            }}
             acceptedFileTypes={["application/pdf"]}
             labelFileTypeNotAllowed={"Type du fichier invalide !"}
             fileValidateTypeLabelExpectedTypes={"Format accepté : PDF"}
@@ -603,63 +588,60 @@ class CandidatureForm extends Component {
               fetch: null
             }}
             onremovefile={file => {
-              this.deleteFile(file.file);
+              if (this.state.RN[0] !== undefined) {
+                this.deleteFile(file.file, this.state.RN[0].nom);
+              }
             }}
             onupdatefiles={fileItems => {
               if (fileItems.length === 0) {
                 this.setState({
                   RN: [],
-                  fileRN: ""
+                  fileRN: "",
+                  formValid: false
                 });
               } else {
-                const fileData = [
-                  {
-                    nom: fileItems[0].filename,
-                    date: fileItems[0].source.lastModifiedDate,
-                    fichier: fileItems[0].filename,
-                    ancienNom: fileItems[0].source.name
-                  }
-                ];
-                this.setState({
-                  RN: fileData,
-                  fileRN: fileItems
-                });
+                if (fileItems[0].fileExtension === "pdf") {
+                  const rename =
+                    "RN_" +
+                    getCandidat().nom +
+                    "_" +
+                    this.state.brouillon._id.substring(18) +
+                    ".pdf";
+                  const fileData = [
+                    {
+                      nom: rename,
+                      date: fileItems[0].source.lastModifiedDate,
+                      fichier: rename,
+                      ancienNom: fileItems[0].source.name
+                    }
+                  ];
+                  this.setState({
+                    RN: fileData,
+                    fileRN: fileItems
+                  });
+                }
               }
             }}
             labelTapToCancel={"Cliquez pour annuler "}
           />
           {this.renderButtonViewFile(this.state.RN)}
           <div className="text-center">
-            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Autres
-            fichiers (max {maxFiles} fichiers){" "}
+            <MDBIcon icon="cloud-upload-alt mdb-gallery-view-icon" /> Autre
+            fichier (optionnel){" "}
           </div>
           <FilePond
             ref={ref => (this.pond = ref)}
             files={this.state.fileAF}
             registerPlugin={registerPlugin}
-            allowMultiple={true}
-            maxFiles={maxFiles}
-            maxParallelUploads={1}
+            allowMultiple={false}
+            required={true}
             allowFileSizeValidation={true}
-            maxTotalFileSize={10000000} // 10MB
+            maxTotalFileSize={2000000} // 2MB
             allowFileTypeValidation={true}
-            allowFileRename={true}
-            fileRenameFunction={file => {
-              let numero = this.state.files.length + 1;
-              return (
-                "AF" +
-                numero +
-                "_" +
-                getCandidat().nom +
-                "_" +
-                this.state.brouillon._id.substring(18) +
-                file.extension
-              );
-            }}
             acceptedFileTypes={["application/pdf"]}
             labelFileTypeNotAllowed={"Type du fichier invalide !"}
             fileValidateTypeLabelExpectedTypes={"Format accepté : PDF"}
-            labelIdle={"Glissez et déposez vos fichiers ici"}
+            labelIdle={"Glissez et déposez votre fichier ici"}
             server={{
               process: (
                 fieldName,
@@ -700,28 +682,36 @@ class CandidatureForm extends Component {
               restore: null,
               fetch: null
             }}
-            onremovefile={file => {
-              this.deleteFile(file.file);
-            }}
+            onremovefile={file => {}}
             onupdatefiles={fileItems => {
-              console.log(fileItems);
               if (fileItems.length === 0) {
                 this.setState({
-                  AF: []
+                  AF: [],
+                  fileAF: ""
                 });
               } else {
-                const fileData = {
-                  nom: fileItems[0].filename,
-                  date: fileItems[0].source.lastModifiedDate,
-                  fichier: fileItems[0].filename,
-                  ancienNom: fileItems[0].source.name
-                };
-                this.setState({
-                  AF: this.state.AF.push(fileData),
-                  fileAF: fileItems
-                });
+                if (fileItems[0].fileExtension === "pdf") {
+                  const rename =
+                    "AF_" +
+                    getCandidat().nom +
+                    "_" +
+                    this.state.brouillon._id.substring(18) +
+                    ".pdf";
+                  const fileData = [
+                    {
+                      nom: rename,
+                      date: fileItems[0].source.lastModifiedDate,
+                      fichier: rename,
+                      ancienNom: fileItems[0].source.name
+                    }
+                  ];
+                  this.setState({
+                    AF: fileData,
+                    fileAF: fileItems
+                  });
+                }
               }
-              console.log(this.state.AF);
+              console.log(this.state);
             }}
             labelTapToCancel={"Cliquez pour annuler "}
           />
@@ -735,7 +725,7 @@ class CandidatureForm extends Component {
   renderButtonViewFile(file) {
     console.log(file);
     if (file.length !== 0) {
-      const ext = file[0].nom.split(".").pop();
+      const ext = file[file.length - 1].nom.split(".").pop();
       if (ext !== "pdf") {
         return <div />;
       }

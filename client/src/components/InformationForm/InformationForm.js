@@ -53,7 +53,6 @@ export default class InformationForm extends Component {
     type = this.props.type;
 
     const User = getUser();
-    console.log(User);
 
     this.setState({
       validForm: false,

@@ -226,12 +226,31 @@ class ModalHome extends Component {
               token: body.token,
               id: body.id
             };
-            while (props.props.get().mail === "") {
+            if (props.props.get().mail === "") {
               // On change les informations de l'utilisateur
               props.props.change(User);
             }
-            Auth.loginCandidat();
-            props.history.push("/SpaceCandidat");
+            fetch("/mail/send", {
+              method: "POST",
+              body: JSON.stringify({
+                mail: User.mail,
+                sujet: "Bienvenue sur la plateforme de candidature E-MIAGE",
+                texte:
+                  "Bonjour " +
+                  User.prenom +
+                  " " +
+                  User.nom +
+                  ",<br />La création de votre compte est achevée, vous pouvez dès à présent compléter votre candidature et la soumettre quand elle sera complète.<br /><br />Cordialement"
+              }),
+              headers: { "Content-Type": "application/json" }
+            })
+              .then(function(response) {
+                return response;
+              })
+              .then(function(body) {
+                Auth.loginCandidat();
+                props.history.push("/SpaceCandidat");
+              });
           } else {
             alert(body.text);
           }
