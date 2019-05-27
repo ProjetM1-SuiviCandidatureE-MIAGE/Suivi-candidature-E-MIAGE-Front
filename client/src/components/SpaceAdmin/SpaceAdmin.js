@@ -5,7 +5,7 @@ import { MDBBadge } from "mdbreact";
 import "./SpaceAdmin.css";
 import Moment from "react-moment";
 import InformationForm from "../InformationForm/InformationForm";
-import DataTable from "./DataTable/DataTable";
+import DataTableAdmin from "./DataTableAdmin/DataTableAdmin";
 
 let propsUser = "";
 
@@ -77,7 +77,6 @@ class SpaceAdmin extends React.Component {
   }
   // Fonction pour récupérer les candidatures et les filtrer
   fetchData() {
-    console.log("Fetch Data !");
     fetch("/candidatures/getAllCandidatures")
       .then(res => res.json())
       .then(data =>
@@ -100,8 +99,6 @@ class SpaceAdmin extends React.Component {
   }
   // Fonction pour récupérer les informations de l'Admin
   getAdmin() {
-    console.log("Get Admin dans SpaceAdmin :");
-    console.log(this.state.admin);
     return this.state.admin;
   }
   // Fonction pour modifier les informations de l'admin
@@ -120,7 +117,6 @@ class SpaceAdmin extends React.Component {
   }
   // Fonction pour trier les candidatures
   sortingArray() {
-    console.log("Sorting array !");
     this.setState({
       NonTraitéesNumber:
         this.state.candidaturesNonTraitees === 0
@@ -241,6 +237,7 @@ class SpaceAdmin extends React.Component {
   // Fonction pour afficher les candidatures non traitées
   renderCandidaturesNonTraitees() {
     if (this.state.candidaturesNonTraitees.length !== 0) {
+      /*
       return (
         <div id="accordion">
           <h1 style={{ color: "black" }}>
@@ -314,6 +311,10 @@ class SpaceAdmin extends React.Component {
             </div>
           ))}
         </div>
+      );
+      */
+      return (
+        <DataTableAdmin candidatures={this.state.candidaturesNonTraitees} />
       );
     }
   }
@@ -454,7 +455,6 @@ class SpaceAdmin extends React.Component {
     return (
       <div className="Admin">
         <SpaceNavbar props={this.props} />
-        <DataTable props={this.candidaturesTraitees} />
         <div className="text-center">
           <Button
             onClick={this.toggleMesInformations}

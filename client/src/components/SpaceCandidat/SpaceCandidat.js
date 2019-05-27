@@ -136,8 +136,6 @@ class SpaceCandidat extends React.Component {
         }
       };
     });
-    console.log("Set candidat dans SpaceCandidat :");
-    console.log(this.state.candidat);
   }
   // Fonction pour afficher/masquer le div contenant les informations du candidat
   toggleInformationForm() {

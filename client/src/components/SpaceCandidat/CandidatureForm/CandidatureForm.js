@@ -63,8 +63,7 @@ class CandidatureForm extends Component {
     brouillonCandidat = this.props.brouillon;
     fetchCandidatures = this.props.fetch;
 
-    console.log("Props Brouillons : " + JSON.stringify(brouillonCandidat));
-    console.log("Props Candidatures : " + JSON.stringify(candidaturesCandidat));
+    console.log("Candidatures : " + candidaturesCandidat.length);
 
     this.setState({
       candidatures: candidaturesCandidat,
@@ -82,12 +81,10 @@ class CandidatureForm extends Component {
   ////////////////////////////////////////////////////////////
   /// Fonction qui s'éxecute à chaque fois que l'état (le this.state) du composant est modifié
   componentDidUpdate() {
-    console.log(this.state);
     const requiredCV = this.state.CV.length > 0 ? true : false;
     const requiredLM = this.state.LM.length > 0 ? true : false;
     const requiredDI = this.state.DI.length > 0 ? true : false;
     const requiredRN = this.state.RN.length > 0 ? true : false;
-    console.log(requiredCV + requiredLM + requiredDI + requiredRN);
 
     if (requiredCV + requiredLM + requiredDI + requiredRN === 4) {
       if (this.state.formValid === false) {
@@ -137,7 +134,7 @@ class CandidatureForm extends Component {
           return response.json();
         })
         .then(function(body) {
-          console.log(body);
+          console.log("candidature envoyée.");
         });
 
       fetch("/mail/send", {
@@ -188,7 +185,7 @@ class CandidatureForm extends Component {
         return response.json();
       })
       .then(function(body) {
-        console.log(body);
+        console.log("candidature modifiée.");
       });
   }
   //////////////////////////////////////////////////////////////
@@ -711,7 +708,6 @@ class CandidatureForm extends Component {
                   });
                 }
               }
-              console.log(this.state);
             }}
             labelTapToCancel={"Cliquez pour annuler "}
           />
@@ -723,7 +719,6 @@ class CandidatureForm extends Component {
   /////////////////////////////////////////////////////////////////
   /// Fonction qui créé un bouton pour visionner le fichier upload
   renderButtonViewFile(file) {
-    console.log(file);
     if (file.length !== 0) {
       const ext = file[file.length - 1].nom.split(".").pop();
       if (ext !== "pdf") {
