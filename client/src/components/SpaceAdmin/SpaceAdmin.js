@@ -3,9 +3,10 @@ import { Button, Collapse } from "reactstrap";
 import SpaceNavbar from "../SpaceNavbar/SpaceNavbar";
 import { MDBBadge } from "mdbreact";
 import "./SpaceAdmin.css";
-import Moment from "react-moment";
 import InformationForm from "../InformationForm/InformationForm";
-import DataTableAdmin from "./DataTableAdmin/DataTableAdmin";
+import DataTableNT from "./DataTableAdmin/DataTableNT";
+import DataTableEA from "./DataTableAdmin/DataTableEA";
+import DataTableTr from "./DataTableAdmin/DataTableTr";
 
 let propsUser = "";
 
@@ -61,7 +62,6 @@ class SpaceAdmin extends React.Component {
   // s'exécute au lancement du composant
   componentDidMount() {
     propsUser = this.props.user;
-    console.log(propsUser);
     this.setState(state => {
       return {
         admin: {
@@ -183,7 +183,7 @@ class SpaceAdmin extends React.Component {
         "Content-Type": "application/json"
       }
     })
-      .then(function(response) {
+      .then(response => {
         return response.json();
       })
       .then(function(body) {
@@ -226,214 +226,43 @@ class SpaceAdmin extends React.Component {
         "Content-Type": "application/json"
       }
     })
-      .then(function(response) {
+      .then(response => {
         return response.json();
       })
-      .then(function(body) {
+      .then(body => {
         console.log(body);
       });
     this.fetchData();
   }
   // Fonction pour afficher les candidatures non traitées
-  renderCandidaturesNonTraitees() {
-    if (this.state.candidaturesNonTraitees.length !== 0) {
-      /*
+  renderCandidaturesNonTraitees(boolean) {
+    if (boolean === true) {
       return (
-        <div id="accordion">
-          <h1 style={{ color: "black" }}>
-            Liste des candidatures non traitées :
-          </h1>
-          {this.state.candidaturesNonTraitees.map((item, index) => (
-            <div key={index} className="card">
-              <div
-                className="card-header"
-                id={"heading" + index}
-                role="button"
-                data-toggle="collapse"
-                data-target={"#collapse" + index}
-                aria-expanded="false"
-                aria-controls={"collapse" + index}
-              >
-                <div className="nameCand">
-                  Candidature de {item.candidat.prenom} {item.candidat.nom}{" "}
-                </div>
-                <div className="dateCand">
-                  <Moment format="DD/MM/YYYY">{item.date}</Moment>
-                </div>
-              </div>
-              <div
-                id={"collapse" + index}
-                className="collapse"
-                aria-labelledby={"heading" + index}
-                data-parent="#accordion"
-              >
-                <div className="card-body">
-                  <h2>Etat candidature : {item.etat}</h2>
-                  <p>email candidat : {item.candidat.mail} </p>
-                  <p>
-                    candidature créée le :{" "}
-                    <Moment format=" DD/MM/YYYY">{item.date}</Moment>{" "}
-                  </p>
-                </div>
-                <form
-                  action={`/candidatures/edit/${item}?_method=PUT`}
-                  method="POST"
-                >
-                  <Button
-                    onClick={() => this.refuseCandidature(item)}
-                    color="danger"
-                    data-toggle="collapse"
-                    data-target={"#collapse" + index}
-                    className="btnCandidature"
-                  >
-                    REFUSER
-                  </Button>
-                  <Button
-                    onClick={() => this.enAttenteCandidature(item)}
-                    color="warning"
-                    data-toggle="collapse"
-                    data-target={"#collapse" + index}
-                    className="btnCandidature"
-                  >
-                    METTRE EN ATTENTE
-                  </Button>
-                  <Button
-                    onClick={() => this.acceptCandidature(item)}
-                    color="success"
-                    data-toggle="collapse"
-                    data-target={"#collapse" + index}
-                    className="btnCandidature"
-                  >
-                    ACCEPTER
-                  </Button>
-                </form>
-              </div>
-            </div>
-          ))}
-        </div>
-      );
-      */
-      return (
-        <DataTableAdmin candidatures={this.state.candidaturesNonTraitees} />
+        <DataTableNT
+          candidatures={this.state.candidaturesNonTraitees}
+          accepter={this.acceptCandidature}
+          refuser={this.refuseCandidature}
+          attente={this.enAttenteCandidature}
+        />
       );
     }
   }
   // Fonction pour afficher les candidatures en attentes
-  renderCandidaturesEnAttentes() {
-    if (this.state.candidaturesEnAttentes.length !== 0) {
+  renderCandidaturesEnAttentes(boolean) {
+    if (boolean === true) {
       return (
-        <div id="accordionAttentes">
-          <h1 style={{ color: "black" }}>
-            Liste des candidatures en attentes :
-          </h1>
-          {this.state.candidaturesEnAttentes.map((item, index) => (
-            <div key={index} className="card">
-              <div
-                className="card-header"
-                id={"headingAttentes" + index}
-                role="button"
-                data-toggle="collapse"
-                data-target={"#collapseAttentes" + index}
-                aria-expanded="false"
-                aria-controls={"collapseAttentes" + index}
-              >
-                <div className="nameCand">
-                  Candidature de {item.candidat.prenom} {item.candidat.nom}{" "}
-                </div>
-                <div className="dateCand">
-                  {" "}
-                  en attente depuis le
-                  <Moment format=" DD/MM/YYYY">{item.dateTraitement}</Moment>
-                </div>
-              </div>
-              <div
-                id={"collapseAttentes" + index}
-                className="collapse"
-                aria-labelledby={"headingAttentes" + index}
-                data-parent="#accordionAttentes"
-              >
-                <div className="card-body">
-                  <h2>Etat candidature : {item.etat}</h2>
-                  <p>email candidat : {item.candidat.mail} </p>
-                  <p>
-                    candidature créée le :{" "}
-                    <Moment format=" DD/MM/YYYY">{item.date}</Moment>{" "}
-                  </p>
-                </div>
-                <form
-                  action={`/candidatures/edit/${item}?_method=PUT`}
-                  method="POST"
-                >
-                  <Button
-                    onClick={() => this.refuseCandidature(item)}
-                    color="danger"
-                    data-toggle="collapse"
-                    data-target={"#collapseAttentes" + index}
-                    className="btnCandidature"
-                  >
-                    REFUSER
-                  </Button>
-                  <Button
-                    onClick={() => this.acceptCandidature(item)}
-                    color="success"
-                    data-toggle="collapse"
-                    data-target={"#collapseAttentes" + index}
-                    className="btnCandidature"
-                  >
-                    ACCEPTER
-                  </Button>
-                </form>
-              </div>
-            </div>
-          ))}
-        </div>
+        <DataTableEA
+          candidatures={this.state.candidaturesEnAttentes}
+          accepter={this.acceptCandidature}
+          refuser={this.refuseCandidature}
+        />
       );
     }
   }
   // Fonction pour afficher les candidatures traitées
-  renderCandidaturesTraitees() {
-    if (this.state.candidaturesTraitees.length !== 0) {
-      return (
-        <div id="accordionTraitees">
-          <h1 style={{ color: "black" }}>Liste des candidatures traitées :</h1>
-          {this.state.candidaturesTraitees.map((item, index) => (
-            <div key={index} className="card">
-              <div
-                className="card-header"
-                id={"headingTraitees" + index}
-                role="button"
-                data-toggle="collapse"
-                data-target={"#collapseTraitees" + index}
-                aria-expanded="false"
-                aria-controls={"collapseTraitees" + index}
-              >
-                <div className="nameCand">
-                  Candidature de {item.candidat.prenom} {item.candidat.nom}{" "}
-                </div>
-                <div className="dateCand">
-                  {item.etat} le
-                  <Moment format=" DD/MM/YYYY">{item.dateTraitement}</Moment>
-                </div>
-              </div>
-              <div
-                id={"collapseTraitees" + index}
-                className="collapse"
-                aria-labelledby={"headingTraitees" + index}
-                data-parent="#accordionTraitees"
-              >
-                <div className="card-body">
-                  <h2>Etat candidature : {item.etat}</h2>
-                  <p>email candidat : {item.candidat.mail} </p>
-                  <p>
-                    candidature créée le :{" "}
-                    <Moment format=" DD/MM/YYYY">{item.date}</Moment>{" "}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      );
+  renderCandidaturesTraitees(boolean) {
+    if (boolean === true) {
+      return <DataTableTr candidatures={this.state.candidaturesTraitees} />;
     }
   }
   // Fonction pour afficher le composant InformationForm
@@ -488,13 +317,13 @@ class SpaceAdmin extends React.Component {
           </Button>
         </div>
         <Collapse isOpen={this.state.boolCandNonTraitees}>
-          {this.renderCandidaturesNonTraitees()}
+          {this.renderCandidaturesNonTraitees(this.state.fetchEnd)}
         </Collapse>
         <Collapse isOpen={this.state.boolCandEnAttentes}>
-          {this.renderCandidaturesEnAttentes()}
+          {this.renderCandidaturesEnAttentes(this.state.fetchEnd)}
         </Collapse>
         <Collapse isOpen={this.state.boolCandTraitees}>
-          {this.renderCandidaturesTraitees()}
+          {this.renderCandidaturesTraitees(this.state.fetchEnd)}
         </Collapse>
       </div>
     );

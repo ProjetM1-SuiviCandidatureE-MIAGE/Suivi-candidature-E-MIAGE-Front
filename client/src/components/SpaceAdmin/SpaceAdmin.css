@@ -73,3 +73,9 @@
 .btnSA {
   padding: 0.8em 0.8em !important;
 }
+
+/* CSS des boutons de téléchargement des fichiers */
+.FileButton {
+  font-size: 0.7rem !important;
+  padding: 0.8rem 1.2rem !important;
+}
