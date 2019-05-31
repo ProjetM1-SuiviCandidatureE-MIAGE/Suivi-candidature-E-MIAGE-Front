@@ -81,7 +81,7 @@ export default class DataTableTr extends Component {
           }
         },
         {
-          name: "dateTraitement",
+          name: "dateTraite",
           label: "Date de traitement"
         },
         {
@@ -96,6 +96,7 @@ export default class DataTableTr extends Component {
         item.prenom = item.candidat[0].prenom;
         item.mail = item.candidat[0].mail;
         item.dateCreation = self.formatDate(item.date);
+        item.dateTraite = self.formatDate(item.dateTraitement);
         return item;
       });
 
@@ -108,7 +109,6 @@ export default class DataTableTr extends Component {
           let filtre = candidaturesData.filter(item => {
             return item._id === rowData[0];
           });
-          console.log(filtre);
           let autreFichier = [];
           if (filtre[0].autresFichier.length !== 0) {
             autreFichier.push(
@@ -120,7 +120,7 @@ export default class DataTableTr extends Component {
                     outline
                     color="default"
                     className="FileButton"
-                    onClick={item => this.loadFile(filtre.autresFichier)}
+                    onClick={item => this.loadFile(filtre[0].autresFichier)}
                   >
                     <MDBIcon icon="eye" /> Voir
                   </MDBBtn>
@@ -129,7 +129,7 @@ export default class DataTableTr extends Component {
                   <MDBBtn
                     color="default"
                     className="FileButton"
-                    onClick={item => this.downloadFile(filtre.autresFichier)}
+                    onClick={item => this.downloadFile(filtre[0].autresFichier)}
                   >
                     <MDBIcon icon="file-download" /> Télécharger
                   </MDBBtn>
@@ -141,12 +141,107 @@ export default class DataTableTr extends Component {
           return (
             <TableRow colSpan={6}>
               <TableCell colSpan={6}>
+                <TableRow>
+                  <TableCell colSpan={1} />
+                  <TableCell colSpan={1}>CV (Curriculum vitæ) :</TableCell>
+                  <TableCell colSpan={1}>
+                    <MDBBtn
+                      outline
+                      color="default"
+                      className="FileButton"
+                      onClick={item => this.loadFile(filtre[0].cv)}
+                    >
+                      <MDBIcon icon="eye" /> Voir
+                    </MDBBtn>
+                  </TableCell>
+                  <TableCell colSpan={1}>
+                    <MDBBtn
+                      color="default"
+                      className="FileButton"
+                      onClick={item => this.downloadFile(filtre[0].cv)}
+                    >
+                      <MDBIcon icon="file-download" /> Télécharger
+                    </MDBBtn>
+                  </TableCell>
+                  <TableCell colSpan={1} />
+                </TableRow>
+                <TableRow>
+                  <TableCell colSpan={1} />
+                  <TableCell colSpan={1}>Lettre de motivation :</TableCell>
+                  <TableCell colSpan={1}>
+                    <MDBBtn
+                      outline
+                      color="default"
+                      className="FileButton"
+                      onClick={item => this.loadFile(filtre[0].lm)}
+                    >
+                      <MDBIcon icon="eye" /> Voir
+                    </MDBBtn>
+                  </TableCell>
+                  <TableCell colSpan={1}>
+                    <MDBBtn
+                      color="default"
+                      className="FileButton"
+                      onClick={item => this.downloadFile(filtre[0].lm)}
+                    >
+                      <MDBIcon icon="file-download" /> Télécharger
+                    </MDBBtn>
+                  </TableCell>
+                  <TableCell colSpan={1} />
+                </TableRow>
+                <TableRow>
+                  <TableCell colSpan={1} />
+                  <TableCell colSpan={1}>Relevé de notes :</TableCell>
+                  <TableCell colSpan={1}>
+                    <MDBBtn
+                      outline
+                      color="default"
+                      className="FileButton"
+                      onClick={item => this.loadFile(filtre[0].releveNote)}
+                    >
+                      <MDBIcon icon="eye" /> Voir
+                    </MDBBtn>
+                  </TableCell>
+                  <TableCell colSpan={1}>
+                    <MDBBtn
+                      color="default"
+                      className="FileButton"
+                      onClick={item => this.downloadFile(filtre[0].releveNote)}
+                    >
+                      <MDBIcon icon="file-download" /> Télécharger
+                    </MDBBtn>
+                  </TableCell>
+                  <TableCell colSpan={1} />
+                </TableRow>
+                <TableRow>
+                  <TableCell colSpan={1} />
+                  <TableCell colSpan={1}>Bulletin :</TableCell>
+                  <TableCell colSpan={1}>
+                    <MDBBtn
+                      outline
+                      color="default"
+                      className="FileButton"
+                      onClick={item => this.loadFile(filtre[0].diplome)}
+                    >
+                      <MDBIcon icon="eye" /> Voir
+                    </MDBBtn>
+                  </TableCell>
+                  <TableCell colSpan={1}>
+                    <MDBBtn
+                      color="default"
+                      className="FileButton"
+                      onClick={item => this.downloadFile(filtre[0].diplome)}
+                    >
+                      <MDBIcon icon="file-download" /> Télécharger
+                    </MDBBtn>
+                  </TableCell>
+                  <TableCell colSpan={1} />
+                </TableRow>
                 {autreFichier}
                 <TableRow>
                   <TableCell colSpan={1} />
                   <TableCell colSpan={1}>Commentaire : </TableCell>
-                  <TableCell colSpan={4}>{filtre[0].commentaire}</TableCell>
-                  <TableCell colSpan={1} />
+                  <TableCell colSpan={3}>{filtre[0].commentaire}</TableCell>
                 </TableRow>
                 <TableRow />
               </TableCell>

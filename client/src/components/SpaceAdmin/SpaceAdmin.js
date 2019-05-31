@@ -24,7 +24,7 @@ class SpaceAdmin extends React.Component {
       },
       // Les booléens pour les fonctions toggle des boutons
       boolMesInformations: false,
-      boolCandNonTraitees: false,
+      boolCandNonTraitees: true,
       boolCandEnAttentes: false,
       boolCandTraitees: false,
       // Tableaux contenant les candidatures traitées, non traitées et en attentes
@@ -58,6 +58,7 @@ class SpaceAdmin extends React.Component {
     this.fetchData = this.fetchData.bind(this);
     this.getAdmin = this.getAdmin.bind(this);
     this.setAdmin = this.setAdmin.bind(this);
+    this.sendMail = this.sendMail.bind(this);
   }
   // s'exécute au lancement du composant
   componentDidMount() {
@@ -91,7 +92,8 @@ class SpaceAdmin extends React.Component {
             return (
               item.etat.includes("acceptée") || item.etat.includes("refusée")
             );
-          })
+          }),
+          fetchEnd: false
         })
       )
       .then(() => this.sortingArray())
@@ -169,13 +171,37 @@ class SpaceAdmin extends React.Component {
       boolCandEnAttentes: false
     });
   }
+  // Fonction pour envoyer un mail au candidat quand sa candidatue a été traité
+  sendMail(candidat, statut) {
+    fetch("/mail/send", {
+      method: "POST",
+      body: JSON.stringify({
+        mail: candidat.mail,
+        sujet: "Votre candidature a été traité",
+        texte:
+          "Bonjour " +
+          candidat.prenom +
+          " " +
+          candidat.nom +
+          ",<br /> votre candidature est " +
+          statut +
+          ".<br /><br />Pour plus de détails, vous pouvez consulter votre candidature dans votre espace personnel.<br /><br />Cordialement."
+      }),
+      headers: { "Content-Type": "application/json" }
+    })
+      .then(function(response) {
+        return response;
+      })
+      .then(function(body) {});
+  }
   // Fonction pour accepter une candidature
-  acceptCandidature(item) {
-    fetch(`/candidatures/edit/${item._id}`, {
+  acceptCandidature(id, comm, candidat) {
+    const self = this;
+    fetch(`/candidatures/edit/${id}`, {
       method: "PUT",
       body: JSON.stringify({
         etat: "acceptée",
-        commentaire: "",
+        commentaire: comm,
         dateTraitement: new Date()
       }),
       headers: {
@@ -187,17 +213,19 @@ class SpaceAdmin extends React.Component {
         return response.json();
       })
       .then(function(body) {
-        console.log(body);
+        console.log("acceptée " + id);
+        self.sendMail(candidat, "acceptée");
+        self.fetchData();
       });
-    this.fetchData();
   }
   // Fonction pour refuser une candidature
-  refuseCandidature(item) {
-    fetch(`/candidatures/edit/${item._id}`, {
+  refuseCandidature(id, comm, candidat) {
+    const self = this;
+    fetch(`/candidatures/edit/${id}`, {
       method: "PUT",
       body: JSON.stringify({
         etat: "refusée",
-        commentaire: "",
+        commentaire: comm,
         dateTraitement: new Date()
       }),
       headers: {
@@ -209,16 +237,18 @@ class SpaceAdmin extends React.Component {
         return response.json();
       })
       .then(function(body) {
-        console.log(body);
+        console.log("refusée " + id);
+        self.sendMail(candidat, "refusée");
+        self.fetchData();
       });
-    this.fetchData();
   }
-  enAttenteCandidature(item) {
-    fetch(`/candidatures/edit/${item._id}`, {
+  enAttenteCandidature(id, comm, candidat) {
+    const self = this;
+    fetch(`/candidatures/edit/${id}`, {
       method: "PUT",
       body: JSON.stringify({
         etat: "en attente",
-        commentaire: "",
+        commentaire: comm,
         dateTraitement: new Date()
       }),
       headers: {
@@ -230,9 +260,10 @@ class SpaceAdmin extends React.Component {
         return response.json();
       })
       .then(body => {
-        console.log(body);
+        console.log("en attente " + id);
+        self.sendMail(candidat, "en attente");
+        self.fetchData();
       });
-    this.fetchData();
   }
   // Fonction pour afficher les candidatures non traitées
   renderCandidaturesNonTraitees(boolean) {
@@ -240,9 +271,15 @@ class SpaceAdmin extends React.Component {
       return (
         <DataTableNT
           candidatures={this.state.candidaturesNonTraitees}
-          accepter={this.acceptCandidature}
-          refuser={this.refuseCandidature}
-          attente={this.enAttenteCandidature}
+          accepter={(id, comm, candidat) =>
+            this.acceptCandidature(id, comm, candidat)
+          }
+          refuser={(id, comm, candidat) =>
+            this.refuseCandidature(id, comm, candidat)
+          }
+          attente={(id, comm, candidat) =>
+            this.enAttenteCandidature(id, comm, candidat)
+          }
         />
       );
     }
@@ -253,8 +290,12 @@ class SpaceAdmin extends React.Component {
       return (
         <DataTableEA
           candidatures={this.state.candidaturesEnAttentes}
-          accepter={this.acceptCandidature}
-          refuser={this.refuseCandidature}
+          accepter={(id, comm, candidat) =>
+            this.acceptCandidature(id, comm, candidat)
+          }
+          refuser={(id, comm, candidat) =>
+            this.refuseCandidature(id, comm, candidat)
+          }
         />
       );
     }

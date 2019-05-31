@@ -13,23 +13,18 @@ export default class DataTableAdmin extends Component {
 
     this.state = {
       candidaturesProps: "",
-      formatEnd: false,
-      commentaire: ""
+      formatEnd: false
     };
     this.renderDataTable = this.renderDataTable.bind(this);
-    this.handleCommentaireChange = this.handleCommentaireChange.bind(this);
   }
   // Fonction qui s'éxecute à la création du composant
   componentDidMount() {
     props = this.props;
-    console.log(props);
     this.setState({
       candidaturesProps: props.candidatures,
       formatEnd: true
     });
   }
-  // Fonction pour changer le commentaire d'une candidature
-  handleCommentaireChange = event => {};
   // Fonction pour formatter la date
   formatDate(date) {
     let d = new Date(date),
@@ -45,7 +40,6 @@ export default class DataTableAdmin extends Component {
   ////////////////////////////////////////////////////////////
   // Fonction pour charger les fichiers upload
   loadFile(file) {
-    console.log(file);
     const path = file[0].fichier;
     const url = "http://localhost:3010/upload/getFile/" + path;
     window.open(url);
@@ -56,6 +50,24 @@ export default class DataTableAdmin extends Component {
     const path = file[0].fichier;
     const url = "http://localhost:3010/upload/downloadFile/" + path;
     window.open(url);
+  }
+  ////////////////////////////////////////////////////////////
+  // Fonction pour accepter une candidature
+  acceptCand(item, idInput) {
+    const commentaire = document.getElementById(idInput).value;
+    props.accepter(item._id, commentaire, item.candidat[0]);
+  }
+  ////////////////////////////////////////////////////////////
+  // Fonction pour refuser une candidature
+  refuseCand(item, idInput) {
+    const commentaire = document.getElementById(idInput).value;
+    props.refuser(item._id, commentaire, item.candidat[0]);
+  }
+  ////////////////////////////////////////////////////////////
+  // Fonction pour mettre en attente une candidature
+  waitCand(item, idInput) {
+    const commentaire = document.getElementById(idInput).value;
+    props.attente(item._id, commentaire, item.candidat[0]);
   }
   // Fonction pour afficher la DataTable
   renderDataTable(boolean) {
@@ -110,7 +122,7 @@ export default class DataTableAdmin extends Component {
           let filtre = candidaturesData.filter(item => {
             return item._id === rowData[0];
           });
-          console.log(filtre);
+          const nomClasse = filtre[0]._id.substring(16);
           let autreFichier = [];
           if (filtre[0].autresFichier.length !== 0) {
             autreFichier.push(
@@ -160,7 +172,7 @@ export default class DataTableAdmin extends Component {
                     <MDBBtn
                       color="default"
                       className="FileButton"
-                      onClick={item => this.downloadFile(filtre.cv)}
+                      onClick={item => this.downloadFile(filtre[0].cv)}
                     >
                       <MDBIcon icon="file-download" /> Télécharger
                     </MDBBtn>
@@ -175,7 +187,7 @@ export default class DataTableAdmin extends Component {
                       outline
                       color="default"
                       className="FileButton"
-                      onClick={item => this.loadFile(filtre.lm)}
+                      onClick={item => this.loadFile(filtre[0].lm)}
                     >
                       <MDBIcon icon="eye" /> Voir
                     </MDBBtn>
@@ -184,7 +196,7 @@ export default class DataTableAdmin extends Component {
                     <MDBBtn
                       color="default"
                       className="FileButton"
-                      onClick={item => this.downloadFile(filtre.lm)}
+                      onClick={item => this.downloadFile(filtre[0].lm)}
                     >
                       <MDBIcon icon="file-download" /> Télécharger
                     </MDBBtn>
@@ -199,7 +211,7 @@ export default class DataTableAdmin extends Component {
                       outline
                       color="default"
                       className="FileButton"
-                      onClick={item => this.loadFile(filtre.releveNote)}
+                      onClick={item => this.loadFile(filtre[0].releveNote)}
                     >
                       <MDBIcon icon="eye" /> Voir
                     </MDBBtn>
@@ -208,7 +220,7 @@ export default class DataTableAdmin extends Component {
                     <MDBBtn
                       color="default"
                       className="FileButton"
-                      onClick={item => this.downloadFile(filtre.releveNote)}
+                      onClick={item => this.downloadFile(filtre[0].releveNote)}
                     >
                       <MDBIcon icon="file-download" /> Télécharger
                     </MDBBtn>
@@ -223,7 +235,7 @@ export default class DataTableAdmin extends Component {
                       outline
                       color="default"
                       className="FileButton"
-                      onClick={item => this.loadFile(filtre.diplome)}
+                      onClick={item => this.loadFile(filtre[0].diplome)}
                     >
                       <MDBIcon icon="eye" /> Voir
                     </MDBBtn>
@@ -232,7 +244,7 @@ export default class DataTableAdmin extends Component {
                     <MDBBtn
                       color="default"
                       className="FileButton"
-                      onClick={item => this.downloadFile(filtre.diplome)}
+                      onClick={item => this.downloadFile(filtre[0].diplome)}
                     >
                       <MDBIcon icon="file-download" /> Télécharger
                     </MDBBtn>
@@ -248,20 +260,36 @@ export default class DataTableAdmin extends Component {
                       type="textarea"
                       label="Votre commentaire"
                       outline
+                      id={nomClasse}
+                      autoComplete="off"
                     />
                   </TableCell>
-                  <TableCell colSpan={1} />
                 </TableRow>
                 <TableRow colSpan={6}>
                   <TableCell colSpan={1} />
                   <TableCell colSpan={1}>
-                    <MDBBtn color="danger">REFUSER</MDBBtn>
+                    <MDBBtn
+                      color="danger"
+                      onClick={() => this.refuseCand(filtre[0], nomClasse)}
+                    >
+                      REFUSER
+                    </MDBBtn>
                   </TableCell>
                   <TableCell colSpan={1}>
-                    <MDBBtn color="warning">METTRE EN ATTENTE</MDBBtn>
+                    <MDBBtn
+                      color="warning"
+                      onClick={() => this.waitCand(filtre[0], nomClasse)}
+                    >
+                      METTRE EN ATTENTE
+                    </MDBBtn>
                   </TableCell>
                   <TableCell colSpan={1}>
-                    <MDBBtn color="success">ACCEPTER</MDBBtn>
+                    <MDBBtn
+                      color="success"
+                      onClick={() => this.acceptCand(filtre[0], nomClasse)}
+                    >
+                      ACCEPTER
+                    </MDBBtn>
                   </TableCell>
                   <TableCell colSpan={1} />
                 </TableRow>
