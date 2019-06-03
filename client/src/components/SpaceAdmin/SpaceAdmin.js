@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import { Button, Collapse } from "reactstrap";
 import SpaceNavbar from "../SpaceNavbar/SpaceNavbar";
 import { MDBBadge } from "mdbreact";
@@ -11,7 +11,7 @@ import DataTableTr from "./DataTableAdmin/DataTableTr";
 let propsUser = "";
 
 // Le composant qui affiche la page de l'espace administrateur
-class SpaceAdmin extends React.Component {
+export default class SpaceAdmin extends Component {
   constructor(props) {
     super(props);
 
@@ -370,5 +370,3 @@ class SpaceAdmin extends React.Component {
     );
   }
 }
-
-export default SpaceAdmin;

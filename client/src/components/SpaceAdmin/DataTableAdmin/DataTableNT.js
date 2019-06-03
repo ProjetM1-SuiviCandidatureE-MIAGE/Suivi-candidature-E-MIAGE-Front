@@ -3,6 +3,7 @@ import MUIDataTable from "mui-datatables";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import { MDBBtn, MDBIcon, MDBInput } from "mdbreact";
+import Download from "./DowloadExcel/Download";
 
 let props = "";
 let candidaturesData = "";
@@ -300,9 +301,9 @@ export default class DataTableAdmin extends Component {
         },
         rowsPerPage: 5,
         rowsPerPageOptions: [5, 10, 20, 50],
-        downloadOptions: {
-          filename: "CandidaturesNonTraitées.csv",
-          separator: ","
+        download: false,
+        customToolbar: () => {
+          return <Download fileName={"CandidaturesNonTraitées"} />;
         },
         textLabels: {
           body: {
