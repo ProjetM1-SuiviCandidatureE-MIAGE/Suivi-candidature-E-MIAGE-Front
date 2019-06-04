@@ -7,6 +7,7 @@ import InformationForm from "../InformationForm/InformationForm";
 import DataTableNT from "./DataTableAdmin/DataTableNT";
 import DataTableEA from "./DataTableAdmin/DataTableEA";
 import DataTableTr from "./DataTableAdmin/DataTableTr";
+import MySnackBar from "../SnackBar/MySnackBar";
 
 let propsUser = "";
 
@@ -36,7 +37,8 @@ export default class SpaceAdmin extends Component {
       EnAttentesNumber: 0,
       TraitéesNumber: 0,
 
-      fetchEnd: false
+      fetchEnd: false,
+      openSnackBar: false
     };
     this.toggleNonTraite = this.toggleNonTraite.bind(this);
     this.toggleAttente = this.toggleAttente.bind(this);
@@ -59,6 +61,7 @@ export default class SpaceAdmin extends Component {
     this.getAdmin = this.getAdmin.bind(this);
     this.setAdmin = this.setAdmin.bind(this);
     this.sendMail = this.sendMail.bind(this);
+    this.changeSnackBar = this.changeSnackBar.bind(this);
   }
   // s'exécute au lancement du composant
   componentDidMount() {
@@ -115,6 +118,13 @@ export default class SpaceAdmin extends Component {
           mail: AdminModif.mail
         }
       };
+    });
+  }
+  ////////////////////////////////////////////////////////////
+  ///// Fonction pour ouvrir le snackBar après la sauvegarde de la candidature
+  changeSnackBar(boolean) {
+    this.setState({
+      openSnackBar: boolean
     });
   }
   // Fonction pour trier les candidatures
@@ -212,6 +222,7 @@ export default class SpaceAdmin extends Component {
       .then(function(body) {
         console.log("acceptée " + id);
         self.sendMail(candidat, "acceptée");
+        self.changeSnackBar(true);
         self.fetchData();
       });
   }
@@ -236,6 +247,7 @@ export default class SpaceAdmin extends Component {
       .then(function(body) {
         console.log("refusée " + id);
         self.sendMail(candidat, "refusée");
+        self.changeSnackBar(true);
         self.fetchData();
       });
   }
@@ -259,6 +271,7 @@ export default class SpaceAdmin extends Component {
       .then(body => {
         console.log("en attente " + id);
         self.sendMail(candidat, "en attente");
+        self.changeSnackBar(true);
         self.fetchData();
       });
   }
@@ -375,6 +388,11 @@ export default class SpaceAdmin extends Component {
         <Collapse isOpen={this.state.boolCandTraitees}>
           {this.renderCandidaturesTraitees(this.state.fetchEnd)}
         </Collapse>
+        <MySnackBar
+          message={"Candidature traitée."}
+          open={this.state.openSnackBar}
+          close={item => this.changeSnackBar(item)}
+        />
       </div>
     );
   }

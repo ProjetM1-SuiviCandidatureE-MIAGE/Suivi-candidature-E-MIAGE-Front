@@ -100,9 +100,9 @@ class CandidatureForm extends Component {
   }
   //////////////////////////////////////////////////////////
   ///// Fonction pour ouvrir le snackBar après la sauvegarde de la candidature
-  changeSnackBar() {
+  changeSnackBar(boolean) {
     this.setState({
-      openSnackBar: !this.state.openSnackBar
+      openSnackBar: boolean
     });
   }
   ////////////////////////////////////////////////////////////
@@ -198,7 +198,7 @@ class CandidatureForm extends Component {
       })
       .then(function(body) {
         console.log("candidature modifiée.");
-        self.changeSnackBar();
+        self.changeSnackBar(true);
       });
   }
   //////////////////////////////////////////////////////////////
@@ -809,7 +809,7 @@ class CandidatureForm extends Component {
           <MySnackBar
             message={"Candidature sauvegardée."}
             open={this.state.openSnackBar}
-            close={() => this.changeSnackBar()}
+            close={item => this.changeSnackBar(item)}
           />
         </MDBCardText>
       </MDBCard>

@@ -33,7 +33,6 @@ const MyButton = React.forwardRef((props, ref) => (
 export default class Download extends Component {
   render() {
     const reff = React.createRef();
-    console.log(this.props.candidatures);
     return (
       <ExcelFile
         filename={this.props.fileName}

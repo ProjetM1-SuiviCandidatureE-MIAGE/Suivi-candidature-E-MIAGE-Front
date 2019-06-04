@@ -38,6 +38,14 @@ export default class DataTableTr extends Component {
 
     return [day, month, year].join("/");
   }
+  // Fonction pour le tri de la date
+  changeFormatDate(date) {
+    const day = date.substring(0, 2);
+    const month = date.substring(3, 5);
+    const year = date.substring(6, 10);
+
+    return [year, month, day].join("/");
+  }
   ////////////////////////////////////////////////////////////
   // Fonction pour charger les fichiers upload
   loadFile(file) {
@@ -59,7 +67,7 @@ export default class DataTableTr extends Component {
         {
           name: "_id",
           options: {
-            display: false
+            display: "excluded"
           }
         },
         {
@@ -288,7 +296,23 @@ export default class DataTableTr extends Component {
             titleAria: "Voir/Cacher les colonnes"
           }
         },
-        selectableRows: "none"
+        selectableRows: "none",
+        customSort: (data, colIndex, order) => {
+          const self = this;
+          return data.sort((a, b) => {
+            // Si c'est une date on tri par rapport à YYYY/MM/DD
+            if (a.data[colIndex].includes("/")) {
+              const dateA = self.changeFormatDate(a.data[colIndex]);
+              const dateB = self.changeFormatDate(b.data[colIndex]);
+              return (dateA > dateB ? -1 : 1) * (order === "desc" ? 1 : -1);
+            } else {
+              return (
+                (a.data[colIndex] > b.data[colIndex] ? -1 : 1) *
+                (order === "desc" ? 1 : -1)
+              );
+            }
+          });
+        }
       };
       return (
         <MUIDataTable

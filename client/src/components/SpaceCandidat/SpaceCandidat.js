@@ -4,6 +4,7 @@ import SpaceNavbar from "../SpaceNavbar/SpaceNavbar";
 import InformationForm from "../InformationForm/InformationForm";
 import { MDBBtn, MDBCollapse } from "mdbreact";
 import "./SpaceCandidat.css";
+import DataTable from "./TableCandidat/DataTableCandidat";
 
 let propsUser = "";
 
@@ -170,12 +171,19 @@ class SpaceCandidat extends React.Component {
       );
     }
   }
+  // Fonction pour afficher la datatable de suivi des candidatures
+  renderDataTableSuivi(boolean) {
+    if (boolean === true) {
+      return <DataTable candidatures={this.state.candidatures} />;
+    }
+  }
   // Fonction qui retourne le html du composant
   render() {
     return (
       <div className="Candidat">
         <SpaceNavbar props={this.props} />
         <div className="text-center">
+          {this.renderDataTableSuivi(this.state.fetchEnd)}
           <MDBBtn
             onClick={this.toggleInformationForm}
             color="info"
