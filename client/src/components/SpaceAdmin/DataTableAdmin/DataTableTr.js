@@ -253,7 +253,12 @@ export default class DataTableTr extends Component {
         rowsPerPageOptions: [5, 10, 20, 50],
         download: false,
         customToolbar: () => {
-          return <Download fileName={"CandidaturesTraitées"} />;
+          return (
+            <Download
+              fileName={"CandidaturesTraitées"}
+              candidatures={candidaturesData}
+            />
+          );
         },
         textLabels: {
           body: {

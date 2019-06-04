@@ -8,6 +8,7 @@ import {
   MDBIcon,
   MDBBtn
 } from "mdbreact";
+import Tooltip from "@material-ui/core/Tooltip";
 
 let type = "";
 
@@ -147,14 +148,21 @@ export default class ModalForgetPassword extends Component {
           >
             Fermer
           </MDBBtn>
-          <MDBBtn
-            color="primary"
-            className="SaveButton"
-            onClick={this.forgetPassword}
-            disabled={!this.state.validForm}
+          <Tooltip
+            title={this.state.validForm === true ? "" : "Le mail est invalide."}
+            placement="top"
           >
-            Envoyer
-          </MDBBtn>
+            <span>
+              <MDBBtn
+                color="primary"
+                className="SaveButton"
+                onClick={this.forgetPassword}
+                disabled={!this.state.validForm}
+              >
+                Envoyer
+              </MDBBtn>
+            </span>
+          </Tooltip>
         </MDBModalFooter>
       </MDBModal>
     );

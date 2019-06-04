@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Button, Collapse } from "reactstrap";
+import { Collapse } from "reactstrap";
 import SpaceNavbar from "../SpaceNavbar/SpaceNavbar";
-import { MDBBadge } from "mdbreact";
+import { MDBBadge, MDBBtn } from "mdbreact";
 import "./SpaceAdmin.css";
 import InformationForm from "../InformationForm/InformationForm";
 import DataTableNT from "./DataTableAdmin/DataTableNT";
@@ -165,10 +165,7 @@ export default class SpaceAdmin extends Component {
   // Fonction pour afficher le div qui contient les informations de l'admin
   toggleMesInformations() {
     this.setState({
-      boolMesInformations: !this.state.boolMesInformations,
-      boolCandTraitees: false,
-      boolCandNonTraitees: false,
-      boolCandEnAttentes: false
+      boolMesInformations: !this.state.boolMesInformations
     });
   }
   // Fonction pour envoyer un mail au candidat quand sa candidatue a été traité
@@ -326,36 +323,48 @@ export default class SpaceAdmin extends Component {
       <div className="Admin">
         <SpaceNavbar props={this.props} />
         <div className="text-center">
-          <Button
+          <MDBBtn
             onClick={this.toggleMesInformations}
             color="info"
             className="btnPerso"
           >
             Voir mes informations
-          </Button>
+          </MDBBtn>
         </div>
         <Collapse isOpen={this.state.boolMesInformations}>
           {this.renderInformationForm(this.state.fetchEnd)}
         </Collapse>
         <div className="text-center">
-          <Button onClick={this.toggleNonTraite} className="btnSA">
+          <MDBBtn
+            onClick={this.toggleNonTraite}
+            className="btnSA"
+            color="light-blue"
+          >
             Afficher les candidatures non traitées
             <MDBBadge color="primary" className="ml-3">
               {this.state.NonTraitéesNumber}
             </MDBBadge>
-          </Button>
-          <Button onClick={this.toggleAttente} className="btnSA">
+          </MDBBtn>
+          <MDBBtn
+            onClick={this.toggleAttente}
+            className="btnSA"
+            color="light-blue"
+          >
             Afficher les candidatures en attentes
             <MDBBadge color="primary" className="ml-3">
               {this.state.EnAttentesNumber}
             </MDBBadge>
-          </Button>
-          <Button onClick={this.toggleTraite} className="btnSA">
+          </MDBBtn>
+          <MDBBtn
+            onClick={this.toggleTraite}
+            className="btnSA"
+            color="light-blue"
+          >
             Afficher les candidatures traitées
             <MDBBadge color="primary" className="ml-3">
               {this.state.TraitéesNumber}
             </MDBBadge>
-          </Button>
+          </MDBBtn>
         </div>
         <Collapse isOpen={this.state.boolCandNonTraitees}>
           {this.renderCandidaturesNonTraitees(this.state.fetchEnd)}

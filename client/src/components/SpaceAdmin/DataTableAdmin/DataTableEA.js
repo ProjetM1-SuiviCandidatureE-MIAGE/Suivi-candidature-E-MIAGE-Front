@@ -301,7 +301,12 @@ export default class DataTableEA extends Component {
         rowsPerPageOptions: [5, 10, 20, 50],
         download: false,
         customToolbar: () => {
-          return <Download fileName={"CandidaturesEnAttentes"} />;
+          return (
+            <Download
+              fileName={"CandidaturesEnAttentes"}
+              candidatures={candidaturesData}
+            />
+          );
         },
         textLabels: {
           body: {

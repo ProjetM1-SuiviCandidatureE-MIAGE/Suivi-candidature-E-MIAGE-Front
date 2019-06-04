@@ -9,6 +9,7 @@ import {
   MDBIcon,
   MDBBtn
 } from "mdbreact";
+import Tooltip from "@material-ui/core/Tooltip";
 
 let type = "";
 let getUser = "";
@@ -254,6 +255,17 @@ export default class ModalPassword extends Component {
           <MDBIcon icon="lock" /> Modification du mot de passe
         </MDBModalHeader>
         <MDBModalBody>
+          <p
+            style={{
+              fontSize: "20px",
+              fontStyle: "oblique",
+              fontWeight: "400",
+              marginBottom: "2em"
+            }}
+          >
+            {" "}
+            Mot de passe de plus de 8 caractères.
+          </p>
           <form>
             <MDBInput
               label="Mot de passe actuel"
@@ -293,14 +305,25 @@ export default class ModalPassword extends Component {
           >
             Fermer
           </MDBBtn>
-          <MDBBtn
-            color="primary"
-            className="SaveButton"
-            onClick={this.passwordChange}
-            disabled={!this.state.validForm}
+          <Tooltip
+            title={
+              this.state.validForm === true
+                ? ""
+                : "Au moins 1 champ est invalide."
+            }
+            placement="top"
           >
-            Sauvegarder
-          </MDBBtn>
+            <span>
+              <MDBBtn
+                color="primary"
+                className="SaveButton"
+                onClick={this.passwordChange}
+                disabled={!this.state.validForm}
+              >
+                Sauvegarder
+              </MDBBtn>
+            </span>
+          </Tooltip>
         </MDBModalFooter>
       </MDBModal>
     );

@@ -12,6 +12,8 @@ import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 import { FilePond, registerPlugin } from "react-filepond";
 import "filepond/dist/filepond.min.css";
 import "./CandidatureForm.css";
+import Tooltip from "@material-ui/core/Tooltip";
+import MySnackBar from "../../SnackBar/MySnackBar";
 
 registerPlugin(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
 let getCandidat = "";
@@ -45,7 +47,8 @@ class CandidatureForm extends Component {
 
       candidatures: "",
       brouillon: "",
-      loadEnd: false
+      loadEnd: false,
+      openSnackBar: false
     };
     // On bind toutes les fonctions qui vont utiliser le this.state
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -55,6 +58,7 @@ class CandidatureForm extends Component {
     this.downloadFile = this.downloadFile.bind(this);
     this.loadFile = this.loadFile.bind(this);
     this.renderButtonViewFile = this.renderButtonViewFile.bind(this);
+    this.changeSnackBar = this.changeSnackBar.bind(this);
   }
   // Fonction qui s'éxecute à la création du composant mais après le constructor et le render
   componentDidMount() {
@@ -93,6 +97,13 @@ class CandidatureForm extends Component {
         });
       }
     }
+  }
+  //////////////////////////////////////////////////////////
+  ///// Fonction pour ouvrir le snackBar après la sauvegarde de la candidature
+  changeSnackBar() {
+    this.setState({
+      openSnackBar: !this.state.openSnackBar
+    });
   }
   ////////////////////////////////////////////////////////////
   // Fonction pour charger les fichiers upload
@@ -165,6 +176,7 @@ class CandidatureForm extends Component {
   // Fonction pour sauvegarder la candidature en brouillon
   handleSave() {
     const Candidat = getCandidat();
+    const self = this;
     fetch("/candidatures/edit/" + this.state.brouillon._id, {
       method: "PUT",
       body: JSON.stringify({
@@ -186,6 +198,7 @@ class CandidatureForm extends Component {
       })
       .then(function(body) {
         console.log("candidature modifiée.");
+        self.changeSnackBar();
       });
   }
   //////////////////////////////////////////////////////////////
@@ -773,15 +786,31 @@ class CandidatureForm extends Component {
           >
             Sauvegarder
           </MDBBtn>
-          <MDBBtn
-            type="submit"
-            color="primary"
-            className="SubmitButton"
-            onClick={this.handleSubmit}
-            disabled={!this.state.formValid}
+          <Tooltip
+            title={
+              this.state.validForm === true
+                ? ""
+                : "Il manque un ou plusieurs fichiers."
+            }
+            placement="top"
           >
-            Envoyer
-          </MDBBtn>
+            <span>
+              <MDBBtn
+                type="submit"
+                color="primary"
+                className="SubmitButton"
+                onClick={this.handleSubmit}
+                disabled={!this.state.formValid}
+              >
+                Envoyer
+              </MDBBtn>
+            </span>
+          </Tooltip>
+          <MySnackBar
+            message={"Candidature sauvegardée."}
+            open={this.state.openSnackBar}
+            close={() => this.changeSnackBar()}
+          />
         </MDBCardText>
       </MDBCard>
     );
