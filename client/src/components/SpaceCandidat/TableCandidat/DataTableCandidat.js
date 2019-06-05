@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import MUIDataTable from "mui-datatables";
+import CustomToolbarSelect from "./CustomToolbar";
 
 let props = "";
 let candidaturesData = "";
@@ -152,14 +153,17 @@ export default class DataTableCandidat extends Component {
             titleAria: "Voir/Cacher les colonnes"
           },
           selectedRows: {
-            text: "Ligne sélectionnée",
-            delete: "Supprimer",
-            deleteAria: "Supprimer la ligne"
+            text: "ligne sélectionnée"
           }
         },
         selectableRows: "single",
-        onRowsSelect: (rowsSelected, allRows) => {
-          console.log(rowsSelected);
+        customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
+          return (
+            <CustomToolbarSelect
+              selectedRows={selectedRows}
+              displayData={displayData}
+            />
+          );
         },
         isRowSelectable: dataIndex => {
           // On peut sélectionner uniquement les candidatures "en attente"

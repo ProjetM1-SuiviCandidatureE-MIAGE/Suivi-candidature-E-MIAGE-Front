@@ -141,7 +141,7 @@ export default class ModalPassword extends Component {
     if (this.state.validForm === true) {
       const User = getUser();
       if (type === "candidat") {
-        fetch("/candidats/editPassword/" + User.id, {
+        fetch("/candidats/editPassword/" + User.mail, {
           method: "PUT",
           body: JSON.stringify({
             password: this.state.password,
@@ -150,38 +150,44 @@ export default class ModalPassword extends Component {
           headers: { "Content-Type": "application/json" }
         })
           .then(function(response) {
-            return response;
+            console.log(response.status);
+            if (response.status === 530) {
+              alert("Mot de passe incorrect.");
+            } else {
+              return response;
+            }
           })
           .then(function(body) {
-            console.log(body.status);
-            if (body.status === 200) {
-              fetch("/mail/send", {
-                method: "POST",
-                body: JSON.stringify({
-                  mail: User.mail,
-                  sujet: "Confirmation modification de votre mot de passe",
-                  texte:
-                    "Bonjour " +
-                    User.prenom +
-                    " " +
-                    User.nom +
-                    ",<br /> votre mot de passe a bien été modifié depuis votre profil.<br /><br />Cordialement"
-                }),
-                headers: { "Content-Type": "application/json" }
-              })
-                .then(function(response) {
-                  return response;
+            if (body !== undefined) {
+              if (body.status === 200) {
+                fetch("/mail/send", {
+                  method: "POST",
+                  body: JSON.stringify({
+                    mail: User.mail,
+                    sujet: "Confirmation modification de votre mot de passe",
+                    texte:
+                      "Bonjour " +
+                      User.prenom +
+                      " " +
+                      User.nom +
+                      ",<br /> votre mot de passe a bien été modifié depuis votre profil.<br /><br />Cordialement"
+                  }),
+                  headers: { "Content-Type": "application/json" }
                 })
-                .then(function(body) {
-                  alert("Vous allez recevoir un mail de confirmation.");
-                });
-            } else {
-              alert("erreur.");
+                  .then(function(response) {
+                    return response;
+                  })
+                  .then(function(body) {
+                    alert("Vous allez recevoir un mail de confirmation.");
+                  });
+              } else {
+                alert("erreur.");
+              }
             }
           });
       }
       if (type === "admin") {
-        fetch("/admins/editPassword/" + User.id, {
+        fetch("/admins/editPassword/" + User.mail, {
           method: "PUT",
           body: JSON.stringify({
             password: this.state.password,
@@ -193,29 +199,31 @@ export default class ModalPassword extends Component {
             return response;
           })
           .then(function(body) {
-            if (body.status === 200) {
-              fetch("/mail/send", {
-                method: "POST",
-                body: JSON.stringify({
-                  mail: User.mail,
-                  sujet: "Confirmation modification de votre mot de passe",
-                  texte:
-                    "Bonjour " +
-                    User.prenom +
-                    " " +
-                    User.nom +
-                    ",<br /> votre mot de passe a bien été modifié depuis votre profil.<br /><br />Cordialement"
-                }),
-                headers: { "Content-Type": "application/json" }
-              })
-                .then(function(response) {
-                  return response;
+            if (body !== undefined) {
+              if (body.status === 200) {
+                fetch("/mail/send", {
+                  method: "POST",
+                  body: JSON.stringify({
+                    mail: User.mail,
+                    sujet: "Confirmation modification de votre mot de passe",
+                    texte:
+                      "Bonjour " +
+                      User.prenom +
+                      " " +
+                      User.nom +
+                      ",<br /> votre mot de passe a bien été modifié depuis votre profil.<br /><br />Cordialement"
+                  }),
+                  headers: { "Content-Type": "application/json" }
                 })
-                .then(function(body) {
-                  alert("Vous allez recevoir un mail de confirmation.");
-                });
-            } else {
-              alert("erreur.");
+                  .then(function(response) {
+                    return response;
+                  })
+                  .then(function(body) {
+                    alert("Vous allez recevoir un mail de confirmation.");
+                  });
+              } else {
+                alert("erreur.");
+              }
             }
           });
       }

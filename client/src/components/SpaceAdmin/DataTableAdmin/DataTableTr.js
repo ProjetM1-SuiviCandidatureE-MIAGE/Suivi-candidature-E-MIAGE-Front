@@ -129,7 +129,9 @@ export default class DataTableTr extends Component {
                     outline
                     color="default"
                     className="FileButton"
-                    onClick={item => this.loadFile(filtre[0].autresFichier)}
+                    onClick={item =>
+                      this.loadFile(filtre[0].autresFichier)
+                    }
                   >
                     <MDBIcon icon="eye" /> Voir
                   </MDBBtn>
@@ -138,7 +140,9 @@ export default class DataTableTr extends Component {
                   <MDBBtn
                     color="default"
                     className="FileButton"
-                    onClick={item => this.downloadFile(filtre[0].autresFichier)}
+                    onClick={item =>
+                      this.downloadFile(filtre[0].autresFichier)
+                    }
                   >
                     <MDBIcon icon="file-download" /> Télécharger
                   </MDBBtn>
@@ -152,7 +156,9 @@ export default class DataTableTr extends Component {
               <TableCell colSpan={6}>
                 <TableRow>
                   <TableCell colSpan={1} />
-                  <TableCell colSpan={1}>CV (Curriculum vitæ) :</TableCell>
+                  <TableCell colSpan={1}>
+                    CV (Curriculum vitæ) :
+                  </TableCell>
                   <TableCell colSpan={1}>
                     <MDBBtn
                       outline
@@ -176,7 +182,9 @@ export default class DataTableTr extends Component {
                 </TableRow>
                 <TableRow>
                   <TableCell colSpan={1} />
-                  <TableCell colSpan={1}>Lettre de motivation :</TableCell>
+                  <TableCell colSpan={1}>
+                    Lettre de motivation :
+                  </TableCell>
                   <TableCell colSpan={1}>
                     <MDBBtn
                       outline
@@ -206,7 +214,9 @@ export default class DataTableTr extends Component {
                       outline
                       color="default"
                       className="FileButton"
-                      onClick={item => this.loadFile(filtre[0].releveNote)}
+                      onClick={item =>
+                        this.loadFile(filtre[0].releveNote)
+                      }
                     >
                       <MDBIcon icon="eye" /> Voir
                     </MDBBtn>
@@ -215,7 +225,9 @@ export default class DataTableTr extends Component {
                     <MDBBtn
                       color="default"
                       className="FileButton"
-                      onClick={item => this.downloadFile(filtre[0].releveNote)}
+                      onClick={item =>
+                        this.downloadFile(filtre[0].releveNote)
+                      }
                     >
                       <MDBIcon icon="file-download" /> Télécharger
                     </MDBBtn>
@@ -239,7 +251,9 @@ export default class DataTableTr extends Component {
                     <MDBBtn
                       color="default"
                       className="FileButton"
-                      onClick={item => this.downloadFile(filtre[0].diplome)}
+                      onClick={item =>
+                        this.downloadFile(filtre[0].diplome)
+                      }
                     >
                       <MDBIcon icon="file-download" /> Télécharger
                     </MDBBtn>
@@ -250,7 +264,9 @@ export default class DataTableTr extends Component {
                 <TableRow>
                   <TableCell colSpan={1} />
                   <TableCell colSpan={1}>Commentaire : </TableCell>
-                  <TableCell colSpan={3}>{filtre[0].commentaire}</TableCell>
+                  <TableCell colSpan={3}>
+                    {filtre[0].commentaire}
+                  </TableCell>
                 </TableRow>
                 <TableRow />
               </TableCell>
@@ -300,11 +316,26 @@ export default class DataTableTr extends Component {
         customSort: (data, colIndex, order) => {
           const self = this;
           return data.sort((a, b) => {
-            // Si c'est une date on tri par rapport à YYYY/MM/DD
-            if (a.data[colIndex].includes("/")) {
-              const dateA = self.changeFormatDate(a.data[colIndex]);
-              const dateB = self.changeFormatDate(b.data[colIndex]);
-              return (dateA > dateB ? -1 : 1) * (order === "desc" ? 1 : -1);
+            if (
+              a.data[colIndex] !== undefined &&
+              b.data[colIndex] !== undefined
+            ) {
+              // Si c'est une date on tri par rapport à YYYY/MM/DD
+              if (
+                a.data[colIndex].includes("/") &&
+                b.data[colIndex].includes("/")
+              ) {
+                const dateA = self.changeFormatDate(a.data[colIndex]);
+                const dateB = self.changeFormatDate(b.data[colIndex]);
+                return (
+                  (dateA > dateB ? -1 : 1) * (order === "desc" ? 1 : -1)
+                );
+              } else {
+                return (
+                  (a.data[colIndex] > b.data[colIndex] ? -1 : 1) *
+                  (order === "desc" ? 1 : -1)
+                );
+              }
             } else {
               return (
                 (a.data[colIndex] > b.data[colIndex] ? -1 : 1) *
