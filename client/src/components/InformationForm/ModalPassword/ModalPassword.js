@@ -141,7 +141,7 @@ export default class ModalPassword extends Component {
     if (this.state.validForm === true) {
       const User = getUser();
       if (type === "candidat") {
-        fetch("/candidats/editPassword/" + User.mail, {
+        fetch("/candidats/editPassword/" + User.id, {
           method: "PUT",
           body: JSON.stringify({
             password: this.state.password,
@@ -187,7 +187,7 @@ export default class ModalPassword extends Component {
           });
       }
       if (type === "admin") {
-        fetch("/admins/editPassword/" + User.mail, {
+        fetch("/admins/editPassword/" + User.id, {
           method: "PUT",
           body: JSON.stringify({
             password: this.state.password,
@@ -196,7 +196,11 @@ export default class ModalPassword extends Component {
           headers: { "Content-Type": "application/json" }
         })
           .then(function(response) {
-            return response;
+            if (response.status === 530) {
+              alert("Mot de passe incorrect.");
+            } else {
+              return response;
+            }
           })
           .then(function(body) {
             if (body !== undefined) {

@@ -333,9 +333,10 @@ class Home extends Component {
                   <div className="icon">
                     <MDBIcon icon="download" />
                     <a
-                      href="/"
+                      href="./fichier_Master1_emiage.pdf"
                       title="Ouvre un lien interne dans la fenêtre en cours"
                       className="download link--icon link--download"
+                      download
                     >
                       {" "}
                       <i className="icon icon-download" />{" "}

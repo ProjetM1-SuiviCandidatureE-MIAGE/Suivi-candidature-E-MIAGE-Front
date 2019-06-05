@@ -77,9 +77,38 @@ export default class ModalForgetPassword extends Component {
   // Fonction pour envoyer une requête de mot de passe oublié au back
   forgetPassword() {
     if (this.state.validForm === true) {
+      const self = this;
       if (type === "candidat") {
+        fetch("/candidats/recupPassword/" + this.state.mail, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+          .then(function(response) {
+            return response;
+          })
+          .then(function(body) {
+            console.log(body);
+            alert("Vous allez recevoir un mail si l'adresse mail correspond.");
+            self.handleReset();
+          });
       }
       if (type === "admin") {
+        fetch("/admins/recupPassword/" + this.state.mail, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+          .then(function(response) {
+            return response;
+          })
+          .then(function(body) {
+            console.log(body);
+            alert("Vous allez recevoir un mail si l'adresse mail correspond.");
+            self.handleReset();
+          });
       }
     } else {
       alert("Mail invalide.");
