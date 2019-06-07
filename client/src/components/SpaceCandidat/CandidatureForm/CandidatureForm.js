@@ -20,6 +20,7 @@ let getCandidat = "";
 let candidaturesCandidat = "";
 let brouillonCandidat = "";
 let fetchCandidatures = "";
+let props = "";
 
 // Le formulaire de création d'une candidature
 class CandidatureForm extends Component {
@@ -60,12 +61,18 @@ class CandidatureForm extends Component {
     this.renderButtonViewFile = this.renderButtonViewFile.bind(this);
     this.changeSnackBar = this.changeSnackBar.bind(this);
   }
+  componentWillReceiveProps(props) {
+    if (this.props.refresh === true && this.props.brouillon.length === 1) {
+      this.componentDidMount();
+    }
+  }
   // Fonction qui s'éxecute à la création du composant mais après le constructor et le render
   componentDidMount() {
     getCandidat = this.props.get;
     candidaturesCandidat = this.props.candidatures;
     brouillonCandidat = this.props.brouillon;
     fetchCandidatures = this.props.fetch;
+    props = this.props;
 
     console.log("Candidatures : " + candidaturesCandidat.length);
 
@@ -79,7 +86,8 @@ class CandidatureForm extends Component {
       RN: brouillonCandidat[0].releveNote,
       AF: brouillonCandidat[0].autresFichier,
 
-      loadEnd: true
+      loadEnd: true,
+      formValid: false
     });
   }
   ////////////////////////////////////////////////////////////
@@ -764,9 +772,12 @@ class CandidatureForm extends Component {
   /////////////////////////////////////////////////////////////////
   render() {
     return (
-      <MDBCard className="shadow-box-example z-depth-4 CardPerso mx-auto">
+      <MDBCard
+        id={"candidature"}
+        className="shadow-box-example z-depth-4 CardPerso mx-auto"
+      >
         <MDBCardTitle className="font-weight-bold mb-3 mx-auto CardTitle">
-          Créer votre candidature
+          {props.type} votre candidature
         </MDBCardTitle>
         <MDBCardBody className="CardBody">
           <div>
@@ -788,7 +799,7 @@ class CandidatureForm extends Component {
           </MDBBtn>
           <Tooltip
             title={
-              this.state.validForm === true
+              this.state.formValid === true
                 ? ""
                 : "Il manque un ou plusieurs fichiers."
             }

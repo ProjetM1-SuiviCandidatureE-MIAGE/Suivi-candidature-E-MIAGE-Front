@@ -21,7 +21,7 @@ class SpaceCandidat extends React.Component {
         mail: ""
       },
       candidatures: "",
-      brouillon: "",
+      brouillon: [],
       fetchEnd: false,
 
       toggleInformations: false
@@ -34,6 +34,7 @@ class SpaceCandidat extends React.Component {
     this.renderInformationForm = this.renderInformationForm.bind(this);
     this.checkBrouillon = this.checkBrouillon.bind(this);
     this.fetchCandidatures = this.fetchCandidatures.bind(this);
+    this.setBrouillon = this.setBrouillon.bind(this);
   }
   // Fonction pour récupérer les candidatures du candidat quand il se connecte
   componentDidMount() {
@@ -119,6 +120,20 @@ class SpaceCandidat extends React.Component {
         console.log(error);
       });
   }
+  //// Fonction pour afficher la candidature en attente et pas le brouillon
+  async setBrouillon(id) {
+    let cand = this.state.candidatures.filter((item, i) => {
+      if (item._id === id) {
+        return item;
+      } else {
+        return false;
+      }
+    });
+    this.state.brouillon.pop();
+    await this.setState({
+      brouillon: this.state.brouillon.concat(cand)
+    });
+  }
   // Fonction pour récupérer les données du candidat pour les autres composants fils
   getCandidat() {
     return this.state.candidat;
@@ -145,16 +160,31 @@ class SpaceCandidat extends React.Component {
     });
   }
   // Fonction pour charger le composant CandidatureForm quand le fetch est fini
-  renderCandidatureForm(boolean) {
-    if (boolean === true) {
-      return (
-        <CandidatureForm
-          candidatures={this.state.candidatures}
-          brouillon={this.state.brouillon}
-          get={() => this.getCandidat()}
-          fetch={() => this.fetchCandidatures()}
-        />
-      );
+  renderCandidatureForm(brouillon) {
+    if (brouillon.length === 1) {
+      if (brouillon[0].etat === "brouillon") {
+        return (
+          <CandidatureForm
+            candidatures={this.state.candidatures}
+            brouillon={this.state.brouillon}
+            get={() => this.getCandidat()}
+            fetch={() => this.fetchCandidatures()}
+            type={"Créer "}
+            refresh={true}
+          />
+        );
+      } else {
+        return (
+          <CandidatureForm
+            candidatures={this.state.candidatures}
+            brouillon={this.state.brouillon}
+            get={() => this.getCandidat()}
+            fetch={() => this.fetchCandidatures()}
+            refresh={true}
+            type={"Modifier "}
+          />
+        );
+      }
     }
   }
   // Fonction pour afficher le composant InformationForm
@@ -174,7 +204,12 @@ class SpaceCandidat extends React.Component {
   // Fonction pour afficher la datatable de suivi des candidatures
   renderDataTableSuivi(boolean) {
     if (boolean === true) {
-      return <DataTable candidatures={this.state.candidatures} />;
+      return (
+        <DataTable
+          candidatures={this.state.candidatures}
+          setBrouillon={item => this.setBrouillon(item)}
+        />
+      );
     }
   }
   // Fonction qui retourne le html du composant
@@ -196,7 +231,7 @@ class SpaceCandidat extends React.Component {
           {this.renderInformationForm(this.state.fetchEnd)}
         </MDBCollapse>
         <div className="CandidatureForm">
-          {this.renderCandidatureForm(this.state.fetchEnd)}
+          {this.renderCandidatureForm(this.state.brouillon)}
         </div>
       </div>
     );

@@ -16,7 +16,9 @@ export default class DataTableCandidat extends Component {
     this.renderDataTable = this.renderDataTable.bind(this);
     this.renderCandidatures = this.renderCandidatures.bind(this);
   }
-
+  componentWillReceiveProps(props) {
+    this.componentDidMount();
+  }
   // Fonction qui s'éxecute à la création du composant
   componentDidMount() {
     props = this.props;
@@ -84,6 +86,12 @@ export default class DataTableCandidat extends Component {
   renderDataTable(boolean) {
     if (boolean === true) {
       const columns = [
+        {
+          name: "_id",
+          options: {
+            display: "excluded"
+          }
+        },
         {
           name: "nom",
           label: "Nom"
@@ -162,6 +170,7 @@ export default class DataTableCandidat extends Component {
             <CustomToolbarSelect
               selectedRows={selectedRows}
               displayData={displayData}
+              setBrouillon={item => this.props.setBrouillon(item)}
             />
           );
         },

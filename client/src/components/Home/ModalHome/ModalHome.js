@@ -96,7 +96,7 @@ class ModalHome extends Component {
   /////////////////////////////////////////////
   // fonction pour vérifier le format du nom et prénom
   validateName(name) {
-    const regex = /^[a-zA-Zéèàêùîô]{2,}$/;
+    const regex = /^[a-zA-Zéèàêùîô ]{2,}$/;
     return regex.test(String(name).toLowerCase());
   }
   //////////////////////////////////////////////////////
@@ -416,7 +416,7 @@ class ModalHome extends Component {
                   <MDBInput
                     type="email"
                     name="mailConnexion"
-                    label="E-mail"
+                    label="E-mail*"
                     icon="envelope"
                     onChange={this.handleInputChange}
                     value={this.state.mailConnexion}
@@ -428,7 +428,7 @@ class ModalHome extends Component {
                     type="password"
                     name="passwordConnexion"
                     icon="lock"
-                    label="Mot de passe"
+                    label="Mot de passe*"
                     onChange={this.handleInputChange}
                     value={this.state.passwordConnexion}
                     group
@@ -474,7 +474,7 @@ class ModalHome extends Component {
                     type="text"
                     name="prenomInscription"
                     icon="user"
-                    label="Prénom"
+                    label={"Prénom*"}
                     onChange={this.handleNameChange}
                     value={this.state.prenomInscription}
                     autoComplete="given-name"
@@ -485,7 +485,7 @@ class ModalHome extends Component {
                     type="text"
                     name="nomInscription"
                     icon="user"
-                    label="Nom"
+                    label="Nom*"
                     onChange={this.handleNameChange}
                     value={this.state.nomInscription}
                     autoComplete="family-name"
@@ -495,7 +495,7 @@ class ModalHome extends Component {
                   <MDBInput
                     type="email"
                     name="mailInscription"
-                    label="E-mail"
+                    label="E-mail*"
                     icon="envelope"
                     onChange={this.handleMailChange}
                     value={this.state.mailInscription}
@@ -507,7 +507,7 @@ class ModalHome extends Component {
                     type="password"
                     name="passwordInscription"
                     icon="lock"
-                    label="Mot de passe"
+                    label="Mot de passe* (8 caractères minimum)"
                     group
                     onChange={this.handlePasswordChange}
                     value={this.state.passwordInscription}
@@ -517,7 +517,7 @@ class ModalHome extends Component {
                   <MDBInput
                     type="password"
                     name="passwordConfirm"
-                    label="Confirmation"
+                    label="Confirmation mot de passe*"
                     icon="lock"
                     onChange={this.handlePasswordChange}
                     value={this.state.passwordConfirm}
@@ -600,7 +600,7 @@ class ModalHome extends Component {
                   <MDBInput
                     type="email"
                     name="mailConnexionAdmin"
-                    label="E-mail"
+                    label="E-mail*"
                     icon="envelope"
                     onChange={this.handleInputChange}
                     value={this.state.mailConnexionAdmin}
@@ -612,7 +612,7 @@ class ModalHome extends Component {
                     type="password"
                     name="passwordConnexionAdmin"
                     icon="lock"
-                    label="Mot de passe"
+                    label="Mot de passe*"
                     onChange={this.handleInputChange}
                     value={this.state.passwordConnexionAdmin}
                     group

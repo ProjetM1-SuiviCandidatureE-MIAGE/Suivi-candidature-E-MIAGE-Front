@@ -90,7 +90,7 @@ export default class InformationForm extends Component {
   /////////////////////////////////////////////
   // fonction pour vérifier le format du nom et prénom
   validateName(name) {
-    const regex = /^[a-zA-Zéèàêùîô]{2,}$/;
+    const regex = /^[a-zA-Zéèàêùîô ]{2,}$/;
     return regex.test(String(name).toLowerCase());
   }
   ////////////////////////////////////////////////
