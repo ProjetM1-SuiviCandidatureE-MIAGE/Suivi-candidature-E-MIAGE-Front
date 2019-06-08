@@ -79,3 +79,7 @@
   font-size: 0.7rem !important;
   padding: 0.8rem 1.2rem !important;
 }
+
+#modalLRForm {
+  text-align: left !important;
+}

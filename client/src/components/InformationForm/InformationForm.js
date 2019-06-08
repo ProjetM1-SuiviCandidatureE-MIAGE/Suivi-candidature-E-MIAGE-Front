@@ -10,6 +10,7 @@ import {
 } from "mdbreact";
 import "./InformationForm.css";
 import ModalPassword from "./ModalPassword/ModalPassword";
+import SnackBar from "../SnackBar/MySnackBar";
 
 let getUser = "";
 let setUser = "";
@@ -35,7 +36,8 @@ export default class InformationForm extends Component {
       newMail: "",
 
       isOpen: false,
-      loadEnd: false
+      loadEnd: false,
+      openSnackBar: false
     };
     this.openModal = this.openModal.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
@@ -45,6 +47,7 @@ export default class InformationForm extends Component {
     this.validateName = this.validateName.bind(this);
     this.changeInfos = this.changeInfos.bind(this);
     this.checkValid = this.checkValid.bind(this);
+    this.changeSnackBar = this.changeSnackBar.bind(this);
   }
   // Fonction qui s'éxecute à la création du composant
   componentDidMount() {
@@ -69,6 +72,13 @@ export default class InformationForm extends Component {
       newMail: User.mail,
 
       loadEnd: true
+    });
+  }
+  ////////////////////////////////////////////////////////////
+  ///// Fonction pour ouvrir le snackBar après la sauvegarde de la candidature
+  changeSnackBar(boolean) {
+    this.setState({
+      openSnackBar: boolean
     });
   }
   // Fonction qui vérifie que tout le formulaire est valide
@@ -212,7 +222,7 @@ export default class InformationForm extends Component {
                 return response;
               })
               .then(function(body) {
-                alert("Vous allez recevoir un mail de confirmation.");
+                self.changeSnackBar(true);
                 const replaceUser = {
                   id: User.id,
                   mail: self.state.newMail,
@@ -268,7 +278,7 @@ export default class InformationForm extends Component {
                 return response;
               })
               .then(function(body) {
-                alert("Vous allez recevoir un mail de confirmation.");
+                self.changeSnackBar(true);
                 const replaceUser = {
                   id: User.id,
                   mail: self.state.newMail,
@@ -374,6 +384,11 @@ export default class InformationForm extends Component {
           >
             Sauvegarder
           </MDBBtn>
+          <SnackBar
+            message={"Informations modifées."}
+            open={this.state.openSnackBar}
+            close={item => this.changeSnackBar(item)}
+          />
         </MDBCardText>
       </MDBCard>
     );

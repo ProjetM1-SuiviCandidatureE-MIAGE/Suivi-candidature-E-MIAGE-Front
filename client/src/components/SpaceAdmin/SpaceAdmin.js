@@ -8,6 +8,7 @@ import DataTableNT from "./DataTableAdmin/DataTableNT";
 import DataTableEA from "./DataTableAdmin/DataTableEA";
 import DataTableTr from "./DataTableAdmin/DataTableTr";
 import MySnackBar from "../SnackBar/MySnackBar";
+import ModalSignUp from "./ModalSignUp/ModalSignUp";
 
 let propsUser = "";
 
@@ -38,11 +39,13 @@ export default class SpaceAdmin extends Component {
       TraitéesNumber: 0,
 
       fetchEnd: false,
-      openSnackBar: false
+      openSnackBar: false,
+      showAdminModal: false
     };
     this.toggleNonTraite = this.toggleNonTraite.bind(this);
     this.toggleAttente = this.toggleAttente.bind(this);
     this.toggleTraite = this.toggleTraite.bind(this);
+    this.openAdminModal = this.openAdminModal.bind(this);
     this.toggleMesInformations = this.toggleMesInformations.bind(this);
 
     this.renderCandidaturesNonTraitees = this.renderCandidaturesNonTraitees.bind(
@@ -78,6 +81,12 @@ export default class SpaceAdmin extends Component {
       };
     });
     this.fetchData();
+  }
+  // Fonction pour ouvrir le modal de connexion quand on clique sur espace admin
+  openAdminModal() {
+    this.setState({
+      showAdminModal: !this.state.showAdminModal
+    });
   }
   // Fonction pour récupérer les candidatures et les filtrer
   fetchData() {
@@ -343,6 +352,13 @@ export default class SpaceAdmin extends Component {
           >
             Voir mes informations
           </MDBBtn>
+          <MDBBtn onClick={this.openAdminModal} className="btnPerso">
+            Inscrire un nouvel enseignant
+          </MDBBtn>
+          <ModalSignUp
+            isOpen={this.state.showAdminModal}
+            toggle={this.openAdminModal}
+          />
         </div>
         <Collapse isOpen={this.state.boolMesInformations}>
           {this.renderInformationForm(this.state.fetchEnd)}

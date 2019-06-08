@@ -49,7 +49,8 @@ class CandidatureForm extends Component {
       candidatures: "",
       brouillon: "",
       loadEnd: false,
-      openSnackBar: false
+      openSnackBarSave: false,
+      openSnackBarSend: false
     };
     // On bind toutes les fonctions qui vont utiliser le this.state
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -59,7 +60,8 @@ class CandidatureForm extends Component {
     this.downloadFile = this.downloadFile.bind(this);
     this.loadFile = this.loadFile.bind(this);
     this.renderButtonViewFile = this.renderButtonViewFile.bind(this);
-    this.changeSnackBar = this.changeSnackBar.bind(this);
+    this.changeSnackBarSave = this.changeSnackBarSave.bind(this);
+    this.changeSnackBarSend = this.changeSnackBarSend.bind(this);
   }
   componentWillReceiveProps(props) {
     if (this.props.refresh === true && this.props.brouillon.length === 1) {
@@ -73,8 +75,6 @@ class CandidatureForm extends Component {
     brouillonCandidat = this.props.brouillon;
     fetchCandidatures = this.props.fetch;
     props = this.props;
-
-    console.log("Candidatures : " + candidaturesCandidat.length);
 
     this.setState({
       candidatures: candidaturesCandidat,
@@ -108,9 +108,14 @@ class CandidatureForm extends Component {
   }
   //////////////////////////////////////////////////////////
   ///// Fonction pour ouvrir le snackBar après la sauvegarde de la candidature
-  changeSnackBar(boolean) {
+  changeSnackBarSave(boolean) {
     this.setState({
-      openSnackBar: boolean
+      openSnackBarSave: boolean
+    });
+  }
+  changeSnackBarSend(boolean) {
+    this.setState({
+      openSnackBarSend: boolean
     });
   }
   ////////////////////////////////////////////////////////////
@@ -132,6 +137,7 @@ class CandidatureForm extends Component {
   handleSubmit(e) {
     e.preventDefault();
     const Candidat = getCandidat();
+    const self = this;
     if (this.state.formValid === true) {
       fetch("/candidatures/edit/" + this.state.brouillon._id, {
         method: "PUT",
@@ -174,7 +180,7 @@ class CandidatureForm extends Component {
           return response;
         })
         .then(function(body) {
-          alert("Vous allez recevoir un mail de confirmation.");
+          self.changeSnackBarSend(true);
         });
 
       this.handleResetForm(e);
@@ -206,7 +212,7 @@ class CandidatureForm extends Component {
       })
       .then(function(body) {
         console.log("candidature modifiée.");
-        self.changeSnackBar(true);
+        self.changeSnackBarSave(true);
       });
   }
   //////////////////////////////////////////////////////////////
@@ -819,8 +825,13 @@ class CandidatureForm extends Component {
           </Tooltip>
           <MySnackBar
             message={"Candidature sauvegardée."}
-            open={this.state.openSnackBar}
-            close={item => this.changeSnackBar(item)}
+            open={this.state.openSnackBarSave}
+            close={item => this.changeSnackBarSave(item)}
+          />
+          <MySnackBar
+            message={"Candidature envoyée."}
+            open={this.state.openSnackBarSend}
+            close={item => this.changeSnackBarSend(item)}
           />
         </MDBCardText>
       </MDBCard>
