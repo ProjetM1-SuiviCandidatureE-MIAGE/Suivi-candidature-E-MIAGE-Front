@@ -189,7 +189,7 @@ export default class ModalSignUp extends Component {
                   User.prenom +
                   " " +
                   User.nom +
-                  ",<br />La création de votre compte est achevée, vous pouvez dès à présent vous connectez dans votre espace enseigant.<br /><br />Cordialement"
+                  ",<br />La création de votre compte est achevée, vous pouvez dès à présent vous connecter dans votre espace enseigant.<br /><br />Cordialement"
               }),
               headers: { "Content-Type": "application/json" }
             })

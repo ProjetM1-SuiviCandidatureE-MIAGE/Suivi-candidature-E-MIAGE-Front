@@ -159,28 +159,40 @@ class CandidatureForm extends Component {
           return response.json();
         })
         .then(function(body) {
-          console.log("candidature envoyée.");
-        });
-
-      fetch("/mail/send", {
-        method: "POST",
-        body: JSON.stringify({
-          mail: Candidat.mail,
-          sujet: "Confirmation de la création de votre candidature",
-          texte:
-            "Bonjour " +
-            Candidat.prenom +
-            " " +
-            Candidat.nom +
-            ",<br /> votre candidature a bien été créée.<br /><br />Cordialement"
-        }),
-        headers: { "Content-Type": "application/json" }
-      })
-        .then(function(response) {
-          return response;
-        })
-        .then(function(body) {
-          self.changeSnackBarSend(true);
+          fetch("/mail/send", {
+            method: "POST",
+            body: JSON.stringify({
+              mail: Candidat.mail,
+              sujet: "Confirmation de la création de votre candidature",
+              texte:
+                "Bonjour " +
+                Candidat.prenom +
+                " " +
+                Candidat.nom +
+                ",<br /> votre candidature a bien été créée.<br /><br />Cordialement"
+            }),
+            headers: { "Content-Type": "application/json" }
+          })
+            .then(function(response) {
+              return response;
+            })
+            .then(function(body) {
+              self.changeSnackBarSend(true);
+            });
+          fetch("/mail/sendAdmins", {
+            method: "POST",
+            body: JSON.stringify({
+              sujet: "Nouvelle candidature sur la plateforme",
+              texte:
+                "Bonjour,<br />" +
+                "Une nouvelle candidature vient d'être envoyée sur la plateforme e-Miage.<br /><br />Cordialement"
+            }),
+            headers: { "Content-Type": "application/json" }
+          })
+            .then(function(response) {
+              return response;
+            })
+            .then(function(body) {});
         });
 
       this.handleResetForm(e);
